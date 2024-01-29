@@ -10,7 +10,7 @@ function Test() {
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', handleOrientation);
         } else {
-            console.error("DeviceOrientation is not supported");
+            console.error("DeviceOrientation n'est pas supporté");
         }
 
         return () => {
@@ -23,7 +23,8 @@ function Test() {
         const beta = event.beta;    // rotation autour de l'axe X
         const gamma = event.gamma;  // rotation autour de l'axe Y
 
-        // Mettez à jour les données de l'orientation dans l'état local
+        console.log(orientationData);
+
         setOrientationData({ alpha, beta, gamma });
     }
 
@@ -33,7 +34,6 @@ function Test() {
                     <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner a l'accueil </button></Link>
             </div>
             <div className="flex flex-col bg-slate-300 h-fit">
-                {/* Afficher les données de l'orientation si disponibles */}
                 {orientationData && (
                     <div>
                         <p>Alpha: {orientationData.alpha}</p>
