@@ -1,6 +1,6 @@
 {
-    "name": "PWA Onip Project",
-    "short_name": "Onip",
+    "name": "One Night In Paradoxe",
+    "short_name": "Bar le Paradoxe",
     "description": "Sert toi de ton téléphone comme téléphone de jeu",
     "start_url": "/",
     "display": "standalone",
