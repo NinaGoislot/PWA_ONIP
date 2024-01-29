@@ -10,6 +10,10 @@ function Test() {
     const [dataY, setBestDataY] = useState(0);
     const [dataZ, setBestDataZ] = useState(0);
 
+    const [dataX2, setBestDataX2] = useState(0);
+    const [dataY2, setBestDataY2] = useState(0);
+    const [dataZ2, setBestDataZ2] = useState(0);
+
 
     /*const handleOrientation = (event) => {
         console.log(event);
@@ -34,6 +38,10 @@ function Test() {
         event.acceleration.x > dataX ? setBestDataX(event.acceleration.x) : "";
         event.acceleration.y > dataY ? setBestDataY(event.acceleration.y) : "";
         event.acceleration.z > dataZ ? setBestDataZ(event.acceleration.z) : "";
+
+        event.acceleration.x < dataX2 ? setBestDataX2(event.acceleration.x) : "";
+        event.acceleration.y < dataY2 ? setBestDataY2(event.acceleration.y) : "";
+        event.acceleration.z < dataZ2 ? setBestDataZ2(event.acceleration.z) : "";
     };
 
     useEffect(() => {
