@@ -35,13 +35,13 @@ function Test() {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
 
-        if (event.acceleration.x > dataX) {setBestDataX(event.acceleration.x)};
-        if (event.acceleration.y > dataY) {setBestDataY(event.acceleration.y)};
-        if (event.acceleration.z > dataZ) {setBestDataZ(event.acceleration.z)};
-
-        event.acceleration.x < dataX2 ? setBestDataX2(event.acceleration.x) : "";
-        event.acceleration.y < dataY2 ? setBestDataY2(event.acceleration.y) : "";
-        event.acceleration.z < dataZ2 ? setBestDataZ2(event.acceleration.z) : "";
+        setBestDataX((prevX) => (acceleration.x > prevX ? acceleration.x : prevX));
+        setBestDataY((prevY) => (acceleration.y > prevY ? acceleration.y : prevY));
+        setBestDataZ((prevZ) => (acceleration.z > prevZ ? acceleration.z : prevZ));
+    
+        setBestDataX2((prevX2) => (acceleration.x < prevX2 ? acceleration.x : prevX2));
+        setBestDataY2((prevY2) => (acceleration.y < prevY2 ? acceleration.y : prevY2));
+        setBestDataZ2((prevZ2) => (acceleration.z < prevZ2 ? acceleration.z : prevZ2));
     };
 
     useEffect(() => {
