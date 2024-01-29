@@ -7,7 +7,7 @@ function Orientation() {
 
     const handleOrientation = (event) => {
         console.log(event);
-        const alpha = 3;  // rotation autour de l'axe Z
+        const alpha = orientationData.alpha++;  // rotation autour de l'axe Z
         const beta = event.beta;    // rotation autour de l'axe X
         const gamma = event.gamma;  // rotation autour de l'axe Y
 
@@ -31,7 +31,7 @@ function Orientation() {
     }, []); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
 
     return (
-            <div className="flex flex-col bg-red-300 h-fit">
+            <div className="flex flex-col bg-yellow-300 h-fit">
                 {/* Afficher les données de l'orientation en permanence */}
                 {orientationData && (
                     <div>
