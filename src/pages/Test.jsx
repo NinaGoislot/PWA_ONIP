@@ -34,15 +34,13 @@ function Test() {
             <div className="flex justify-center items-center h-full">
                 <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
             </div>
-            <div className="flex flex-col bg-blue-300 h-fit">
+            <div className="flex flex-col bg-red-300 h-fit">
                 {/* Afficher les données de l'orientation en permanence */}
-                {orientationData && (
                     <div>
                         <p>Alpha: {alpha}</p>
                         <p>Beta: {beta}</p>
                         <p>Gamma: {gamma}</p>
                     </div>
-                )}
             </div>
         </main>
     );
