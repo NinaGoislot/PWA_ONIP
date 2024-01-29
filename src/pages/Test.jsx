@@ -12,10 +12,6 @@ function Test() {
         } else {
             console.error("DeviceOrientation n'est pas supporté");
         }
-
-        return () => {
-            window.removeEventListener('deviceorientation', handleOrientation);
-        };
     }, []);
 
     function handleOrientation(event) {
