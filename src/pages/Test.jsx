@@ -76,9 +76,13 @@ function Test() {
                 <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
             </div>
             <div className="flex justify-center items-center h-full">
-                <p>Point culminant en X : {dataX}</p>
-                <p>Point culminant en Y : {dataY}</p>
-                <p>Point culminant en Z : {dataZ}</p>
+                <p>Point culminant Positif en X : {dataX}</p>
+                <p>Point culminant Positif en Y : {dataY}</p>
+                <p>Point culminant Positif en Z : {dataZ}</p>
+
+                <p>Point culminant Négatif en X : {dataX2}</p>
+                <p>Point culminant Négatif en Y : {dataY2}</p>
+                <p>Point culminant Négatif en Z : {dataZ2}</p>
             </div>
             <div className="flex flex-col bg-slate-300 h-fit">
                 {/* Afficher les données de l'orientation en permanence */}
