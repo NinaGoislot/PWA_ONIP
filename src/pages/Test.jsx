@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 function Test() {
-    const [orientationData, setOrientationData] = useState({ alpha: 6, beta: 0, gamma: 0 });
+    const alpha = 1, gamma = 1, beta = 1;
 
     const handleOrientation = (event) => {
         console.log(event);
-        const alpha = 3;  // rotation autour de l'axe Z
+        const alpha = event.alpha;  // rotation autour de l'axe Z
         const beta = event.beta;    // rotation autour de l'axe X
         const gamma = event.gamma;  // rotation autour de l'axe Y
 
@@ -34,13 +34,13 @@ function Test() {
             <div className="flex justify-center items-center h-full">
                 <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
             </div>
-            <div className="flex flex-col bg-green-300 h-fit">
+            <div className="flex flex-col bg-blue-300 h-fit">
                 {/* Afficher les données de l'orientation en permanence */}
                 {orientationData && (
                     <div>
-                        <p>Alpha: {orientationData.alpha}</p>
-                        <p>Beta: {orientationData.beta}</p>
-                        <p>Gamma: {orientationData.gamma}</p>
+                        <p>Alpha: {alpha}</p>
+                        <p>Beta: {beta}</p>
+                        <p>Gamma: {gamma}</p>
                     </div>
                 )}
             </div>
