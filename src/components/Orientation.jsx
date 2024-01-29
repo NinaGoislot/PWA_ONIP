@@ -28,7 +28,7 @@ function Orientation() {
         return () => {
             window.removeEventListener('deviceorientation', handleOrientation);
         };
-    }, []); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
+    }, [orientationData]); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
 
     return (
             <div className="flex flex-col bg-green-300 h-fit">
