@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { observer } from 'mobx-react-lite';
+import { Observer, observer } from 'mobx-react-lite';
 
 function Orientation() {
     const [orientationData, setOrientationData] = useState({ alpha: 6, beta: 0, gamma: 0 });
@@ -44,4 +44,4 @@ function Orientation() {
     );
 }
 
-export default Orientation(Test);
+export default observer(Orientation);
