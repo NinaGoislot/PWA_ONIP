@@ -6,12 +6,21 @@ function Test() {
     
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
 
-    useEffect(() => {
+    function componentDidMount() {
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', handleOrientation);
         } else {
             console.error("DeviceOrientation n'est pas supporté");
         }
+    };
+
+    useEffect(() => {
+        /*if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', handleOrientation);
+        } else {
+            console.error("DeviceOrientation n'est pas supporté");
+        }*/
+
     }, []);
 
     function handleOrientation(event) {
