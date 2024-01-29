@@ -35,13 +35,13 @@ function Test() {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
 
-        event.acceleration.x > dataX ? setBestDataX(event.acceleration.x) : "";
-        event.acceleration.y > dataY ? setBestDataY(event.acceleration.y) : "";
-        event.acceleration.z > dataZ ? setBestDataZ(event.acceleration.z) : "";
+        event.acceleration.x > dataX ? setBestDataX(event.acceleration.x) : 4;
+        event.acceleration.y > dataY ? setBestDataY(event.acceleration.y) : 5;
+        event.acceleration.z > dataZ ? setBestDataZ(event.acceleration.z) : 3;
 
-        event.acceleration.x < dataX2 ? setBestDataX2(event.acceleration.x) : "";
-        event.acceleration.y < dataY2 ? setBestDataY2(event.acceleration.y) : "";
-        event.acceleration.z < dataZ2 ? setBestDataZ2(event.acceleration.z) : "";
+        event.acceleration.x < dataX2 ? setBestDataX2(event.acceleration.x) : 1;
+        event.acceleration.y < dataY2 ? setBestDataY2(event.acceleration.y) : 2;
+        event.acceleration.z < dataZ2 ? setBestDataZ2(event.acceleration.z) : 3;
     };
 
     useEffect(() => {
@@ -75,14 +75,17 @@ function Test() {
             <div className="flex justify-center items-center h-full">
                 <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
             </div>
-            <div className="flex justify-center items-center h-full">
-                <p>Point culminant Positif en X : {dataX}</p>
-                <p>Point culminant Positif en Y : {dataY}</p>
-                <p>Point culminant Positif en Z : {dataZ}</p>
-
-                <p>Point culminant Négatif en X : {dataX2}</p>
-                <p>Point culminant Négatif en Y : {dataY2}</p>
-                <p>Point culminant Négatif en Z : {dataZ2}</p>
+            <div className="flex flex-col justify-center items-center h-full">
+                <div className="flex justify-auround">
+                    <p>Point culminant Positif en X : {dataX}</p>
+                    <p>Point culminant Positif en Y : {dataY}</p>
+                    <p>Point culminant Positif en Z : {dataZ}</p>
+                </div>
+                <div className="flex justify-auround">
+                    <p>Point culminant Négatif en X : {dataX2}</p>
+                    <p>Point culminant Négatif en Y : {dataY2}</p>
+                    <p>Point culminant Négatif en Z : {dataZ2}</p>
+                </div>
             </div>
             <div className="flex flex-col bg-slate-300 h-fit">
                 {/* Afficher les données de l'orientation en permanence */}
