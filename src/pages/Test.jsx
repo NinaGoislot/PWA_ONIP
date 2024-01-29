@@ -6,7 +6,7 @@ function Test() {
 
     const handleOrientation = (event) => {
         console.log(event);
-        const alpha = event.alpha;  // rotation autour de l'axe Z
+        const alpha = {alpha : 3};  // rotation autour de l'axe Z
         const beta = event.beta;    // rotation autour de l'axe X
         const gamma = event.gamma;  // rotation autour de l'axe Y
 
