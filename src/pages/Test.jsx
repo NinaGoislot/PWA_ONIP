@@ -6,6 +6,8 @@ function Test() {
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
 
+    var dataY = 0, dataX = 0, dataZ =0;
+
 
     /*const handleOrientation = (event) => {
         console.log(event);
@@ -26,6 +28,10 @@ function Test() {
         console.log("MOTION: ",event);
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
+
+        event.acceleration.x > dataX ? dataX = event.acceleration.x : "";
+        event.acceleration.y > dataY ? dataY = event.acceleration.y : "";
+        event.acceleration.z > dataZ ? dataZ = event.acceleration.z : "";
     };
 
     useEffect(() => {
@@ -58,6 +64,11 @@ function Test() {
         <main className="h-screen w-screen flex flex-col justify-around item-center bg-slate-700">
             <div className="flex justify-center items-center h-full">
                 <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
+            </div>
+            <div className="flex justify-center items-center h-full">
+                <p>Point culminant en Y : {dataY}</p>
+                <p>Point culminant en X : {dataX}</p>
+                <p>Point culminant en Z : {dataZ}</p>
             </div>
             <div className="flex flex-col bg-slate-300 h-fit">
                 {/* Afficher les données de l'orientation en permanence */}
