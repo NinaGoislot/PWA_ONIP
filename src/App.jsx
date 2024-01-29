@@ -1,6 +1,5 @@
 import Home from './pages/Home';
-import Test from './pages/Test';
-import TestV2 from './pages/TestV2';
+import Test from './pages/Test'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { createContext } from 'react';
@@ -19,7 +18,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/Test" element={<Test />} />
-            <Route path="/TestV2" element={<TestV2 />} />
           </Routes>
         </BrowserRouter>
       </GlobalContext.Provider>
