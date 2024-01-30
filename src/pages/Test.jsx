@@ -44,9 +44,9 @@ function Test() {
             setHigherY(dataY);
             setHigherZ(dataZ);
 
-            setLowerX(dataX);
-            setLowerY(dataY);
-            setLowerZ(dataZ);
+            setLowerX(dataX2);
+            setLowerY(dataY2);
+            setLowerZ(dataZ2);
 
         }, 5000);
     };
