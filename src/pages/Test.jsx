@@ -98,24 +98,26 @@ function Test() {
         // Variable d'état pour suivre la direction actuelle
         let currentDirection = "Aucun mouvement significatif";
 
+        const previousDirection = direction;
+
         // Logique de traitement
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 // Mouvement horizontal
-                currentDirection = acceleration.x > 2 ? "Est" : "Ouest";
+                currentDirection = acceleration.x > threshold ? "Est" : "Ouest";
             } else {
                 // Mouvement vertical
-                currentDirection = acceleration.y > 2 ? "Sud" : "Nord";
+                currentDirection = acceleration.y > threshold ? "Sud" : "Nord";
 
                 // Logique de traitement pour les diagonales
                 if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                    if (acceleration.x > 2 && acceleration.y > 2) {
+                    if (acceleration.x > threshold && acceleration.y > threshold) {
                         currentDirection = "Nord-Est";
-                    } else if (acceleration.x > 0 && acceleration.y < 0) {
+                    } else if (acceleration.x > threshold && acceleration.y < threshold) {
                         currentDirection = "Sud-Est";
-                    } else if (acceleration.x < 0 && acceleration.y > 0) {
+                    } else if (acceleration.x < threshold && acceleration.y > threshold) {
                         currentDirection = "Nord-Ouest";
-                    } else if (acceleration.x < 0 && acceleration.y < 0) {
+                    } else if (acceleration.x < threshold && acceleration.y < threshold) {
                         currentDirection = "Sud-Ouest";
                     }
                 }
@@ -126,6 +128,13 @@ function Test() {
         if (currentDirection !== "Aucun mouvement significatif") {
             setDirection(currentDirection);
         }
+        const nextDirection = direction;
+
+        if (previousDirection == "Ouest" && nextDirection == "Est" || previousDirection=="Est" && nextDirection=="Ouest") {
+            setNbMovements((prevNbMovements) => prevNbMovements + 1);
+        }
+
+
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
         setBestDataY((prevY) => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
