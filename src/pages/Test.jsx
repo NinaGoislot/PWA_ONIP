@@ -98,8 +98,6 @@ function Test() {
         // Variable d'état pour suivre la direction actuelle
         let currentDirection = "Aucun mouvement significatif";
 
-        const previousDirection = direction;
-
         // Logique de traitement
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
@@ -128,11 +126,12 @@ function Test() {
         if (currentDirection !== "Aucun mouvement significatif") {
             setDirection(currentDirection);
         }
-        const nextDirection = direction;
 
-        if (previousDirection == "Ouest" && nextDirection == "Est" || previousDirection=="Est" && nextDirection=="Ouest") {
+        if (currentDirection == "Ouest" || currentDirection == "Est") {
             setNbMovements((prevNbMovements) => prevNbMovements + 1);
         }
+
+        
 
 
 
