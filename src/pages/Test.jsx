@@ -35,13 +35,13 @@ function Test() {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
 
-        setBestDataX((prevX) => (acceleration.x > prevX ? acceleration.x : prevX).toFixed(2));
-        setBestDataY((prevY) => (acceleration.y > prevY ? acceleration.y : prevY).toFixed(2));
-        setBestDataZ((prevZ) => (acceleration.z > prevZ ? acceleration.z : prevZ).toFixed(2));
+        setBestDataX((prevX) => (acceleration.x > prevX ? acceleration.x : prevX));
+        setBestDataY((prevY) => (acceleration.y > prevY ? acceleration.y : prevY));
+        setBestDataZ((prevZ) => (acceleration.z > prevZ ? acceleration.z : prevZ));
     
-        setBestDataX2((prevX2) => (acceleration.x < prevX2 ? acceleration.x : prevX2).toFixed(2));
-        setBestDataY2((prevY2) => (acceleration.y < prevY2 ? acceleration.y : prevY2).toFixed(2));
-        setBestDataZ2((prevZ2) => (acceleration.z < prevZ2 ? acceleration.z : prevZ2).toFixed(2));
+        setBestDataX2((prevX2) => (acceleration.x < prevX2 ? acceleration.x : prevX2));
+        setBestDataY2((prevY2) => (acceleration.y < prevY2 ? acceleration.y : prevY2));
+        setBestDataZ2((prevZ2) => (acceleration.z < prevZ2 ? acceleration.z : prevZ2));
     };
 
     useEffect(() => {
@@ -76,15 +76,15 @@ function Test() {
                 <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
             </div>
             <div className="flex flex-col justify-center items-center h-full">
-                <div className="flex justify-auround py-4">
-                    <p className="text-white">Point culminant Positif en X : {dataX}</p>
-                    <p className="text-white">Point culminant Positif en Y : {dataY}</p>
-                    <p className="text-white">Point culminant Positif en Z : {dataZ}</p>
+                <div className="flex justify-auround py-4 text-white">
+                    <p>Point culminant Positif en X : {dataX}</p>
+                    <p>Point culminant Positif en Y : {dataY}</p>
+                    <p>Point culminant Positif en Z : {dataZ}</p>
                 </div>
-                <div className="flex justify-auround py-4">
-                    <p className="text-white">Point culminant Négatif en X : {dataX2}</p>
-                    <p className="text-white">Point culminant Négatif en Y : {dataY2}</p>
-                    <p className="text-white">Point culminant Négatif en Z : {dataZ2}</p>
+                <div className="flex justify-auround py-4 text-white">
+                    <p>Point culminant Négatif en X : {dataX2}</p>
+                    <p>Point culminant Négatif en Y : {dataY2}</p>
+                    <p>Point culminant Négatif en Z : {dataZ2}</p>
                 </div>
             </div>
             <div className="flex flex-col bg-slate-300 h-fit">
