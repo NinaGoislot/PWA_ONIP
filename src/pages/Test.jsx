@@ -88,13 +88,13 @@ function Test() {
             }
         }
 
-        setBestDataX((prevX) => formatAndCompare(acceleration.x, prevX));
-        setBestDataY((prevY) => formatAndCompare(acceleration.y, prevY));
-        setBestDataZ((prevZ) => formatAndCompare(acceleration.z, prevZ));
+        setBestDataX((prevX) => formatAndCompare(acceleration.x, prevX, "up"));
+        setBestDataY((prevY) => formatAndCompare(acceleration.y, prevY, "up"));
+        setBestDataZ((prevZ) => formatAndCompare(acceleration.z, prevZ, "up"));
 
-        setBestDataX2((prevX2) => formatAndCompare(acceleration.x, prevX2));
-        setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2));
-        setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2));
+        setBestDataX2((prevX2) => formatAndCompare(acceleration.x, prevX2, "down"));
+        setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2, "down"));
+        setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2, "down"));
     };
 
     useEffect(() => {
