@@ -87,9 +87,9 @@ function Test() {
         }
 
         if (acceleration.y > 10) {
-            setDirection("Haut");
-        } else if (acceleration.y < -10) {
             setDirection("Bas");
+        } else if (acceleration.y < -10) {
+            setDirection("Haut");
         }
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
@@ -139,18 +139,6 @@ function Test() {
             window.removeEventListener('devicemotion', handleMotion);
         };
     }, []); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
-
-    const formatAndCompare = (value, prevValue, signe) => {
-        var formattedValue;
-        if (signe == "up") {
-            formattedValue = value > prevValue ? value : prevValue;
-        }
-        if (signe == "down") {
-            formattedValue = value < prevValue ? value : prevValue;
-        }
-        formattedValue = formattedValue !== undefined ? formattedValue.toFixed(2) : formattedValue;
-        return formattedValue;
-    };
 
     return (
         <main className="h-screen w-screen bg-slate-700">
