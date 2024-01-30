@@ -88,11 +88,11 @@ function Test() {
                     <p className="text-gray-700">Ce texte peut être personnalisé selon vos besoins.</p>
                 </Modal>
             )}
-            <div className={`${simulationStart ? 'absolute h-screen w-screen z-20 bg-black opacity-50' : 'hidden'}`}></div>
+            <div className={`${simulationStart ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
             <div className={`${simulationStart ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center`}>
-                <div className="flex justify-center items-center h-full">
-                    <Link to="/"><button className="bg-slate-400 h-20 p-8">Retourner à l'accueil</button></Link>
-                    <button onClick={openModal} className="w-fit bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
+                <div className="flex gap-4 justify-center items-center h-full">
+                    <Link to="/"><button className="w-fit bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600">Retourner à l'accueil</button></Link>
+                    <button onClick={openModal} className="w-fit bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600">
                         Démarrer la simulation
                     </button>
                 </div>
