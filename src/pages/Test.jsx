@@ -95,37 +95,37 @@ function Test() {
         // Seuil pour considérer un mouvement significatif
         const threshold = 2;
 
-        // Logique de traitement
-        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
-            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                // Mouvement horizontal
-                if (acceleration.x > 0) {
-                    setDirection("Est");
-                } else {
-                    setDirection("Ouest");
-                }
-            } else {
-                // Mouvement vertical
-                if (acceleration.y > 0) {
-                    setDirection("Sud");
-                } else {
-                    setDirection("Nord");
-                }
+        // Variable d'état pour suivre la direction actuelle
+let currentDirection = "Aucun mouvement significatif";
 
-                // Logique de traitement pour les diagonales
-                if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                    if (acceleration.x > 0 && acceleration.y > 0) {
-                        setDirection("Nord-Est");
-                    } else if (acceleration.x > 0 && acceleration.y < 0) {
-                        setDirection("Sud-Est");
-                    } else if (acceleration.x < 0 && acceleration.y > 0) {
-                        setDirection("Nord-Ouest");
-                    } else if (acceleration.x < 0 && acceleration.y < 0) {
-                        setDirection("Sud-Ouest");
-                    }
-                }
+// Logique de traitement
+if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+        // Mouvement horizontal
+        currentDirection = acceleration.x > 0 ? "Est" : "Ouest";
+    } else {
+        // Mouvement vertical
+        currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+
+        // Logique de traitement pour les diagonales
+        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+            if (acceleration.x > 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Est";
+            } else if (acceleration.x > 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Est";
+            } else if (acceleration.x < 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Ouest";
+            } else if (acceleration.x < 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Ouest";
             }
         }
+    }
+}
+
+// Mettez à jour la direction seulement si un mouvement significatif a été détecté
+if (currentDirection !== "Aucun mouvement significatif") {
+    setDirection(currentDirection);
+}
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
         setBestDataY((prevY) => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
