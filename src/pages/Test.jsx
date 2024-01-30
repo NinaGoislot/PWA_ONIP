@@ -7,6 +7,10 @@ function Test() {
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [simulationStart, setSimulation] = useState(false);
+    const [nbMovements, setNbMovements] = useState(0);
+    const [displayText, setDisplayText] = useState('');
+    const [isTimerActive, setTimer] = useState(false);
+    const [isTestOver, setTestOver] = useState(false);
 
     const [dataX, setBestDataX] = useState(0);
     const [dataY, setBestDataY] = useState(0);
@@ -16,7 +20,19 @@ function Test() {
     const [dataY2, setBestDataY2] = useState(0);
     const [dataZ2, setBestDataZ2] = useState(0);
 
-    const openModal = () => setSimulation(true);
+    const openModal = () => {
+        setDisplayText('Secoue ! ');
+
+        setTimer(true);
+        setTestOver(false);
+
+        setTimeout(() => {
+            setTimer(false);
+            setDisplayText('Stop !');
+            setTestOver(true);
+        }, 5000);
+        setSimulation(true)
+    };
     const closeModal = () => setSimulation(false);
 
 
@@ -30,23 +46,42 @@ function Test() {
     };*/
 
     const handleOrientation = (event) => {
-        console.log("ORIENTATION : ", event);
-        const { alpha, beta, gamma } = event;
-        setOrientationData({ alpha, beta, gamma });
+        if (isTimerActive) {
+            console.log("ORIENTATION : ", event);
+            const { alpha, beta, gamma } = event;
+            setOrientationData({ alpha, beta, gamma });
+        }
     };
 
     const handleMotion = (event) => {
-        console.log("MOTION: ", event);
-        const { acceleration, rotationRate } = event;
-        setMotionData({ acceleration, rotationRate });
+        if (isTimerActive) {
+            console.log("MOTION: ", event);
 
-        setBestDataX((prevX) => formatAndCompare(acceleration.x, prevX));
-        setBestDataY((prevY) => formatAndCompare(acceleration.y, prevY));
-        setBestDataZ((prevZ) => formatAndCompare(acceleration.z, prevZ));
+            const previousX = motionData.acceleration.x;
 
-        setBestDataX2((prevX2) => formatAndCompare(acceleration.x, prevX2));
-        setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2));
-        setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2));
+            const { acceleration, rotationRate } = event;
+            setMotionData({ acceleration, rotationRate });
+
+            const newX = motionData.acceleration.x;
+
+            if (previousX > 0) {
+                if (newX < 0) {
+                    setNbMovements((prevNbMovements) => prevNbMovements + 1);
+                }
+            } else if (previousX < 0) {
+                if (newX > 0) {
+                    setNbMovements((prevNbMovements) => prevNbMovements + 1);
+                }
+            }
+
+            setBestDataX((prevX) => formatAndCompare(acceleration.x, prevX));
+            setBestDataY((prevY) => formatAndCompare(acceleration.y, prevY));
+            setBestDataZ((prevZ) => formatAndCompare(acceleration.z, prevZ));
+
+            setBestDataX2((prevX2) => formatAndCompare(acceleration.x, prevX2));
+            setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2));
+            setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2));
+        }
     };
 
     useEffect(() => {
@@ -84,8 +119,26 @@ function Test() {
         <main className="h-screen w-screen bg-slate-700">
             {simulationStart && (
                 <Modal onClose={closeModal}>
-                    <h2 className="text-2xl font-bold mb-4">Contenu du Modal</h2>
-                    <p className="text-gray-700">Ce texte peut être personnalisé selon vos besoins.</p>
+                    <h2 className="text-xl font-bold mb-4">{displayText}</h2>
+                    {isTestOver && (
+                        <div className="flex flex-col gap-8">
+                            <div className="flex flex-col gap-4">
+                                <h3 className="text-lg font-bold">Plus hauts scores</h3>
+                                <p>Plus haute accélération X : {dataX}</p>
+                                <p>Plus haute accélération Y : {dataY}</p>
+                                <p>Plus haute accélération Z : {dataZ}</p>
+                            </div>
+                            <div className="flex flex-col gap-4">
+                                <h3 className="text-lg font-bold">Plus bas scores</h3>
+                                <p>Plus basse accélération X : {dataX2}</p>
+                                <p>Plus basse accélération Y : {dataY2}</p>
+                                <p>Plus basse accélération Z : {dataZ2}</p>
+                            </div>
+                            <div className="flex flex-col gap-4">
+                                <h3 className="text-lg font-bold">Nombre de coup : {nbMovements / 2}</h3>
+                            </div>
+                        </div>
+                    )}
                 </Modal>
             )}
             <div className={`${simulationStart ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
