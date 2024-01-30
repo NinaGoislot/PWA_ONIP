@@ -11,6 +11,7 @@ function Test() {
     const [displayText, setDisplayText] = useState('');
     const [isTimerActive, setTimer] = useState(false);
     const [isTestOver, setTestOver] = useState(false);
+    const [direction, setDirection] = useState("Aucune direction");
 
     const [dataX, setBestDataX] = useState(0);
     const [dataY, setBestDataY] = useState(0);
@@ -79,35 +80,39 @@ function Test() {
             }
         }
 
-        /*setBestDataX((prevX) => formatAndCompare(acceleration.x, prevX, "up"));
-        setBestDataY((prevY) => formatAndCompare(acceleration.y, prevY, "up"));
-        setBestDataZ((prevZ) => formatAndCompare(acceleration.z, prevZ, "up"));
+        if (acceleration.x > 10) {
+            setDirection("Droite");
+        } else if (acceleration.x < -10) {
+            setDirection("Gauche");
+        }
 
-        setBestDataX2((prevX2) => formatAndCompare(acceleration.x, prevX2, "down"));
-        setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2, "down"));
-        setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2, "down"));*/
+        if (acceleration.y > 10) {
+            setDirection("Haut");
+        } else if (acceleration.y < -10) {
+            setDirection("Bas");
+        }
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
         setBestDataY((prevY) => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
         setBestDataZ((prevZ) => Math.round(acceleration.z * 100) / 100 > prevZ ? Math.round(acceleration.z * 100) / 100 : prevZ);
-        
+
         setBestDataX2((prevX2) => Math.round(acceleration.x * 100) / 100 < prevX2 ? Math.round(acceleration.x * 100) / 100 : prevX2);
         setBestDataY2((prevY2) => Math.round(acceleration.y * 100) / 100 < prevY2 ? Math.round(acceleration.y * 100) / 100 : prevY2);
         setBestDataZ2((prevZ2) => Math.round(acceleration.z * 100) / 100 < prevZ2 ? Math.round(acceleration.z * 100) / 100 : prevZ2);
-        
+
     };
 
     useEffect(() => {
         if (isTestOver) {
-          setHigherX(dataX);
-          setHigherY(dataY);
-          setHigherZ(dataZ);
-      
-          setLowerX(dataX2);
-          setLowerY(dataY2);
-          setLowerZ(dataZ2);
+            setHigherX(dataX);
+            setHigherY(dataY);
+            setHigherZ(dataZ);
+
+            setLowerX(dataX2);
+            setLowerY(dataY2);
+            setLowerZ(dataZ2);
         }
-      }, [isTestOver, dataX, dataY, dataZ, dataX2, dataY2, dataZ2]);
+    }, [isTestOver, dataX, dataY, dataZ, dataX2, dataY2, dataZ2]);
 
     useEffect(() => {
         const setupOrientationListener = () => {
@@ -182,6 +187,7 @@ function Test() {
                         Démarrer la simulation
                     </button>
                 </div>
+                <h2 className="font-bold text-2xl">{direction}</h2>
                 <div className="flex flex-col justify-center items-center h-full">
                     <div className="flex gap-8 justify-auround py-4">
                         <p className="text-white">Point culminant Positif en X : {dataX}</p>
