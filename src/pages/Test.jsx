@@ -39,14 +39,6 @@ function Test() {
             setDisplayText('Stop !');
             setTestOver(true);
 
-            setHigherX(prevX => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
-            setHigherY(prevY => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
-            setHigherZ(prevZ => Math.round(acceleration.z * 100) / 100 > prevZ ? Math.round(acceleration.z * 100) / 100 : prevZ);
-    
-            setLowerX(prevX2 => Math.round(acceleration.x * 100) / 100 < prevX2 ? Math.round(acceleration.x * 100) / 100 : prevX2);
-            setLowerY(prevY2 => Math.round(acceleration.y * 100) / 100 < prevY2 ? Math.round(acceleration.y * 100) / 100 : prevY2);
-            setLowerZ(prevZ2 => Math.round(acceleration.z * 100) / 100 < prevZ2 ? Math.round(acceleration.z * 100) / 100 : prevZ2);
-
         }, 3000);
     };
     const closeModal = () => setSimulation(false);
@@ -104,6 +96,18 @@ function Test() {
         setBestDataZ2((prevZ2) => Math.round(acceleration.z * 100) / 100 < prevZ2 ? Math.round(acceleration.z * 100) / 100 : prevZ2);
         
     };
+
+    useEffect(() => {
+        if (isTestOver) {
+          setHigherX(dataX);
+          setHigherY(dataY);
+          setHigherZ(dataZ);
+      
+          setLowerX(dataX2);
+          setLowerY(dataY2);
+          setLowerZ(dataZ2);
+        }
+      }, [isTestOver, dataX, dataY, dataZ, dataX2, dataY2, dataZ2]);
 
     useEffect(() => {
         const setupOrientationListener = () => {
