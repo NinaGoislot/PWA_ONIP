@@ -76,9 +76,7 @@ function Test() {
 
     return (
         <main className="relative h-screen w-screen bg-slate-700">
-
-            <div className={`${simulationStart ? 'absolute h-screen w-screen bg-black opacity-80' : 'hidden'}`}></div>
-            <div className={`${simulationStart ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center`}>
+            <div className={`flex w-full h-full flex-col justify-around item-center`}>
                 <div className="flex gap-8 justify-center items-center h-full">
                     <Link to="/"><button className="w-fit bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600">Retourner à l'accueil</button></Link>
                     <button onClick={openModal} className="w-fit bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600">
