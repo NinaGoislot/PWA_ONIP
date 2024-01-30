@@ -96,13 +96,14 @@ function Test() {
         setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2, "down"));
         setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2, "down"));*/
 
-        setBestDataX((prevX) => (acceleration.x > prevX ? acceleration.x : prevX));
-        setBestDataY((prevY) => (acceleration.y > prevY ? acceleration.y : prevY));
-        setBestDataZ((prevZ) => (acceleration.z > prevZ ? acceleration.z : prevZ));
-
-        setBestDataX2((prevX2) => (acceleration.x < prevX2 ? acceleration.x : prevX2));
-        setBestDataY2((prevY2) => (acceleration.y < prevY2 ? acceleration.y : prevY2));
-        setBestDataZ2((prevZ2) => (acceleration.z < prevZ2 ? acceleration.z : prevZ2));
+        setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
+        setBestDataY((prevY) => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
+        setBestDataZ((prevZ) => Math.round(acceleration.z * 100) / 100 > prevZ ? Math.round(acceleration.z * 100) / 100 : prevZ);
+        
+        setBestDataX2((prevX2) => Math.round(acceleration.x * 100) / 100 < prevX2 ? Math.round(acceleration.x * 100) / 100 : prevX2);
+        setBestDataY2((prevY2) => Math.round(acceleration.y * 100) / 100 < prevY2 ? Math.round(acceleration.y * 100) / 100 : prevY2);
+        setBestDataZ2((prevZ2) => Math.round(acceleration.z * 100) / 100 < prevZ2 ? Math.round(acceleration.z * 100) / 100 : prevZ2);
+        
     };
 
     useEffect(() => {
