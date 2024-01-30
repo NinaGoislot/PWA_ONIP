@@ -34,19 +34,10 @@ function Test() {
         setTestOver(false);
         setSimulation(true);
 
-        // Démarrez le chronomètre au clic
         setTimeout(() => {
             setTimer(false);
             setDisplayText('Stop !');
             setTestOver(true);
-
-            setHigherX(dataX);
-            setHigherY(dataY);
-            setHigherZ(dataZ);
-
-            setLowerX(dataX2);
-            setLowerY(dataY2);
-            setLowerZ(dataZ2);
 
         }, 3000);
     };
@@ -77,6 +68,16 @@ function Test() {
         setMotionData({ acceleration, rotationRate });
 
         const newX = motionData.acceleration.x;
+
+        if (isTimerActive) {
+            setHigherX(dataX);
+            setHigherY(dataY);
+            setHigherZ(dataZ);
+
+            setLowerX(dataX2);
+            setLowerY(dataY2);
+            setLowerZ(dataZ2);
+        }
 
         if (previousX > 0) {
             if (newX < 0) {
