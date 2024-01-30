@@ -123,8 +123,16 @@ function Test() {
         };
     }, []); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
 
-    const formatAndCompare = (value, prevValue) => {
-        return value !== undefined ? value.toFixed(2) : prevValue;
+    const formatAndCompare = (value, prevValue, signe) => {
+        var formattedValue;
+        if (signe == "up") {
+            formattedValue = value > prevValue ? value : prevValue;
+        }
+        if (signe == "down") {
+            formattedValue = value < prevValue ? value : prevValue;
+        }
+        formattedValue = formattedValue !== undefined ? formattedValue.toFixed(2) : formattedValue;
+        return formattedValue;
     };
 
     return (
