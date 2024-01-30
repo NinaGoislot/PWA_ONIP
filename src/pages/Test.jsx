@@ -76,33 +76,7 @@ function Test() {
 
     return (
         <main className="relative h-screen w-screen bg-slate-700">
-            {simulationStart && (
-                <Modal onClose={closeModal}>
-                    <div className="flex flex-col bg-slate-300 h-fit">
-                        {/* Afficher les données de l'orientation en permanence */}
-                        {orientationData && (
-                            <div>
-                                <p>Alpha: {orientationData.alpha}</p>
-                                <p>Beta: {orientationData.beta}</p>
-                                <p>Gamma: {orientationData.gamma}</p>
-                            </div>
-                        )}
-                    </div>
-                    <div className="flex flex-col bg-red-300 h-fit">
-                        {/* Afficher les données d'accélération en permanence */}
-                        {motionData && (
-                            <div>
-                                <p>Acceleration X: {motionData.acceleration.x}</p>
-                                <p>Acceleration Y: {motionData.acceleration.y}</p>
-                                <p>Acceleration Z: {motionData.acceleration.z}</p>
-                                <p>Rotation Rate Alpha: {motionData.rotationRate.alpha}</p>
-                                <p>Rotation Rate Beta: {motionData.rotationRate.beta}</p>
-                                <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
-                            </div>
-                        )}
-                    </div>
-                </Modal>
-            )}
+
             <div className={`${simulationStart ? 'absolute h-screen w-screen bg-black opacity-80' : 'hidden'}`}></div>
             <div className={`${simulationStart ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center`}>
                 <div className="flex gap-8 justify-center items-center h-full">
