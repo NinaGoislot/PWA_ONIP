@@ -125,10 +125,7 @@ function Test() {
                     }
                 }
             }
-        } else {
-            setDirection("Aucun mouvement significatif");
         }
-
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
         setBestDataY((prevY) => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
