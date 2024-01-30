@@ -35,13 +35,9 @@ function Test() {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
 
-        setBestDataX((prevX) => (acceleration.x > prevX ? acceleration.x : prevX).toFixed(2));
-        setBestDataY((prevY) => (acceleration.y > prevY ? acceleration.y : prevY).toFixed(2));
-        setBestDataZ((prevZ) => (acceleration.z > prevZ ? acceleration.z : prevZ).toFixed(2));
-
-        setBestDataX2((prevX2) => (acceleration.x < prevX2 ? acceleration.x : prevX2).toFixed(2));
-        setBestDataY2((prevY2) => (acceleration.y < prevY2 ? acceleration.y : prevY2).toFixed(2));
-        setBestDataZ2((prevZ2) => (acceleration.z < prevZ2 ? acceleration.z : prevZ2).toFixed(2));
+        setBestDataX2((prevX2) => formatAndCompare(acceleration.x, prevX2));
+        setBestDataY2((prevY2) => formatAndCompare(acceleration.y, prevY2));
+        setBestDataZ2((prevZ2) => formatAndCompare(acceleration.z, prevZ2));
     };
 
     useEffect(() => {
@@ -69,6 +65,11 @@ function Test() {
             window.removeEventListener('devicemotion', handleMotion);
         };
     }, []); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
+
+    const formatAndCompare = (value, prevValue) => {
+        const formattedValue = value !== undefined ? value.toFixed(2) : prevValue;
+        return value < prevValue ? formattedValue : prevValue;
+      };
 
     return (
         <main className="h-screen w-screen flex flex-col justify-around item-center bg-slate-700">
