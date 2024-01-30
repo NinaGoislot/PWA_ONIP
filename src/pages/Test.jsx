@@ -99,14 +99,14 @@ function Test() {
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 // Mouvement horizontal
-                if (x > 0) {
+                if (acceleration.x > 0) {
                     setDirection("Est");
                 } else {
                     setDirection("Ouest");
                 }
             } else {
                 // Mouvement vertical
-                if (y > 0) {
+                if (acceleration.y > 0) {
                     setDirection("Sud");
                 } else {
                     setDirection("Nord");
