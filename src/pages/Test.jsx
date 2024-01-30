@@ -81,15 +81,25 @@ function Test() {
         }
 
         if (acceleration.x > 10) {
-            setDirection("Gauche");
+            if (acceleration.y > 10) {
+                setDirection("Sud Ouest");
+            } else if (acceleration.y < 10) {
+                setDirection("Nord Ouest");
+            } else {
+                setDirection("Ouest");
+            }
         } else if (acceleration.x < -10) {
-            setDirection("Droite");
-        }
-
-        if (acceleration.y > 10) {
-            setDirection("Bas");
+            if (acceleration.y > 10) {
+                setDirection("Sud Est");
+            } else if (acceleration.y < 10) {
+                setDirection("Nord Est");
+            } else {
+                setDirection("Est");
+            }
+        } else if (acceleration.y > 10) {
+            setDirection("Sud");
         } else if (acceleration.y < -10) {
-            setDirection("Haut");
+            setDirection("Nord");
         }
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
