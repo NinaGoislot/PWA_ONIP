@@ -81,9 +81,9 @@ function Test() {
         }
 
         if (acceleration.x > 10) {
-            setDirection("Droite");
-        } else if (acceleration.x < -10) {
             setDirection("Gauche");
+        } else if (acceleration.x < -10) {
+            setDirection("Droite");
         }
 
         if (acceleration.y > 10) {
