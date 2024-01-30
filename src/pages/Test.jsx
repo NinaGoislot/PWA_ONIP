@@ -138,15 +138,15 @@ function Test() {
                         <div className="flex flex-col gap-8">
                             <div className="flex flex-col gap-4">
                                 <h3 className="text-lg font-bold">Plus hauts scores</h3>
-                                <p>Plus haute accélération X : {dataX}</p>
-                                <p>Plus haute accélération Y : {dataY}</p>
-                                <p>Plus haute accélération Z : {dataZ}</p>
+                                <p>Plus haute accélération X : {highX}</p>
+                                <p>Plus haute accélération Y : {highY}</p>
+                                <p>Plus haute accélération Z : {highZ}</p>
                             </div>
                             <div className="flex flex-col gap-4">
                                 <h3 className="text-lg font-bold">Plus bas scores</h3>
-                                <p>Plus basse accélération X : {dataX2}</p>
-                                <p>Plus basse accélération Y : {dataY2}</p>
-                                <p>Plus basse accélération Z : {dataZ2}</p>
+                                <p>Plus basse accélération X : {lowX}</p>
+                                <p>Plus basse accélération Y : {lowY}</p>
+                                <p>Plus basse accélération Z : {lowZ}</p>
                             </div>
                             <div className="flex flex-col gap-4">
                                 <h3 className="text-lg font-bold">Nombre de coups : {nbMovements / 2}</h3>
