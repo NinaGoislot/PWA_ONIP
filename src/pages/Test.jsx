@@ -48,7 +48,7 @@ function Test() {
             setLowerY(dataY2);
             setLowerZ(dataZ2);
 
-        }, 5000);
+        }, 3000);
     };
     const closeModal = () => setSimulation(false);
 
