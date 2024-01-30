@@ -26,12 +26,12 @@ function Test() {
         setTimer(true);
         setTestOver(false);
 
-        setTimeout(() => {
+        const intervalId = setInterval(() => {
             setTimer(false);
             setDisplayText('Stop !');
             setTestOver(true);
+            clearInterval(intervalId);  // Arrête l'intervalle après 5 secondes
         }, 5000);
-        setSimulation(true)
     };
     const closeModal = () => setSimulation(false);
 
