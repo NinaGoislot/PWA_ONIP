@@ -80,15 +80,15 @@ function Test() {
             }
         }
 
-        if (acceleration.x > 10) {
+        if (acceleration.x > 5) {
             setDirection("Gauche");
-        } else if (acceleration.x < -10) {
+        } else if (acceleration.x < -5) {
             setDirection("Droite");
         }
 
-        if (acceleration.y > 10) {
+        if (acceleration.y > 5) {
             setDirection("Bas");
-        } else if (acceleration.y < -10) {
+        } else if (acceleration.y < -5) {
             setDirection("Haut");
         }
 
@@ -144,7 +144,7 @@ function Test() {
         <main className="h-screen w-screen bg-slate-700">
             {simulationStart && (
                 <Modal onClose={closeModal}>
-                    <h2 className="text-xl font-bold mb-4">{displayText}</h2>
+                    <h2 className="text-xl font-bold mb-4 text-red-500">{displayText}</h2>
                     <p>Test : {orientationData.alpha}</p>
                     {isTestOver && (
                         <div className="flex flex-col gap-8">
