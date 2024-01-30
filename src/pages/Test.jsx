@@ -80,27 +80,55 @@ function Test() {
             }
         }
 
-        if (acceleration.x > 10) {
-            if (acceleration.y > 20) {
-                setDirection("Sud Ouest");
-            } else if (acceleration.y < 20) {
-                setDirection("Nord Ouest");
-            } else {
-                setDirection("Ouest");
-            }
+        /*if (acceleration.x > 10) {
+            setDirection("Ouest");
         } else if (acceleration.x < -10) {
-            if (acceleration.y > 20) {
-                setDirection("Sud Est");
-            } else if (acceleration.y < 20) {
-                setDirection("Nord Est");
-            } else {
-                setDirection("Est");
-            }
-        } else if (acceleration.y > 10) {
+            setDirection("Est");
+        }
+
+        if (acceleration.y > 10) {
             setDirection("Sud");
         } else if (acceleration.y < -10) {
             setDirection("Nord");
+        }*/
+
+        // Seuil pour considérer un mouvement significatif
+        const threshold = 2;
+
+        // Logique de traitement
+        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                // Mouvement horizontal
+                if (x > 0) {
+                    setDirection("Est");
+                } else {
+                    setDirection("Ouest");
+                }
+            } else {
+                // Mouvement vertical
+                if (y > 0) {
+                    setDirection("Sud");
+                } else {
+                    setDirection("Nord");
+                }
+
+                // Logique de traitement pour les diagonales
+                if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                    if (acceleration.x > 0 && acceleration.y > 0) {
+                        setDirection("Nord-Est");
+                    } else if (acceleration.x > 0 && acceleration.y < 0) {
+                        setDirection("Sud-Est");
+                    } else if (acceleration.x < 0 && acceleration.y > 0) {
+                        setDirection("Nord-Ouest");
+                    } else if (acceleration.x < 0 && acceleration.y < 0) {
+                        setDirection("Sud-Ouest");
+                    }
+                }
+            }
+        } else {
+            setDirection("Aucun mouvement significatif");
         }
+
 
         setBestDataX((prevX) => Math.round(acceleration.x * 100) / 100 > prevX ? Math.round(acceleration.x * 100) / 100 : prevX);
         setBestDataY((prevY) => Math.round(acceleration.y * 100) / 100 > prevY ? Math.round(acceleration.y * 100) / 100 : prevY);
@@ -185,7 +213,7 @@ function Test() {
                         Démarrer la simulation
                     </button>
                 </div>
-                <h2 className="font-bold text-2xl w-full text-center  text-red-500">{direction}</h2>
+                <h2 className="font-bold text-2xl text-white w-full text-center">{direction}</h2>
                 <div className="flex flex-col justify-center items-center h-full">
                     <div className="flex gap-8 justify-auround py-4">
                         <p className="text-white">Point culminant Positif en X : {dataX}</p>
