@@ -48,6 +48,7 @@ function OneSimulation() {
     //Pour gérer la mise à jour du timer
     useEffect(() => {
         if (countdown === 0) {
+            console.log("JE SUIS DANS LE USE EFFECT");
             const setupMotionListener = () => {
                 if (window.DeviceMotionEvent) {
                     window.addEventListener('devicemotion', handleMotion);
