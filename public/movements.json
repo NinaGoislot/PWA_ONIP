@@ -4,7 +4,7 @@
       "description": "Secoue de gauche à droite",
       "image" : "",
       "type":"hands",
-      "thershold_general": 2,
+      "thershold_general": 5,
       "thershold_penality": 2,
       "timer" : 5000,
       "point_per_moves" : 50,

@@ -80,10 +80,10 @@ function OneSimulation() {
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 // Mouvement horizontal
-                currentDirection = acceleration.x > threshold ? "Ouest" : "Est";
+                currentDirection = acceleration.x > threshold ? "Ouest" : acceleration.x < threshold ? "Est" : currentDirection;
             } else {
                 // Mouvement vertical
-                currentDirection = acceleration.y > threshold ? "Sud" : "Nord";
+                currentDirection = acceleration.y > threshold ? "Sud" : acceleration.y < threshold ? "Nord" : currentDirection;
             }
         }
 
@@ -91,6 +91,7 @@ function OneSimulation() {
         if (!(movement.direction.length > currentDirection)) {
             if (movement.direction[sequenceIndex] == currentDirection) {
                 setScore((prevScore) => prevScore + movement.point_per_moves);
+                setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
             }
         }
 
@@ -128,7 +129,7 @@ function OneSimulation() {
     /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4">
-            <h1 className='text-2xl font-bold ext-white text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-white text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {movement.timer ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
