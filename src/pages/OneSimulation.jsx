@@ -20,7 +20,7 @@ function OneSimulation() {
     const [startTime, setStartTime] = useState(null);
 
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
-    const [direction, setDirection] = useState("Aucune direction n'a été trouvée");
+    const [direction, setDirection] = useState("None");
     const [sequenceIndex, setSequenceIndex] = useState(0);
 
     //Scores finaux
@@ -75,7 +75,7 @@ function OneSimulation() {
 
         /**************** Logique des directions ****************/
         const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
-        let currentDirection = "Aucun mouvement significatif";  // Variable d'état pour suivre la direction actuelle
+        let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
 
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
@@ -88,7 +88,7 @@ function OneSimulation() {
         }
 
         /***************** Logique de jeu Timer *****************/
-        if (!(movement.direction.length > currentDirection && currentDirection != direction)) {
+        if (!(movement.direction.length > currentDirection && currentDirection != direction && currentDirection != "None")) {
             if (movement.direction[sequenceIndex] == currentDirection) {
 
                 console.log("Direction actuelle: ", direction);
@@ -100,7 +100,7 @@ function OneSimulation() {
         }
 
         // Mettez à jour la direction seulement si un mouvement significatif a été détecté
-        if (currentDirection !== "Aucun mouvement significatif") {
+        if (currentDirection !== "None") {
             setDirection(currentDirection);
         }
 
