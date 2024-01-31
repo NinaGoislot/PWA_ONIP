@@ -89,16 +89,12 @@ function OneSimulation() {
 
         /***************** Logique de jeu Timer *****************/
         if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection !== "None") {
-            /*
-            console.log("1 ► Condition longueur tableau direction : ", movement.direction.length < currentDirection);
             console.log("2 ► Condition prochaine direction différente : ", currentDirection !== direction);
             console.log("2 ► Direction prochaine : ", currentDirection );
             console.log("2 ► Direction précédente : ", direction );
-            console.log("3 ► Condition prochaine direction non nulle : ", currentDirection !== "None");*/
+            console.log("3 ► Condition prochaine direction non nulle : ", currentDirection !== "None");
             
             if (movement.direction[sequenceIndex] == currentDirection) {
-
-                console.log("DANS LE IF DU IF", movement.direction.length < currentDirection);
 
                 console.log("Direction actuelle: ", direction);
                 console.log("Direction nouvelle: ", currentDirection);
