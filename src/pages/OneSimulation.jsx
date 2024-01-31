@@ -75,7 +75,7 @@ function OneSimulation() {
 
         /**************** Logique des directions ****************/
         const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
-        let currentDirection = direction;  // Variable d'état pour suivre la direction actuelle
+        let currentDirection = "Aucune";  // Variable d'état pour suivre la direction actuelle
 
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
@@ -88,11 +88,11 @@ function OneSimulation() {
         }
 
         /***************** Logique de jeu Timer *****************/
-        if (movement.direction.length > sequenceIndex && currentDirection !== direction) {
+        if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection != "Aucune") {
             //console.log("2 ► Condition prochaine direction différente : ", currentDirection !== direction);
-            console.log("2 ► Direction prochaine : ", currentDirection );
-            console.log("2 ► Direction précédente : ", direction );
-            console.log("3 ► Condition prochaine direction non nulle : ", currentDirection != direction);
+            // console.log("2 ► Direction prochaine : ", currentDirection );
+            // console.log("2 ► Direction précédente : ", direction );
+            // console.log("3 ► Condition prochaine direction non nulle : ", currentDirection != "None");
             
             if (movement.direction[sequenceIndex] == currentDirection) {
 
@@ -105,7 +105,9 @@ function OneSimulation() {
         }
 
         // Mettez à jour la direction seulement si un mouvement significatif a été détecté
-        setDirection(currentDirection);
+        if (currentDirection != "Aucune") {
+            setDirection(currentDirection);
+        }
 
     };
 
