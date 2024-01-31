@@ -5,6 +5,7 @@ import { GlobalContext } from '../App.jsx';
 
 function OneSimulation() {
 
+    /********************************************************************* States ********************************************************************/
     const { id } = useParams();
     const { movementsStore } = useContext(GlobalContext);
     const movement = movementsStore.getMovementById(id);
@@ -15,12 +16,19 @@ function OneSimulation() {
     const [countdown, setCountdown] = useState(3);
 
     //Pour créer la détection de mouvement
-    const [currentDirection, setCurrentDirection] = useState(null);
     const [directionSequenceIndex, setDirectionSequenceIndex] = useState(0);
     const [failuresCount, setFailuresCount] = useState(0);
     const [startTime, setStartTime] = useState(null);
 
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
+    const [direction, setDirection] = useState("Aucune direction n'a été trouvée");
+
+    //Scores finaux
+    const [score, setScore] = useState(0);
+    const [nbMoves, setNbMoves] = useState(0);
+
+
+    /******************************************************************** UseEffect ********************************************************************/
 
     //Pour gérer la mise à jour du timer
     useEffect(() => {
@@ -51,10 +59,13 @@ function OneSimulation() {
             setupMotionListener();
 
             return () => {
+                console.log("Le return est passé");
                 window.removeEventListener('devicemotion', handleMotion);
             };
         }
     }, [countdown]);
+
+     /******************************************************************** Fonctions ********************************************************************/
 
     const handleMotion = (event) => {
         console.log("MOTION: ", event);
@@ -62,10 +73,31 @@ function OneSimulation() {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
 
+        /**************** Logique des directions ****************/
+        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
+        let currentDirection = "Aucun mouvement significatif";  // Variable d'état pour suivre la direction actuelle
+
+        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                // Mouvement horizontal
+                currentDirection = acceleration.x > threshold ? "Est" : "Ouest";
+            } else {
+                // Mouvement vertical
+                currentDirection = acceleration.y > threshold ? "Sud" : "Nord";
+            }
+        }
+
+        // Mettez à jour la direction seulement si un mouvement significatif a été détecté
+        if (currentDirection !== "Aucun mouvement significatif") {
+            setDirection(currentDirection);
+        }
+
     };
 
     const startSimulation = () => {
         setSimulationRunning(true);
+        setScore(0);
+        setNbMoves(0);
 
 
         // Logique pour démarrer le chrono, si nécessaire
@@ -86,11 +118,11 @@ function OneSimulation() {
 
     };
 
-
+    /******************************************************************** Code HTML ********************************************************************/
     return (
-        <main className="w-screen h-screen flex flex-col gap-4">
+        <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700">
             <h1 className='text-xl text-center'>Simulation du mouvement {movement.id}</h1>
-            <p className='text-center italic text-sm'>
+            <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {movement.timer ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
 
@@ -99,7 +131,7 @@ function OneSimulation() {
                 <div className='flex flex-col gap-4'>
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : ''}</p>
                     <h2 className="text-2xl text-center">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
-
+                    <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
                     <div className="flex flex-col bg-red-300 h-fit">
                         {motionData && (
                             <div className='flex flex-col gap-2'>
