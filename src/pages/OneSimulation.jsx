@@ -88,10 +88,8 @@ function OneSimulation() {
         }
 
         /***************** Logique de jeu Timer *****************/
-        if (!(movement.direction.length > currentDirection && currentDirection !== direction && currentDirection !== "None")) {
+        if (!(movement.direction.length > currentDirection) && currentDirection !== direction && currentDirection !== "None") {
 
-            console.log("currentDirection !== None ? ", currentDirection !== "None");
-            console.log("currentDirection != None ? ", currentDirection != "None");
             if (movement.direction[sequenceIndex] == currentDirection) {
 
                 console.log("Direction actuelle: ", direction);
