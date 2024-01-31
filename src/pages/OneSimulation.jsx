@@ -88,7 +88,7 @@ function OneSimulation() {
         }
 
         /***************** Logique de jeu Timer *****************/
-        if (!(movement.direction.length > currentDirection && currentDirection != direction && currentDirection != "None")) {
+        if (!(movement.direction.length > currentDirection && currentDirection !== direction && currentDirection !== "None")) {
             if (movement.direction[sequenceIndex] == currentDirection) {
 
                 console.log("Direction actuelle: ", direction);
@@ -144,7 +144,7 @@ function OneSimulation() {
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : ''}</p>
                     <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
-                    <div className="flex flex-col bg-red-300 h-fit">
+                    {/*<div className="flex flex-col bg-red-300 h-fit">
                         {motionData && (
                             <div className='flex flex-col gap-2'>
                                 <p>Acceleration X: {motionData.acceleration.x}</p>
@@ -155,7 +155,7 @@ function OneSimulation() {
                                 <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
                             </div>
                         )}
-                    </div>
+                    </div>*/}
                     <div className='flex flex-col gap-4'>
                         <p className='text-white'>Score : {score}</p>
                         <p className='text-white'>Index : {sequenceIndex}</p>
