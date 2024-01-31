@@ -16,12 +16,12 @@ function OneSimulation() {
     const [countdown, setCountdown] = useState(3);
 
     //Pour créer la détection de mouvement
-    const [directionSequenceIndex, setDirectionSequenceIndex] = useState(0);
     const [failuresCount, setFailuresCount] = useState(0);
     const [startTime, setStartTime] = useState(null);
 
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [direction, setDirection] = useState("Aucune direction n'a été trouvée");
+    const [sequenceIndex, setSequenceIndex] = useState(0);
 
     //Scores finaux
     const [score, setScore] = useState(0);
@@ -65,7 +65,7 @@ function OneSimulation() {
         }
     }, [countdown]);
 
-     /******************************************************************** Fonctions ********************************************************************/
+    /******************************************************************** Fonctions ********************************************************************/
 
     const handleMotion = (event) => {
         console.log("MOTION: ", event);
@@ -80,10 +80,17 @@ function OneSimulation() {
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 // Mouvement horizontal
-                currentDirection = acceleration.x > threshold ? "Est" : "Ouest";
+                currentDirection = acceleration.x > threshold ? "Ouest" : "Est";
             } else {
                 // Mouvement vertical
                 currentDirection = acceleration.y > threshold ? "Sud" : "Nord";
+            }
+        }
+
+        /***************** Logique de jeu Timer *****************/
+        if (!(movement.direction.length > currentDirection)) {
+            if (movement.direction[sequenceIndex] == currentDirection) {
+                setScore((prevScore) => prevScore + movement.point_per_moves);
             }
         }
 
@@ -98,7 +105,7 @@ function OneSimulation() {
         setSimulationRunning(true);
         setScore(0);
         setNbMoves(0);
-
+        setSequenceIndex(0);
 
         // Logique pour démarrer le chrono, si nécessaire
         // ...
@@ -120,8 +127,8 @@ function OneSimulation() {
 
     /******************************************************************** Code HTML ********************************************************************/
     return (
-        <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700">
-            <h1 className='text-xl text-center'>Simulation du mouvement {movement.id}</h1>
+        <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4">
+            <h1 className='text-2xl font-bold ext-white text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {movement.timer ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
@@ -130,7 +137,7 @@ function OneSimulation() {
                 // Afficher les éléments pendant la simulation (chrono, indication "Secouez !", etc.)
                 <div className='flex flex-col gap-4'>
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : ''}</p>
-                    <h2 className="text-2xl text-center">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
+                    <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
                     <div className="flex flex-col bg-red-300 h-fit">
                         {motionData && (
@@ -143,6 +150,10 @@ function OneSimulation() {
                                 <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
                             </div>
                         )}
+                    </div>
+                    <div className='flex flex-col gap-4'>
+                        <p className='text-white'>Score : {score}</p>
+                        <p className='text-white'>Index : {sequenceIndex}</p>
                     </div>
 
                     {/* Ajoutez ici des éléments liés à la simulation en cours */}
