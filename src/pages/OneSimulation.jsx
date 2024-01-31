@@ -64,12 +64,11 @@ function OneSimulation() {
             };
         }
     }, [countdown]);
-    
+
 
     /******************************************************************** Fonctions ********************************************************************/
 
     const handleMotion = (event) => {
-        console.log("MOTION: ", event);
 
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
@@ -91,6 +90,10 @@ function OneSimulation() {
         /***************** Logique de jeu Timer *****************/
         if (!(movement.direction.length > currentDirection && currentDirection != direction)) {
             if (movement.direction[sequenceIndex] == currentDirection) {
+
+                console.log("Direction actuelle: ", direction);
+                console.log("Direction nouvelle: ", currentDirection);
+
                 setScore((prevScore) => prevScore + movement.point_per_moves);
                 setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
             }
