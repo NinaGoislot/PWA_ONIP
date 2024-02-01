@@ -63,10 +63,10 @@ function OneSimulation() {
     const handleMotion = (event) => {
         const { acceleration } = event;
         setMotionData({ acceleration });
-
+    
         const threshold = movement.threshold_general;
         let currentDirection = "Aucune";
-
+    
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
@@ -74,19 +74,23 @@ function OneSimulation() {
                 currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
             }
         }
-
-        setDirection(currentDirection);
-
-        if (isSimulationRunning && checkDirectionMatch()) {
-            setScore((prevScore) => prevScore + 1);
-            setSequenceIndex((prevIndex) => prevIndex + 1);
-
-            if (sequenceIndex === expectedSequence.length - 1) {
-                setExpectedSequence(movement.direction || []);
-                setSequenceIndex(0);
+    
+        // Utilisez la fonction setDirection de manière asynchrone
+        setDirection((prevDirection) => {
+            // Vérifiez la correspondance et mettez à jour le score et la séquence
+            if (isSimulationRunning && checkDirectionMatch()) {
+                setScore((prevScore) => prevScore + 1);
+                setSequenceIndex((prevIndex) => prevIndex + 1);
+    
+                if (sequenceIndex === expectedSequence.length - 1) {
+                    setExpectedSequence(movement.direction || []);
+                    setSequenceIndex(0);
+                }
             }
-        }
+            return currentDirection;
+        });
     };
+    
 
     const startSimulation = () => {
         setSimulationRunning(true);
