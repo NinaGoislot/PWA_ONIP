@@ -2,26 +2,35 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { GlobalContext } from '../App.jsx';
 
+
 function OneSimulation() {
+
+    /********************************************************************* States ********************************************************************/
     const { id } = useParams();
     const { movementsStore } = useContext(GlobalContext);
     const movement = movementsStore.getMovementById(id);
 
+    //Pour créer le timer
     const [isSimulationRunning, setSimulationRunning] = useState(false);
     const [timer, setTimer] = useState(movement.timer || 0);
     const [countdown, setCountdown] = useState(3);
 
+    //Pour créer la détection de mouvement
     const [failuresCount, setFailuresCount] = useState(0);
     const [startTime, setStartTime] = useState(null);
 
-    const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 } });
+    const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [direction, setDirection] = useState("None");
     const [sequenceIndex, setSequenceIndex] = useState(0);
+
+    //Scores finaux
     const [score, setScore] = useState(0);
     const [nbMoves, setNbMoves] = useState(0);
 
-    const [expectedSequence, setExpectedSequence] = useState(movement.direction || []);
 
+    /******************************************************************** UseEffect ********************************************************************/
+
+    //Pour gérer la mise à jour du timer
     useEffect(() => {
         let countdownInterval;
 
@@ -36,6 +45,7 @@ function OneSimulation() {
         };
     }, [isSimulationRunning, countdown]);
 
+    //Pour gérer la mise à jour du timer
     useEffect(() => {
         if (countdown === 0) {
             const setupMotionListener = () => {
@@ -55,73 +65,127 @@ function OneSimulation() {
         }
     }, [countdown]);
 
-    const checkDirectionMatch = () => {
-        const currentExpectedDirection = expectedSequence[sequenceIndex];
-        return direction === currentExpectedDirection;
-    };
 
-    const handleMotion = (event) => {
-        const { acceleration } = event;
-        setMotionData({ acceleration });
-    
-        const threshold = movement.threshold_general;
-        let currentDirection = "Aucune";
-    
+    /******************************************************************** Fonctions ********************************************************************/
+
+    /*const handleMotion = (event) => {
+
+        const { acceleration, rotationRate } = event;
+        setMotionData({ acceleration, rotationRate });
+        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
+        let currentDirection = "Aucune";  // Variable d'état pour suivre la direction actuelle
+
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                // Mouvement horizontal
                 currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
             } else {
+                // Mouvement vertical
                 currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
             }
         }
-    
-        // Utilisez la fonction setDirection de manière asynchrone
-        setDirection((prevDirection) => {
-            // Vérifiez la correspondance et mettez à jour le score et la séquence
-            if (isSimulationRunning && checkDirectionMatch()) {
-                setScore((prevScore) => prevScore + 1);
-                setSequenceIndex((prevIndex) => prevIndex + 1);
-    
-                if (sequenceIndex === expectedSequence.length - 1) {
-                    setExpectedSequence(movement.direction || []);
-                    setSequenceIndex(0);
+
+        if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection != "Aucune") {
+            
+            if (movement.direction[sequenceIndex] == currentDirection) {
+
+                console.log("Direction actuelle: ", direction);
+                console.log("Direction nouvelle: ", currentDirection);
+
+                setScore((prevScore) => prevScore + movement.point_per_moves);
+                setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
+            }
+        }
+
+        if (currentDirection != "Aucune") {
+            setDirection(currentDirection);
+        }
+
+    };*/
+
+    const handleMotion = (event) => {
+        const { acceleration, rotationRate } = event;
+        setMotionData({ acceleration, rotationRate });
+
+        /**************** Logique des directions ****************/
+        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
+        let currentDirection = "Aucune";  // Variable d'état pour suivre la direction actuelle
+
+        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                // Mouvement horizontal
+                currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
+            } else {
+                // Mouvement vertical
+                currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+            }
+        }
+
+        /***************** Logique de jeu Timer *****************/
+        if (currentDirection !== "Aucune") {
+
+            if (movement.direction.length > sequenceIndex && currentDirection !== direction) {
+                console.log("Direction précédente : ", direction);
+                console.log("Direction nouvelle : ", currentDirection);
+                console.log("Index : ", sequenceIndex);
+                console.log("Longueur du tableau : ", movement.direction.length);
+                if (movement.direction[sequenceIndex] === currentDirection) {
+                    console.log("Je set le score et l'index");
+                    setScore(score + movement.point_per_moves);
+                    setSequenceIndex(sequenceIndex + 1);
                 }
             }
-            return currentDirection;
-        });
+            setDirection(currentDirection);
+        }
     };
-    
+
 
     const startSimulation = () => {
         setSimulationRunning(true);
         setScore(0);
         setNbMoves(0);
         setSequenceIndex(0);
-        setExpectedSequence(movement.direction || []);
     };
 
     const stopSimulation = () => {
         setSimulationRunning(false);
     };
 
+    /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4 justify-center items-center">
-            <h1 className='text-2xl font-bold text-pink-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-orange-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {movement.timer ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
 
             {isSimulationRunning ? (
+                // Afficher les éléments pendant la simulation (chrono, indication "Secouez !", etc.)
                 <div className='flex flex-col gap-4'>
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : ''}</p>
                     <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
+                    {/*<div className="flex flex-col bg-red-300 h-fit">
+                        {motionData && (
+                            <div className='flex flex-col gap-2'>
+                                <p>Acceleration X: {motionData.acceleration.x}</p>
+                                <p>Acceleration Y: {motionData.acceleration.y}</p>
+                                <p>Acceleration Z: {motionData.acceleration.z}</p>
+                                <p>Rotation Rate Alpha: {motionData.rotationRate.alpha}</p>
+                                <p>Rotation Rate Beta: {motionData.rotationRate.beta}</p>
+                                <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
+                            </div>
+                        )}
+                    </div>*/}
                     <div className='flex flex-col gap-4'>
                         <p className='text-white'>Score : {score}</p>
                         <p className='text-white'>Index : {sequenceIndex}</p>
                     </div>
+
+                    {/* Ajoutez ici des éléments liés à la simulation en cours */}
                 </div>
             ) : (
+                // Afficher les éléments avant le démarrage de la simulation
                 <div className="text-center">
                     <button className='bg-red-500 text-white text-center p-2 w-fit' onClick={startSimulation}>Start</button>
                 </div>
@@ -132,8 +196,8 @@ function OneSimulation() {
                     <button className={`bg-red-500 text-white text-center p-2 w-fit ${countdown > 0 ? "hidden ?" : 'block'}`} onClick={stopSimulation}>Arrêter la simulation</button>
                 </div>
             ) : ""}
-        </main>
-    );
-}
 
+        </main>
+    )
+}
 export default OneSimulation;
