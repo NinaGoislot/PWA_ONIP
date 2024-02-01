@@ -124,15 +124,16 @@ function OneSimulation() {
     
         /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "Aucune") {
-            setDirection(currentDirection, () => {
-                if (movement.direction.length > sequenceIndex && currentDirection !== direction) {
-                    console.log("Direction précédente : ", direction);
+            setDirection((prevDirection) => {
+                if (movement.direction.length > sequenceIndex && currentDirection !== prevDirection) {
+                    console.log("Direction précédente : ", prevDirection);
                     console.log("Direction nouvelle : ", currentDirection);
                     console.log("Index : ", sequenceIndex);
                     console.log("Longueur du tableau : ", movement.direction.length);
                     if (movement.direction[sequenceIndex] === currentDirection) {
-                        console.log("Direction actuelle: ", direction);
-                        console.log("Direction nouvelle: ", currentDirection);
+                        //console.log("Direction actuelle: ", prevDirection);
+                        //console.log("Direction nouvelle: ", currentDirection);
+                        console.log("Je set le score et l'index");
                         setScore((prevScore) => prevScore + movement.point_per_moves);
                         setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
                     }
