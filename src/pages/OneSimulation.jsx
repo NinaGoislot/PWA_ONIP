@@ -48,7 +48,6 @@ function OneSimulation() {
     //Pour gérer la mise à jour du timer
     useEffect(() => {
         if (countdown === 0) {
-            console.log("JE SUIS DANS LE USE EFFECT");
             const setupMotionListener = () => {
                 if (window.DeviceMotionEvent) {
                     window.addEventListener('devicemotion', handleMotion);
@@ -70,14 +69,13 @@ function OneSimulation() {
     /******************************************************************** Fonctions ********************************************************************/
 
     const handleMotion = (event) => {
-
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
-
+    
         /**************** Logique des directions ****************/
         const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
         let currentDirection = "Aucune";  // Variable d'état pour suivre la direction actuelle
-
+    
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 // Mouvement horizontal
@@ -87,30 +85,22 @@ function OneSimulation() {
                 currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
             }
         }
-
+    
         /***************** Logique de jeu Timer *****************/
-        if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection != "Aucune") {
-            //console.log("2 ► Condition prochaine direction différente : ", currentDirection !== direction);
-            // console.log("2 ► Direction prochaine : ", currentDirection );
-            // console.log("2 ► Direction précédente : ", direction );
-            // console.log("3 ► Condition prochaine direction non nulle : ", currentDirection != "None");
-            
-            if (movement.direction[sequenceIndex] == currentDirection) {
-
-                console.log("Direction actuelle: ", direction);
-                console.log("Direction nouvelle: ", currentDirection);
-
-                setScore((prevScore) => prevScore + movement.point_per_moves);
-                setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
-            }
+        if (currentDirection !== "Aucune") {
+            setDirection(currentDirection, () => {
+                if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection !== "Aucune") {
+                    if (movement.direction[sequenceIndex] === currentDirection) {
+                        console.log("Direction actuelle: ", direction);
+                        console.log("Direction nouvelle: ", currentDirection);
+                        setScore((prevScore) => prevScore + movement.point_per_moves);
+                        setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
+                    }
+                }
+            });
         }
-
-        // Mettez à jour la direction seulement si un mouvement significatif a été détecté
-        if (currentDirection != "Aucune") {
-            setDirection(currentDirection);
-        }
-
     };
+    
 
     const startSimulation = () => {
         setSimulationRunning(true);
