@@ -156,7 +156,7 @@ function OneSimulation() {
     /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4 justify-center items-center">
-            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-yellow-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {movement.timer ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
