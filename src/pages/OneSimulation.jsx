@@ -68,6 +68,42 @@ function OneSimulation() {
 
     /******************************************************************** Fonctions ********************************************************************/
 
+    /*const handleMotion = (event) => {
+
+        const { acceleration, rotationRate } = event;
+        setMotionData({ acceleration, rotationRate });
+        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
+        let currentDirection = "Aucune";  // Variable d'état pour suivre la direction actuelle
+
+        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                // Mouvement horizontal
+                currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
+            } else {
+                // Mouvement vertical
+                currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+            }
+        }
+
+        if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection != "Aucune") {
+            
+            if (movement.direction[sequenceIndex] == currentDirection) {
+
+                console.log("Direction actuelle: ", direction);
+                console.log("Direction nouvelle: ", currentDirection);
+
+                setScore((prevScore) => prevScore + movement.point_per_moves);
+                setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
+            }
+        }
+
+        // Mettez à jour la direction seulement si un mouvement significatif a été détecté
+        if (currentDirection != "Aucune") {
+            setDirection(currentDirection);
+        }
+
+    };*/
+
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
@@ -89,7 +125,11 @@ function OneSimulation() {
         /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "Aucune") {
             setDirection(currentDirection, () => {
-                if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection !== "Aucune") {
+                if (movement.direction.length > sequenceIndex && currentDirection !== direction) {
+                    console.log("Direction précédente : ", direction);
+                    console.log("Direction nouvelle : ", currentDirection);
+                    console.log("Index : ", sequenceIndex);
+                    console.log("Longueur du tableau : ", movement.direction.length);
                     if (movement.direction[sequenceIndex] === currentDirection) {
                         console.log("Direction actuelle: ", direction);
                         console.log("Direction nouvelle: ", currentDirection);
@@ -98,6 +138,23 @@ function OneSimulation() {
                     }
                 }
             });
+        }
+
+        if (movement.direction.length > sequenceIndex && currentDirection !== direction && currentDirection != "Aucune") {
+            
+            if (movement.direction[sequenceIndex] == currentDirection) {
+
+                console.log("Direction actuelle: ", direction);
+                console.log("Direction nouvelle: ", currentDirection);
+
+                setScore((prevScore) => prevScore + movement.point_per_moves);
+                setSequenceIndex((prevSequenceIndex) => prevSequenceIndex + 1);
+            }
+        }
+
+        // Mettez à jour la direction seulement si un mouvement significatif a été détecté
+        if (currentDirection != "Aucune") {
+            setDirection(currentDirection);
         }
     };
     
