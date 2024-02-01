@@ -123,12 +123,12 @@ function OneSimulation() {
 
         /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "Aucune") {
-
             if (movement.direction.length > sequenceIndex && currentDirection !== direction) {
                 console.log("Direction précédente : ", direction);
                 console.log("Direction nouvelle : ", currentDirection);
                 console.log("Index : ", sequenceIndex);
                 console.log("Longueur du tableau : ", movement.direction.length);
+                console.log("Mouvement attendu ", movement.direction[sequenceIndex]);
                 if (movement.direction[sequenceIndex] === currentDirection) {
                     console.log("Je set le score et l'index");
                     setScore(score + movement.point_per_moves);
@@ -154,7 +154,7 @@ function OneSimulation() {
     /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4 justify-center items-center">
-            <h1 className='text-2xl font-bold text-orange-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-yellow-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {movement.timer ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
