@@ -81,10 +81,10 @@ function OneSimulation() {
 
     //Pour gérer le timer pendant la simulation
     useEffect(() => {
-        let countdownInterval;
+        let timerInterval;
 
         if (isTimerRunning && timerMovement > 0) {
-            countdownInterval = setInterval(() => {
+            timerInterval = setInterval(() => {
                 setTimer((prevTimerMovement) => prevTimerMovement - 1);
             }, 1000);
         }
@@ -94,7 +94,7 @@ function OneSimulation() {
         }
 
         return () => {
-            clearInterval(countdownInterval);
+            clearInterval(timerInterval);
         };
     }, [isTimerRunning, timerMovement]);
 
@@ -144,7 +144,7 @@ function OneSimulation() {
     /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4 justify-center items-center">
-            <h1 className='text-2xl font-bold text-red-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-blue-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
@@ -153,6 +153,7 @@ function OneSimulation() {
                 // Afficher les éléments pendant la simulation (chrono, indication "Secouez !", etc.)
                 <div className='flex flex-col gap-4'>
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : ''}</p>
+                    <p className="text-2xl text-center text-red-500">{timerMovement > 0 ? timerMovement : ''}</p>
                     <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
                     <div className='flex flex-col gap-4'>
