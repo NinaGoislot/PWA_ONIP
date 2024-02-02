@@ -158,7 +158,7 @@ function OneSimulation() {
                 // Afficher les éléments pendant la simulation (chrono, indication "Secouez !", etc.)
                 <div className='flex flex-col gap-4'>
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : timerMovement > 0 ? timerMovement : ''}</p>
-                    <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
+                    <h2 className="text-2xl text-center text-yellow-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
                     <div className='flex flex-col gap-4'>
                         <p className='text-white'>Score : {score}</p>
@@ -181,7 +181,7 @@ function OneSimulation() {
             ) : ""}
 
             {showResults && (
-                <Modal onClose={closeModal = () => setShowResults(false)}>
+                <Modal onClose={setShowResults(false)}>
                     <h2 className="text-xl font-bold mb-4 text-red-500">Résultats</h2>
                         <div className="flex flex-col gap-8">
                             <p className="text-lg font-bold">Nombre de coups : {nbMoves}</p>
