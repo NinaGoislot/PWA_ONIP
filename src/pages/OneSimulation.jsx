@@ -147,6 +147,7 @@ function OneSimulation() {
         setSimulationRunning(false);
         setTimerRunning(false);
         setCountdown(3);
+        setTimer(movement.timer || 0);
     };
 
     /******************************************************************** Code HTML ********************************************************************/
