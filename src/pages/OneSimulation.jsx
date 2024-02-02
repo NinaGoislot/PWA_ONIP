@@ -85,7 +85,7 @@ function OneSimulation() {
 
         if (isTimerRunning && timerMovement > 0) {
             countdownInterval = setInterval(() => {
-                setTimer((prevTimer) => prevTimer - 1);
+                setTimer((prevTimerMovement) => prevTimerMovement - 1);
             }, 1000);
         }
 
@@ -131,7 +131,7 @@ function OneSimulation() {
         setScore(0);
         setNbMoves(0);
         setSequenceIndex(0);
-        if (!isTimerRunning && timer!=0) {
+        if (!isTimerRunning && timerMovement!=0) {
             setTimerRunning(true);
         }
     };
