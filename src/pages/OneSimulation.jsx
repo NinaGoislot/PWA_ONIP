@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { GlobalContext } from '../App.jsx';
+import Modal from '../components/Modal.jsx';
 
 
 function OneSimulation() {
@@ -59,7 +60,7 @@ function OneSimulation() {
 
             setupMotionListener();
 
-            if (!isTimerRunning && timerMovement!=0) {
+            if (!isTimerRunning && timerMovement != 0) {
                 setTimerRunning(true);
             }
 
@@ -76,10 +77,10 @@ function OneSimulation() {
             if (movement.direction[sequenceIndex] === direction) {
                 console.log("Je set le score et l'index");
                 setSequenceIndex(sequenceIndex + 1);
-            } 
+            }
         } else if (movement.direction.length == sequenceIndex && isTimerRunning) {
             //console.log("Je passe bien dans la condition d'index plus grand. ");
-            setNbMoves (nbMoves + 1);
+            setNbMoves(nbMoves + 1);
             setScore(score + movement.point_per_moves);
             setSequenceIndex(0);
         }
@@ -97,6 +98,7 @@ function OneSimulation() {
 
         if (isTimerRunning && timerMovement == 0) {
             stopSimulation();
+            setShowResults(true);
         }
 
         return () => {
@@ -147,7 +149,7 @@ function OneSimulation() {
     /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4 justify-center items-center">
-            <h1 className='text-2xl font-bold text-pink-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
@@ -155,8 +157,7 @@ function OneSimulation() {
             {isSimulationRunning ? (
                 // Afficher les éléments pendant la simulation (chrono, indication "Secouez !", etc.)
                 <div className='flex flex-col gap-4'>
-                    <p className="text-2xl text-center">{countdown > 0 ? countdown : ''}</p>
-                    <p className="text-2xl text-center text-red-500">{timerMovement > 0 ? timerMovement : ''}</p>
+                    <p className="text-2xl text-center">{countdown > 0 ? countdown : timerMovement > 0 ? timerMovement : ''}</p>
                     <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
                     <div className='flex flex-col gap-4'>
@@ -178,6 +179,16 @@ function OneSimulation() {
                     <button className={`bg-red-500 text-white text-center p-2 w-fit ${countdown > 0 ? "hidden ?" : 'block'}`} onClick={stopSimulation}>Arrêter la simulation</button>
                 </div>
             ) : ""}
+
+            {showResults && (
+                <Modal onClose={closeModal = () => setShowResults(false)}>
+                    <h2 className="text-xl font-bold mb-4 text-red-500">Résultats</h2>
+                        <div className="flex flex-col gap-8">
+                            <p className="text-lg font-bold">Nombre de coups : {nbMoves}</p>
+                            <p className="text-lg font-bold">Points : {score}</p>
+                        </div>
+                </Modal>
+            )}
 
         </main>
     )
