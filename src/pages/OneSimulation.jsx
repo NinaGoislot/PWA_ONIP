@@ -73,13 +73,17 @@ function OneSimulation() {
 
     //Pour gérer le suivit des mouvements du tableau
     useEffect(() => {
+        console.log("Première condition : ", movement.direction.length > sequenceIndex && direction !== "None");
+        console.log("Deuxième condition : ", movement.direction.length == sequenceIndex && isTimerRunning);
+        console.log("Mouvement : ", direction);
+
         if (movement.direction.length > sequenceIndex && direction !== "None") {
             if (movement.direction[sequenceIndex] === direction) {
                 console.log("Je set le score et l'index");
                 setSequenceIndex(sequenceIndex + 1);
             }
         } else if (movement.direction.length == sequenceIndex && isTimerRunning) {
-            //console.log("Je passe bien dans la condition d'index plus grand. ");
+            console.log("Je passe bien dans la condition d'index plus grand. ");
             setNbMoves(nbMoves + 1);
             setScore(score + movement.point_per_moves);
             setSequenceIndex(0);
@@ -120,6 +124,7 @@ function OneSimulation() {
         let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
 
         if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+            console.log("Un mouvement est reconnu");
             if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                 // Mouvement horizontal
                 currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
@@ -128,8 +133,6 @@ function OneSimulation() {
                 currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
             }
         }
-
-        
 
         /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "None") {
@@ -167,7 +170,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-yellow-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
