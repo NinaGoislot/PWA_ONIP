@@ -73,6 +73,14 @@ function OneSimulation() {
             setupOrientationListener();
             setupMotionListener();
 
+            // Request permission for iOS 13+ devices
+            if (
+                DeviceMotionEvent &&
+                typeof DeviceMotionEvent.requestPermission === "function"
+            ) {
+                DeviceMotionEvent.requestPermission();
+            }
+
             if (!isTimerRunning && timerMovement != 0) {
                 setTimerRunning(true);
             }
@@ -176,7 +184,7 @@ function OneSimulation() {
             case alpha > 247.5 && alpha <= 292.5:
                 setOrientation("E");
                 break;
-            case alpha > 202,5 && alpha < 247.5:
+            case alpha > 202, 5 && alpha < 247.5:
                 setOrientation("SE");
                 break;
             case alpha > 157.5 && alpha <= 202.5:
@@ -235,7 +243,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-green-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-yellow-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
@@ -246,6 +254,7 @@ function OneSimulation() {
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : timerMovement > 0 ? timerMovement : ''}</p>
                     <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
                     <h3 className="font-bold text-2xl w-full text-center text-white">Direction : {direction}</h3>
+                    <h3 className="font-bold text-2xl w-full text-center text-white">Orientation: {orientation}</h3>
                     <div className='flex flex-col gap-4'>
                         <p className='text-white'>Score : {score}</p>
                         <p className='text-white'>Index : {sequenceIndex}</p>
