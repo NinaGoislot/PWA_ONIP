@@ -73,9 +73,9 @@ function OneSimulation() {
 
     //Pour gérer le suivit des mouvements du tableau
     useEffect(() => {
-        console.log("Première condition : ", movement.direction.length > sequenceIndex && direction !== "None");
-        console.log("Deuxième condition : ", movement.direction.length == sequenceIndex && isTimerRunning);
         console.log("Mouvement : ", direction);
+        console.log("Index ", sequenceIndex);
+        console.log("Condition changement :  ", movement.direction[sequenceIndex] === direction);
 
         if (movement.direction.length > sequenceIndex && direction !== "None") {
             if (movement.direction[sequenceIndex] === direction) {
@@ -170,7 +170,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-green-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
