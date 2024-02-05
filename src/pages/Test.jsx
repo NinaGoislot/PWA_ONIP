@@ -173,6 +173,14 @@ function Test() {
         setupOrientationListener();
         setupMotionListener();
 
+        // Request permission for iOS 13+ devices
+        if (
+            DeviceMotionEvent &&
+            typeof DeviceMotionEvent.requestPermission === "function"
+        ) {
+            DeviceMotionEvent.requestPermission();
+        }
+
         return () => {
             window.removeEventListener('deviceorientation', handleOrientation);
             window.removeEventListener('devicemotion', handleMotion);

@@ -24,6 +24,7 @@ function OneSimulation() {
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
 
     const [direction, setDirection] = useState("None");
+    const [orientation, setOrientation] = useState("None");
     const [sequenceIndex, setSequenceIndex] = useState(0);
 
     //Scores finaux
@@ -124,57 +125,76 @@ function OneSimulation() {
     /******************************************************************** Fonctions ********************************************************************/
     const closeModal = () => setShowResults(false);
     const handleMotion = (event) => {
-        const { alpha, beta, gamma } = event;
-    setOrientationData({ alpha, beta, gamma });
+        const { acceleration, rotationRate } = event;
+        setMotionData({ acceleration, rotationRate });
 
-    /**************** Logique des directions ****************/
-    const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
-    let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
+        /**************** Logique des directions ****************/
+        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
+        let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
 
-    if (Math.abs(beta) > threshold || Math.abs(gamma) > threshold) {
-        console.log("Un mouvement est reconnu");
-
-        const diagonalThreshold = 45;  // Seuil d'angle pour considérer le mouvement en diagonale
-
-        if (Math.abs(beta) > diagonalThreshold && Math.abs(gamma) > diagonalThreshold) {
-            // Mouvement en diagonale
-            currentDirection = determineDiagonalDirection(beta, gamma);
-        } else if (Math.abs(beta) > Math.abs(gamma)) {
-            // Mouvement vertical
-            currentDirection = beta > 0 ? "Sud" : "Nord";
-        } else {
-            // Mouvement horizontal
-            currentDirection = gamma > 0 ? "Ouest" : "Est";
+        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
+            console.log("Un mouvement est reconnu");
+            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                // Mouvement horizontal
+                currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
+            } else {
+                // Mouvement vertical
+                currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+            }
         }
-    }
 
-    /***************** Logique de jeu Timer *****************/
-    if (currentDirection !== "None") {
-        setDirection(currentDirection);
-    }
-};
+        // Logique de traitement pour les diagonales
+        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+            if (acceleration.x > 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Est";
+            } else if (acceleration.x > 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Est";
+            } else if (acceleration.x < 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Ouest";
+            } else if (acceleration.x < 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Ouest";
+            }
+        }
 
-const determineDiagonalDirection = (beta, gamma) => {
-    // Insérez votre logique pour déterminer la direction en diagonale en fonction des angles beta et gamma
-    // Vous pouvez utiliser des seuils appropriés pour chaque quadrant.
-    // À titre d'exemple, je vais utiliser un seuil simple ici
-    if (beta > 0 && gamma > 0) {
-        return "Diagonale Nord-Est";
-    } else if (beta < 0 && gamma > 0) {
-        return "Diagonale Nord-Ouest";
-    } else if (beta > 0 && gamma < 0) {
-        return "Diagonale Sud-Est";
-    } else if (beta < 0 && gamma < 0) {
-        return "Diagonale Sud-Ouest";
-    } else {
-        return "None";  // Cas par défaut
-    }
-};
-
+        /***************** Logique de jeu Timer *****************/
+        if (currentDirection !== "None") {
+            setDirection(currentDirection);
+        }
+    };
 
     const handleOrientation = (event) => {
         console.log("ORIENTATION : ", event);
         const { alpha, beta, gamma } = event;
+
+        switch (alpha) {
+            case alpha > 0 && alpha <= 22.5 || alpha > 337.5:
+                setOrientation("N");
+                break;
+            case alpha > 292.5 && alpha <= 337.5:
+                setOrientation("NE");
+                break;
+            case alpha > 247.5 && alpha <= 292.5:
+                setOrientation("E");
+                break;
+            case alpha > 202,5 && alpha < 247.5:
+                setOrientation("SE");
+                break;
+            case alpha > 157.5 && alpha <= 202.5:
+                setOrientation("S");
+                break;
+            case alpha > 112.5 && alpha <= 157.5:
+                setOrientation("SO");
+                break;
+            case alpha > 67.5 && alpha <= 112.5:
+                setOrientation("O");
+                break;
+            case alpha > 22.5 && alpha <= 67.5:
+                setOrientation("NO");
+                break;
+            default:
+                setOrientation("None");
+                break;
+        }
         setOrientationData({ alpha, beta, gamma });
     };
 
@@ -215,7 +235,7 @@ const determineDiagonalDirection = (beta, gamma) => {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-blue-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-green-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
