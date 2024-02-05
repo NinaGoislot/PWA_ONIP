@@ -172,7 +172,7 @@ function OneSimulation() {
 
     const handleOrientation = (event) => {
         console.log("ORIENTATION : ", event);
-        const { alpha } = event;
+        const { alpha, beta, gamma } = event;
     
         switch (true) {
             case (alpha > 0 && alpha <= 22.5) || (alpha > 337.5):
