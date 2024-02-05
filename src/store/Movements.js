@@ -7,6 +7,7 @@ class Movements {
     _description;
     _image;
     _type;
+    _api;
     _thershold_general;
     _thershold_penality;
     _timer;
@@ -16,11 +17,12 @@ class Movements {
 
 
     // Constructeur
-    constructor(id, description, image, type, thershold_general, thershold_penality, timer, repeat, point_per_moves, direction ) {
+    constructor(id, description, image, type, api, thershold_general, thershold_penality, timer, repeat, point_per_moves, direction ) {
         this._id = id;
         this._description = description;
         this._image = image;
         this._type = type;
+        this._api = api;
         this._thershold_general = thershold_general;
         this._thershold_penality = thershold_penality;
         this._timer = timer;
@@ -35,6 +37,7 @@ class Movements {
     get description() { return this._description; }
     get image() { return this._image; }
     get type() { return this._type; }
+    get api() { return this._api; }
     get thershold_general() { return this._thershold_general; }
     get thershold_penality() { return this._thershold_penality; }
     get timer() { return this._timer; }
@@ -46,6 +49,7 @@ class Movements {
     set description(description) { this._description = description; }
     set image(image) { this._image = image; }
     set type(type) { this._type = type; }
+    set api(api) { this._api = api; }
     set thershold_general(thershold_general) { this._thershold_general = thershold_general; }
     set thershold_penality(thershold_penality) { this._thershold_penality = thershold_penality; }
     set timer(timer) { this._timer = timer; }

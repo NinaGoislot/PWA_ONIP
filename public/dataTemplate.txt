@@ -1,0 +1,17 @@
+[
+    {
+      "id": numéro du mouvement
+      "description": En quoi le mouvement consiste
+      "image" : url de l'image
+      "type": est-ce un mouvement de main ou de corps
+      "api": quelles api est utilisée (motion → Besoin de l'accelleration) (rotation → besoin de la rotation)
+      "thershold_general": Seuil accepté pour la reconnaissance de mouvement. Plus il est proche de 0 plus le mouvement sera sensible
+      "thershold_penality": 2,
+      "point_per_moves" : Point en cas du mouvement réussi
+      "direction": Tableau qui indique les directions à suivre 
+
+      VALEURS OPTIONNELLES 
+      "timer" : Indique la durée du mouvement
+      
+    }
+  ]

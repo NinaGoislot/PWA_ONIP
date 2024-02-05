@@ -39,6 +39,7 @@ class MovementsStore {
                 movement.description,
                 movement.image,
                 movement.type,
+                movement.api,
                 movement.thershold_general,
                 movement.thershold_penality,
                 movement.timer,

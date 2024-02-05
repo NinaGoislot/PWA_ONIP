@@ -129,6 +129,19 @@ function OneSimulation() {
             }
         }
 
+        // Logique de traitement pour les diagonales
+        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+            if (acceleration.x > 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Est";
+            } else if (acceleration.x > 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Est";
+            } else if (acceleration.x < 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Ouest";
+            } else if (acceleration.x < 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Ouest";
+            }
+        }
+
         /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "None") {
             setDirection(currentDirection);
@@ -165,7 +178,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-yellow-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-pink-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
