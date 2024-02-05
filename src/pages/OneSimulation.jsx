@@ -245,7 +245,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-pink-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
@@ -260,9 +260,9 @@ function OneSimulation() {
                     <div className='flex flex-col gap-4'>
                         <p className='text-white'>Score : {score}</p>
                         <p className='text-white'>Index : {sequenceIndex}</p>
-                        <p className='text-white'>alpha : {orientationData.alpha.toFixed(8)}</p>
-                        <p className='text-white'>beta : {orientationData.beta.toFixed(8)}</p>
-                        <p className='text-white'>gamma : {orientationData.gamma.toFixed(8)}</p>
+                        <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
+                        <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
+                        <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
                     </div>
 
                     {/* Ajoutez ici des éléments liés à la simulation en cours */}
