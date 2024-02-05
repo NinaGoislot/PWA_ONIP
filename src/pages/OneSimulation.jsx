@@ -21,6 +21,8 @@ function OneSimulation() {
 
     //Pour créer la détection de mouvement
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
+    const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
+
     const [direction, setDirection] = useState("None");
     const [sequenceIndex, setSequenceIndex] = useState(0);
 
@@ -50,6 +52,14 @@ function OneSimulation() {
     //Pour gérer l'ajout des évènements
     useEffect(() => {
         if (countdown === 0 && isSimulationRunning) {
+            const setupOrientationListener = () => {
+                if (window.DeviceOrientationEvent) {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                } else {
+                    console.error("DeviceOrientation n'est pas supporté");
+                }
+            };
+
             const setupMotionListener = () => {
                 if (window.DeviceMotionEvent) {
                     window.addEventListener('devicemotion', handleMotion);
@@ -58,6 +68,8 @@ function OneSimulation() {
                 }
             };
 
+
+            setupOrientationListener();
             setupMotionListener();
 
             if (!isTimerRunning && timerMovement != 0) {
@@ -66,6 +78,7 @@ function OneSimulation() {
 
             return () => {
                 console.log("L'écouteur d'évènement s'est arreté.'");
+                window.removeEventListener('deviceorientation', handleOrientation);
                 window.removeEventListener('devicemotion', handleMotion);
             };
         }
@@ -129,11 +142,38 @@ function OneSimulation() {
             }
         }
 
+        // Logique de traitement pour les diagonales
+        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+            if (acceleration.x > 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Est";
+            } else if (acceleration.x > 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Est";
+            } else if (acceleration.x < 0 && acceleration.y > 0) {
+                currentDirection = "Nord-Ouest";
+            } else if (acceleration.x < 0 && acceleration.y < 0) {
+                currentDirection = "Sud-Ouest";
+            }
+        }
+
         /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "None") {
             setDirection(currentDirection);
         }
     };
+
+    const handleOrientation = (event) => {
+        console.log("ORIENTATION : ", event);
+        const { alpha, beta, gamma } = event;
+        setOrientationData({ alpha, beta, gamma });
+    };
+
+    const findDirection = () => {
+
+    };
+
+    const findOrientation = () => {
+
+    }
 
 
     const startSimulation = () => {
@@ -156,16 +196,16 @@ function OneSimulation() {
             {showResults && (
                 <Modal onClose={closeModal}>
                     <h2 className="text-xl font-bold mb-4 text-red-500">Résultats</h2>
-                        <div className="flex flex-col gap-8">
-                            <p className="text-lg font-bold">Nombre de coups : {nbMoves}</p>
-                            <p className="text-lg font-bold">Points : {score}</p>
-                        </div>
+                    <div className="flex flex-col gap-8">
+                        <p className="text-lg font-bold">Nombre de coups : {nbMoves}</p>
+                        <p className="text-lg font-bold">Points : {score}</p>
+                    </div>
                 </Modal>
             )}
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-pink-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-green-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
