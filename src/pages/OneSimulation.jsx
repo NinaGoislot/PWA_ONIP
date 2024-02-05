@@ -73,19 +73,12 @@ function OneSimulation() {
 
     //Pour gérer le suivit des mouvements du tableau
     useEffect(() => {
-        console.log("Mouvement : ", direction);
-        console.log("Index ", sequenceIndex);
-        console.log("Condition changement :  ", movement.direction[sequenceIndex] === direction);
-        console.log("Mouvement attendu:  ", movement.direction[sequenceIndex]);
-        console.log("Position reçue :  ", direction);
-
         if (movement.direction.length > sequenceIndex && direction !== "None") {
             if (movement.direction[sequenceIndex] === direction) {
                 console.log("Je set le score et l'index");
                 setSequenceIndex(sequenceIndex + 1);
             }
         } else if (movement.direction.length == sequenceIndex && isTimerRunning) {
-            console.log("Je passe bien dans la condition d'index plus grand. ");
             setNbMoves(nbMoves + 1);
             setScore(score + movement.point_per_moves);
             setSequenceIndex(0);

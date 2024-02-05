@@ -156,9 +156,9 @@ function Test() {
     useEffect(() => {
         const setupOrientationListener = () => {
             if (window.DeviceOrientationEvent) {
-                window.addEventListener('deviceorientation', handleOrientation);
+                window.addEventListener('deviceorientationabsolute', handleOrientation);
             } else {
-                console.error("DeviceOrientation n'est pas supporté");
+                console.error("DeviceOrientationAbsolute n'est pas supporté");
             }
         };
 

@@ -1,6 +1,6 @@
 [{
     "id": "9",
-    "description": "Secoue de gauche à droite",
+    "description": "Secoue d'en bas à gauche à en haut à droite",
     "image": "",
     "type": "hands",
     "api": "motion",
@@ -12,7 +12,7 @@
   },
   {
     "id": "11",
-    "description": "Secoue d'en bas à gauche à en haut à droite",
+    "description": "Secoue de gauche à droite",
     "image": "",
     "type": "hands",
     "api": "motion",
