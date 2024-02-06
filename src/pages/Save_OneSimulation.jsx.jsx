@@ -131,140 +131,13 @@ function OneSimulation() {
     //Pour gérer le mouvement selon l'orientation
     useEffect(() => {
         if (motionData && orientation !== "None") {
-            /**************** Logique des directions ****************/
-            const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
-            let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
+            const threshold = 0; // Mettez votre seuil ici
 
-            let acceleration = motionData.acceleration;
+            // Logique pour déterminer la direction en fonction de motionData et orientation
+            // ...
 
-            if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                console.log("Je rentre dans le if, orientation vaut " + orientation)
-                switch (orientation) {
-                    case "N":
-                        console.log("Je rentre dans le switch");
-
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Ouest";
-                            }
-                        }
-                        break;
-                    case "NE":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Nord-Ouest" : "Sud-Est";
-                            0
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Nord-Est";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord" : "Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Ouest" : "Sud";
-                            }
-                        }
-                        break;
-                    case "E":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Nord" : "Sud";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Ouest" : "Est";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Sud-Est" : "Sud-Ouest";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Nord-Est" : "Nord-Ouest";
-                            }
-                        }
-                        break;
-                    case "SE":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Nord-Est" : "Sud-Ouest";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Est";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Sud" : "Ouest";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Est" : "Nord";
-                            }
-                        }
-                        break;
-                    case "S":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Est" : "Ouest";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Nord" : "Sud";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Nord-Ouest";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Sud-Est" : "Nord-Est";
-                            }
-                        }
-                        break;
-                    case "SO":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Sud-Est" : "Nord-Ouest";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Ouest";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Ouest" : "Nord";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Sud" : "Est";
-                            }
-                        }
-                        break;
-                    case "O":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Sud" : "Nord";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Est" : "Ouest";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Nord-Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Sud-Est";
-                            }
-                        }
-                        break;
-                    case "NO":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Sud-Ouest" : "Nord-Est";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Sud-Est" : "Nord-Ouest";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord" : "Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Ouest" : "Sud";
-                            }
-                        }
-                        break;
-                    default:
-                        console.log("Aucune donnée reconnue")
-                        break;
-                }
-            }
-
-            /***************** Logique de jeu Timer *****************/
-            if (currentDirection !== "None") {
-                setDirection(currentDirection);
-            }
+            // Mettre à jour la direction
+            // setDirection(newDirection);
         }
     }, [motionData, orientation]);
 
@@ -276,6 +149,138 @@ function OneSimulation() {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate });
 
+        /**************** Logique des directions ****************/
+        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
+        let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
+
+        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+            console.log("Je rentre dans le if, orientation vaut " + orientation)
+            switch (orientation) {
+                case "N":
+                    console.log("Je rentre dans le switch");
+
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Est";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Ouest";
+                        }
+                    }
+                    break;
+                case "NE":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Nord-Ouest" : "Sud-Est";
+                        0
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Nord-Est";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Nord" : "Est";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Ouest" : "Sud";
+                        }
+                    }
+                    break;
+                case "E":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Nord" : "Sud";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Ouest" : "Est";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Sud-Est" : "Sud-Ouest";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Nord-Est" : "Nord-Ouest";
+                        }
+                    }
+                    break;
+                case "SE":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Nord-Est" : "Sud-Ouest";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Est";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Sud" : "Ouest";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Est" : "Nord";
+                        }
+                    }
+                    break;
+                case "S":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Est" : "Ouest";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Nord" : "Sud";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Nord-Ouest";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Sud-Est" : "Nord-Est";
+                        }
+                    }
+                    break;
+                case "SO":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Sud-Est" : "Nord-Ouest";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Ouest";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Ouest" : "Nord";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Sud" : "Est";
+                        }
+                    }
+                    break;
+                case "O":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Sud" : "Nord";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Est" : "Ouest";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Nord-Est";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Sud-Est";
+                        }
+                    }
+                    break;
+                case "NO":
+                    if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                        currentDirection = acceleration.x > 0 ? "Sud-Ouest" : "Nord-Est";
+                    } else {
+                        currentDirection = acceleration.y > 0 ? "Sud-Est" : "Nord-Ouest";
+                    }
+                    if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                        if (acceleration.x > 0) {
+                            currentDirection = acceleration.y > 0 ? "Nord" : "Est";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Ouest" : "Sud";
+                        }
+                    }
+                    break;
+                default:
+                    console.log("Aucune donnée reconnue")
+                    break;
+            }
+        }
+
+        /***************** Logique de jeu Timer *****************/
+        if (currentDirection !== "None") {
+            setDirection(currentDirection);
+        }
     };
 
     const handleOrientation = (event) => {
@@ -351,7 +356,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-blue-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
