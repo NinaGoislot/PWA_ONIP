@@ -115,7 +115,6 @@ function OneSimulation() {
             timerInterval = setInterval(() => {
                 setTimer((prevTimerMovement) => prevTimerMovement - 1);
             }, 1000);
-            console.log("Je dois diminuer le timer");
         }
 
         if (isTimerRunning && timerMovement == 0) {
@@ -260,6 +259,7 @@ function OneSimulation() {
                     }
                     break;
                 default:
+                    console.log("Aucune donnée reconnue")
                     break;
             }
         }
