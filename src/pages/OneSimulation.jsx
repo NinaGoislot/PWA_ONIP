@@ -135,6 +135,8 @@ function OneSimulation() {
         const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
         let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
 
+        let acceleration = motionData.acceleration;
+
         if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
             console.log("Je rentre dans le if, orientation vaut " + orientation)
             switch (orientation) {
