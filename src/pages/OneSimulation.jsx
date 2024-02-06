@@ -1,56 +1,73 @@
-import React, { useContext, useState, useEffect } from 'react';
+
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { GlobalContext } from '../App.jsx';
 import Modal from '../components/Modal.jsx';
 
-
 function OneSimulation() {
-
-    /********************************************************************* States ********************************************************************/
     const { id } = useParams();
     const { movementsStore } = useContext(GlobalContext);
     const movement = movementsStore.getMovementById(id);
 
-    //Pour créer le timer avant de lancer la simulation
     const [isSimulationRunning, setSimulationRunning] = useState(false);
     const [countdown, setCountdown] = useState(3);
-
-    //Pour créer le timer pendant la simulation
     const [isTimerRunning, setTimerRunning] = useState(false);
     const [timerMovement, setTimer] = useState(movement.timer || 0);
-
-    //Pour créer la détection de mouvement
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
-
     const [direction, setDirection] = useState("None");
     const [orientation, setOrientation] = useState("None");
     const [sequenceIndex, setSequenceIndex] = useState(0);
-
-    //Scores finaux
     const [score, setScore] = useState(0);
     const [nbMoves, setNbMoves] = useState(0);
     const [showResults, setShowResults] = useState(false);
 
+    const motionDataRef = useRef({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
+    const orientationDataRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
 
-    /******************************************************************** UseEffect ********************************************************************/
+    const closeModal = () => setShowResults(false);
 
-    //Pour gérer le chrono d'avant jeu
-    useEffect(() => {
-        let countdownInterval;
+    const handleMotion = (event) => {
+        const { acceleration, rotationRate } = event;
+        motionDataRef.current = { acceleration, rotationRate };
+        setMotionData({ acceleration, rotationRate });
+    };
 
-        if (isSimulationRunning && countdown > 0) {
-            countdownInterval = setInterval(() => {
-                setCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
+    const handleOrientation = (event) => {
+        const { alpha, beta, gamma } = event;
+        orientationDataRef.current = { alpha, beta, gamma };
+
+        switch (true) {
+            case (alpha > 0 && alpha <= 37.75) || (alpha > 322.25):
+                setOrientation("N");
+                break;
+            case alpha > 307.75 && alpha <= 322.25:
+                setOrientation("NE");
+                break;
+            case alpha > 247.5 && alpha <= 307.75:
+                setOrientation("E");
+                break;
+            case alpha > 217.75 && alpha <= 247.5:
+                setOrientation("SE");
+                break;
+            case alpha > 142.25 && alpha <= 217.75:
+                setOrientation("S");
+                break;
+            case alpha > 127.75 && alpha <= 142.25:
+                setOrientation("SO");
+                break;
+            case alpha > 52.25 && alpha <= 127.75:
+                setOrientation("O");
+                break;
+            case alpha > 37.75 && alpha <= 52.25:
+                setOrientation("NO");
+                break;
+            default:
+                setOrientation("None");
+                break;
         }
+    };
 
-        return () => {
-            clearInterval(countdownInterval);
-        };
-    }, [isSimulationRunning, countdown]);
-
-    //Pour gérer l'ajout des évènements
     useEffect(() => {
         if (countdown === 0 && isSimulationRunning) {
             const setupOrientationListener = () => {
@@ -69,11 +86,9 @@ function OneSimulation() {
                 }
             };
 
-
             setupOrientationListener();
             setupMotionListener();
 
-            // Request permission for iOS 13+ devices
             if (
                 DeviceMotionEvent &&
                 typeof DeviceMotionEvent.requestPermission === "function"
@@ -86,18 +101,15 @@ function OneSimulation() {
             }
 
             return () => {
-                console.log("L'écouteur d'évènement s'est arreté.'");
                 window.removeEventListener('deviceorientation', handleOrientation);
                 window.removeEventListener('devicemotion', handleMotion);
             };
         }
     }, [countdown, isSimulationRunning]);
 
-    //Pour gérer le suivit des mouvements du tableau
     useEffect(() => {
         if (movement.direction.length > sequenceIndex && direction !== "None") {
             if (movement.direction[sequenceIndex] === direction) {
-                console.log("Je set le score et l'index");
                 setSequenceIndex(sequenceIndex + 1);
             }
         } else if (movement.direction.length == sequenceIndex && isTimerRunning) {
@@ -107,7 +119,6 @@ function OneSimulation() {
         }
     }, [direction, sequenceIndex]);
 
-    //Pour gérer le timer pendant la simulation
     useEffect(() => {
         let timerInterval;
 
@@ -118,7 +129,6 @@ function OneSimulation() {
         }
 
         if (isTimerRunning && timerMovement == 0) {
-            console.log("La simulation s'arrete et je dois montrer les résultats");
             stopSimulation();
             setShowResults(true);
         }
@@ -128,21 +138,17 @@ function OneSimulation() {
         };
     }, [isTimerRunning, timerMovement]);
 
-    //Pour gérer le mouvement selon l'orientation
     useEffect(() => {
-        
-        /**************** Logique des directions ****************/
-        const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
-        let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
+        const threshold = movement.threshold_general;
+        let currentDirection = "None";
 
-        let acceleration = motionData.acceleration;
+        const { acceleration } = motionDataRef.current;
 
         if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-            console.log("Je rentre dans le if, orientation vaut " + orientation)
             switch (orientation) {
                 case "N":
                     console.log("Je rentre dans le switch");
-
+        
                     if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                         currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
                     } else {
@@ -261,63 +267,10 @@ function OneSimulation() {
             }
         }
 
-        /***************** Logique de jeu Timer *****************/
         if (currentDirection !== "None") {
             setDirection(currentDirection);
         }
     }, [motionData, orientation]);
-
-
-    /******************************************************************** Fonctions ********************************************************************/
-    const closeModal = () => setShowResults(false);
-    const handleMotion = (event) => {
-        const { acceleration, rotationRate } = event;
-        setMotionData({ acceleration, rotationRate });
-    };
-
-    const handleOrientation = (event) => {
-        const { alpha, beta, gamma } = event;
-
-        switch (true) {
-            case (alpha > 0 && alpha <= 22.5) || (alpha > 337.5):
-                setOrientation("N");
-                break;
-            case alpha > 292.5 && alpha <= 337.5:
-                setOrientation("NE");
-                break;
-            case alpha > 247.5 && alpha <= 292.5:
-                setOrientation("E");
-                break;
-            case alpha > 202.5 && alpha <= 247.5:
-                setOrientation("SE");
-                break;
-            case alpha > 157.5 && alpha <= 202.5:
-                setOrientation("S");
-                break;
-            case alpha > 112.5 && alpha <= 157.5:
-                setOrientation("SO");
-                break;
-            case alpha > 67.5 && alpha <= 112.5:
-                setOrientation("O");
-                break;
-            case alpha > 22.5 && alpha <= 67.5:
-                setOrientation("NO");
-                break;
-            default:
-                setOrientation("None");
-                break;
-        }
-
-        setOrientationData({ alpha, beta, gamma });
-    };
-
-    const findDirection = () => {
-
-    };
-
-    const findOrientation = () => {
-
-    }
 
     const startSimulation = () => {
         setSimulationRunning(true);
@@ -333,7 +286,6 @@ function OneSimulation() {
         setTimer(movement.timer || 0);
     };
 
-    /******************************************************************** Code HTML ********************************************************************/
     return (
         <main className="w-screen h-screen flex flex-col gap-4 bg-slate-700 p-4 justify-center items-center">
             {showResults && (
@@ -348,13 +300,12 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-purple-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-green-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
 
             {isSimulationRunning ? (
-                // Afficher les éléments pendant la simulation (chrono, indication "Secouez !", etc.)
                 <div className='flex flex-col gap-4'>
                     <p className="text-2xl text-center">{countdown > 0 ? countdown : timerMovement > 0 ? timerMovement : ''}</p>
                     <h2 className="text-2xl text-center text-red-500">{countdown > 0 ? "Prêt ?" : 'Secouez !'}</h2>
@@ -367,11 +318,8 @@ function OneSimulation() {
                         <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
                         <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
                     </div>
-
-                    {/* Ajoutez ici des éléments liés à la simulation en cours */}
                 </div>
             ) : (
-                // Afficher les éléments avant le démarrage de la simulation
                 <div className="text-center">
                     <button className='bg-red-500 text-white text-center p-2 w-fit' onClick={startSimulation}>Start</button>
                 </div>
@@ -383,6 +331,7 @@ function OneSimulation() {
                 </div>
             ) : ""}
         </main>
-    )
+    );
 }
+
 export default OneSimulation;
