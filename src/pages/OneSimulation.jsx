@@ -148,55 +148,12 @@ function OneSimulation() {
                         } else {
                             currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
                         }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Ouest";
-                            }
-                        }
-                        break;
-                    case "NE":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Nord-Ouest" : "Sud-Est";
-                            0
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Nord-Est";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord" : "Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Ouest" : "Sud";
-                            }
-                        }
                         break;
                     case "E":
                         if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                             currentDirection = acceleration.x > 0 ? "Nord" : "Sud";
                         } else {
                             currentDirection = acceleration.y > 0 ? "Ouest" : "Est";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Sud-Est" : "Sud-Ouest";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Nord-Est" : "Nord-Ouest";
-                            }
-                        }
-                        break;
-                    case "SE":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Nord-Est" : "Sud-Ouest";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Est";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Sud" : "Ouest";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Est" : "Nord";
-                            }
                         }
                         break;
                     case "S":
@@ -205,54 +162,12 @@ function OneSimulation() {
                         } else {
                             currentDirection = acceleration.y > 0 ? "Nord" : "Sud";
                         }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Nord-Ouest";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Sud-Est" : "Nord-Est";
-                            }
-                        }
-                        break;
-                    case "SO":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Sud-Est" : "Nord-Ouest";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Ouest";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Ouest" : "Nord";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Sud" : "Est";
-                            }
-                        }
                         break;
                     case "O":
                         if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                             currentDirection = acceleration.x > 0 ? "Sud" : "Nord";
                         } else {
                             currentDirection = acceleration.y > 0 ? "Est" : "Ouest";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Nord-Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Sud-Ouest" : "Sud-Est";
-                            }
-                        }
-                        break;
-                    case "NO":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Sud-Ouest" : "Nord-Est";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Sud-Est" : "Nord-Ouest";
-                        }
-                        if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                            if (acceleration.x > 0) {
-                                currentDirection = acceleration.y > 0 ? "Nord" : "Est";
-                            } else {
-                                currentDirection = acceleration.y > 0 ? "Ouest" : "Sud";
-                            }
                         }
                         break;
                     default:
@@ -281,30 +196,20 @@ function OneSimulation() {
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
 
+        let angle = 360 / 8; //angle de 45°
+
         switch (true) {
-            case (alpha > 0 && alpha <= 37.75) || (alpha > 322.25):
+            case (alpha > 0 && alpha <= angle) || (alpha > angle * 7 ):
                 setOrientation("N");
                 break;
-            case alpha > 307.75 && alpha <= 322.25:
-                setOrientation("NE");
-                break;
-            case alpha > 247.5 && alpha <= 307.75:
+            case alpha > angle * 5 && alpha <= angle * 7:
                 setOrientation("E");
                 break;
-            case alpha > 217.75 && alpha <= 247.5:
-                setOrientation("SE");
-                break;
-            case alpha > 142.25 && alpha <= 217.75:
+            case alpha > angle * 3 && alpha <= angle * 5:
                 setOrientation("S");
                 break;
-            case alpha > 127.75 && alpha <= 142.25:
-                setOrientation("SO");
-                break;
-            case alpha > 52.25 && alpha <= 127.75:
+            case alpha > angle && alpha <= angle * 3:
                 setOrientation("O");
-                break;
-            case alpha > 37.75 && alpha <= 52.25:
-                setOrientation("NO");
                 break;
             default:
                 setOrientation("None");
@@ -313,14 +218,6 @@ function OneSimulation() {
 
         setOrientationData({ alpha, beta, gamma });
     };
-
-    const findDirection = () => {
-
-    };
-
-    const findOrientation = () => {
-
-    }
 
     const startSimulation = () => {
         setSimulationRunning(true);
