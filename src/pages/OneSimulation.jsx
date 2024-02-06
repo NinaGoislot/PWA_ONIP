@@ -140,27 +140,14 @@ function OneSimulation() {
         const threshold = movement.thershold_general;  // Seuil pour considérer un mouvement significatif
         let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
 
-        if (Math.abs(acceleration.x) > threshold || Math.abs(acceleration.y) > threshold) {
-            console.log("Un mouvement est reconnu");
-            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                // Mouvement horizontal
-                currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
-            } else {
-                // Mouvement vertical
-                currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
-            }
-        }
 
         // Logique de traitement pour les diagonales
         if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-            if (acceleration.x > 0) {
-                currentDirection = acceleration.y > 0 ? "Nord-Est" : "Sud-Est";
-            } else {
-                currentDirection = acceleration.y > 0 ? "Nord-Ouest" : "Sud-Ouest";
-            }
-
+            console.log("Je rentre dans le if, orientation vaut "+ orientation )
             switch (orientation) {
                 case "N":
+                console.log("Je rentre dans le switch");
+
                     if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
                         currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
                     } else {
@@ -357,7 +344,7 @@ function OneSimulation() {
 
             <div className={`${showResults ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
 
-            <h1 className='text-2xl font-bold text-blue-500 text-center'>Simulation du mouvement {movement.id}</h1>
+            <h1 className='text-2xl font-bold text-orange-500 text-center'>Simulation du mouvement {movement.id}</h1>
             <p className='text-center italic text-sm text-white'>
                 Évaluation portée sur {timerMovement != 0 ? 'le nombre de coups réalisés' : 'la précision du mouvement'}
             </p>
