@@ -271,7 +271,6 @@ function OneSimulation() {
     };
 
     const handleOrientation = (event) => {
-        console.log("ORIENTATION : ", event);
         const { alpha, beta, gamma } = event;
 
         switch (true) {
