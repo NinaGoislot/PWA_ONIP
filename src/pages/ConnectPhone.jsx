@@ -25,7 +25,6 @@ function ConnectPhone() {
         const formData = new FormData(event.target);
         const roomId = formData.get("roomId");
         socket.emit("JOIN_GAME_MOBILE", roomId);
-        navigate("/Game");
     }
 
     //   const search = (formData) => {
@@ -51,6 +50,7 @@ function ConnectPhone() {
 
     socket.on("READY_TO_PLAY", () => {
         setInfos("Shaker connecté !");
+        navigate("/Game");
     });
 
 
