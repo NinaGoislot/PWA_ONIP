@@ -19,7 +19,11 @@ function Game() {
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [finalData, setFinalData] = useState([]);
-    const [knnClassifier, setKNNClassifier] = useState(ml5.KNNClassifier());
+
+    const knnClassifier  = ml5.KNNClassifier();
+    knnClassifier.load('../myGestures-30.json', () => {
+        //console.log('Données d\'entraînement chargées avec succès.');
+    });
 
     /*const inferenceActive = ref(false);
     const scaleFactor = ref(10);
@@ -50,13 +54,6 @@ function Game() {
     });*/
 
     /********************************************* USE EFFECT *********************************************/
-
-    //Charger le knn initial
-    useEffect(() => {
-        knnClassifier.load('../myGestures-30.json', () => {
-            console.log('Données d\'entraînement chargées avec succès.');
-        });
-    }, []);
 
     //Pour gérer l'ajout des évènements
     useEffect(() => {
@@ -125,11 +122,11 @@ function Game() {
 
     /****************************************** FONCTIONS ******************************************/
     const startMotion = () => {
-        setSimulationRunning(true);
+        setMovementStarted(true);
     };
 
     const stopMotion = () => {
-        setSimulationRunning(false);
+        setMovementStarted(false);
     };
 
     /********************************************* ML5 *********************************************/
