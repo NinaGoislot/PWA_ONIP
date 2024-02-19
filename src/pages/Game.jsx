@@ -197,25 +197,25 @@ function Game() {
         const knnClassifier = ml5.KNNClassifier();
         knnClassifier.load('../myGestures-30.json', () => {
             console.log('Données d\'entraînement chargées avec succès.');
-        });
 
-        // Classer les données avec le modèle KNN
-        knnClassifier.classify(data, (error, result) => {
-            if (error) {
-                console.error(error);
-                return;
-            }
-            console.log("Résultat du classify : ", result)
-            const resultsData = getLabel(result);
-            // Récupérer le mouvement prédit
-            const predictedMovement = resultsData.label;
-            // Récupérer l'intervalle de confiance du mouvement prédit
-            const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
-            // Afficher le résultat
-            console.log('Mouvement prédit :', predictedMovement);
-            console.log('Intervalle de confiance :', confidenceInterval);
+            // Classer les données avec le modèle KNN
+            knnClassifier.classify(data, (error, result) => {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                console.log("Résultat du classify : ", result)
+                const resultsData = getLabel(result);
+                // Récupérer le mouvement prédit
+                const predictedMovement = resultsData.label;
+                // Récupérer l'intervalle de confiance du mouvement prédit
+                const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
+                // Afficher le résultat
+                console.log('Mouvement prédit :', predictedMovement);
+                console.log('Intervalle de confiance :', confidenceInterval);
 
-            return predictedMovement;
+                return predictedMovement;
+            });
         });
     }
 
