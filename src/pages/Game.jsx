@@ -93,13 +93,13 @@ function Game() {
             console.log("Je rentre dans le else conditionnel'");
 
             let tabDataDone = normalizeData(finalData);
-            console.log("Étape 1 ► Normaliser ", predictedMovement);
+            console.log("Étape 1 ► Normaliser ", tabDataDone);
 
             tabDataDone = subSampleData(tabDataDone);
-            console.log("Étape 2 ► subSample ", predictedMovement);
+            console.log("Étape 2 ► subSample ", tabDataDone);
 
             tabDataDone = flattenData(tabDataDone);
-            console.log("Étape 3 ► flatten ", predictedMovement);
+            console.log("Étape 3 ► flatten ", tabDataDone);
 
             const predictedMovement = classifyData(tabDataDone);
             console.log("Étape 4 ► Le mouvement reconnu est : ", predictedMovement);
@@ -244,7 +244,7 @@ function Game() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-red-600">Le jeu est lancé</h1>
+            <h1 className="text-3xl text-orange-600">Le jeu est lancé</h1>
             <h2 className="text-xl text-pink-200">Mouvement attendu : {movementRequired}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
