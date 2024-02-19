@@ -21,11 +21,6 @@ function Game() {
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [finalData, setFinalData] = useState([]);
 
-    const knnClassifier = ml5.KNNClassifier();
-    knnClassifier.load('../myGestures-30.json', () => {
-        //console.log('Données d\'entraînement chargées avec succès.');
-    });
-
     /*const inferenceActive = ref(false);
     const scaleFactor = ref(10);
     const motionData = ref([]);
@@ -197,7 +192,12 @@ function Game() {
 
     // 4. Classification des données avec KNN
     function classifyData(data) {
-        console.log("Je rentre dans la fonction classifyData ")
+        console.log("Je rentre dans la fonction classifyData ");
+
+        const knnClassifier = ml5.KNNClassifier();
+        knnClassifier.load('../myGestures-30.json', () => {
+            console.log('Données d\'entraînement chargées avec succès.');
+        });
 
         // Classer les données avec le modèle KNN
         knnClassifier.classify(data, (error, result) => {
@@ -246,7 +246,7 @@ function Game() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-purple-600">Le jeu est lancé</h1>
+            <h1 className="text-3xl text-green-600">Le jeu est lancé</h1>
             <h2 className="text-xl text-pink-200">Mouvement attendu : {movementRequired}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
