@@ -246,7 +246,7 @@ function Game() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-blue-600">Le jeu est lancé</h1>
+            <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
             <h2 className="text-xl text-pink-200">Mouvement attendu : {movementRequired}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
