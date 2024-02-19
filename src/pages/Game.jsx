@@ -93,13 +93,22 @@ function Game() {
             console.log("Je rentre dans le else conditionnel'");
 
             let tabDataDone = normalizeData(finalData);
+            console.log("Étape 1 ► Normaliser ", predictedMovement);
+
             tabDataDone = subSampleData(tabDataDone);
+            console.log("Étape 2 ► subSample ", predictedMovement);
+
             tabDataDone = flattenData(tabDataDone);
+            console.log("Étape 3 ► flatten ", predictedMovement);
+
             const predictedMovement = classifyData(tabDataDone);
+            console.log("Étape 4 ► Le mouvement reconnu est : ", predictedMovement);
+
             setMovementRecognized(predictedMovement);
             const isMovementCorrect = predictedMovement == movementRequired;
-            socket.emit("MOVEMENT_DONE", isMovementCorrect, roomId, numeroPlayer);
             setFinalData("");
+            socket.emit("MOVEMENT_DONE", isMovementCorrect, roomId, numeroPlayer);
+            setMovementStarted(false);
         }
     }, [isMovementStarted]);
 
