@@ -6,8 +6,6 @@ import { socket } from "../socket";
 
 function ConnectPhone() {
 
-    const [roomId, setRoomId] = useState("");
-    const [connected, setConnected] = useState(false);
     const [start, setStart] = useState(false);
     const [infos, setInfos] = useState("Le téléphone n'est pas connecté au serveur");
     const navigate = useNavigate();
@@ -31,13 +29,6 @@ function ConnectPhone() {
     //     const query = formData.get("query");
     //     alert(`Vous avez recherché « ${query} »`);
     // };
-
-    //afficher l'état de connection au départ
-    socket.on("CONNECTED", () => {
-        console.log("Connexion au serveur réussie");
-        setConnected(true);
-        setInfos("Connectez votre téléphone");
-    });
 
     //si mauvais game id
     socket.on("BAD_GAME_ID_MOBILE", () => {
