@@ -9,7 +9,7 @@ function ConnectPhone() {
     const [roomId, setRoomId] = useState("");
     const [connected, setConnected] = useState(false);
     const [start, setStart] = useState(false);
-    const [infos, setInfos] = useState("Connectez votre téléphone");
+    const [infos, setInfos] = useState("Le téléphone n'est pas connecté au serveur");
     const navigate = useNavigate();
 
     // const handleJoinClick = () => {
@@ -36,6 +36,7 @@ function ConnectPhone() {
     socket.on("CONNECTED", () => {
         console.log("Connexion au serveur réussie");
         setConnected(true);
+        setInfos("Connectez votre téléphone");
     });
 
     //si mauvais game id
@@ -68,7 +69,7 @@ function ConnectPhone() {
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
             <h1 className="text-3xl text-red-600">{infos}</h1>
-            {!start && (
+            {!start && connected && (
                 <form onSubmit={submit} className="flex flex-col gap-6">
                     <div className="flex flex-col  text-xl text-white">
                         <label htmlFor="roomId">Code de connexion</label>
