@@ -10,6 +10,7 @@ function Game() {
     const [movementRequired, setMovementRequiered] = useState("");
     const [roomId, setRoomId] = useState("");
     const [numeroPlayer, setNumeroPlayer] = useState("");
+    const [alreadyHasMovement, setHasMovement] = useState(false);
 
     //Suivre la reconnaissance de mouvements
     const [movementRecognized, setMovementRecognized] = useState("");
@@ -20,7 +21,7 @@ function Game() {
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [finalData, setFinalData] = useState([]);
 
-    const knnClassifier  = ml5.KNNClassifier();
+    const knnClassifier = ml5.KNNClassifier();
     knnClassifier.load('../myGestures-30.json', () => {
         //console.log('Données d\'entraînement chargées avec succès.');
     });
@@ -102,8 +103,8 @@ function Game() {
             setMovementRecognized(predictedMovement);
             const isMovementCorrect = predictedMovement == movementRequired;
             setFinalData("");
+            setHasMovement(false);
             socket.emit("MOVEMENT_DONE", isMovementCorrect, roomId, numeroPlayer);
-            setMovementStarted(false);
         }
     }, [isMovementStarted]);
 
@@ -196,6 +197,8 @@ function Game() {
 
     // 4. Classification des données avec KNN
     function classifyData(data) {
+        console.log("Je rentre dans la fonction classifyData ")
+
         // Classer les données avec le modèle KNN
         knnClassifier.classify(data, (error, result) => {
             if (error) {
@@ -232,15 +235,18 @@ function Game() {
     /********************************************* SOCKET *********************************************/
 
     socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
-        console.log("PWA ► J'ai reçu le mouvement : ", movement);
-        setMovementRequiered(movement);
-        setRoomId(roomId);
-        setNumeroPlayer(numeroPlayer);
+        if (!alreadyHasMovement) {
+            console.log("PWA ► J'ai reçu le mouvement : ", movement);
+            setMovementRequiered(movement);
+            setRoomId(roomId);
+            setNumeroPlayer(numeroPlayer);
+            setHasMovement(true);
+        }
     });
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
+            <h1 className="text-3xl text-purple-600">Le jeu est lancé</h1>
             <h2 className="text-xl text-pink-200">Mouvement attendu : {movementRequired}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
