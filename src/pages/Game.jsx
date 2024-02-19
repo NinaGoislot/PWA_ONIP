@@ -19,12 +19,7 @@ function Game() {
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [finalData, setFinalData] = useState([]);
-
-    const knnClassifier = ml5.KNNClassifier();
-
-    knnClassifier.load('../myGestures-30.json', () => {
-        console.log('Données d\'entraînement chargées avec succès.');
-    });
+    const [knnClassifier, setKNNClassifier] = useState(ml5.KNNClassifier());
 
     /*const inferenceActive = ref(false);
     const scaleFactor = ref(10);
@@ -55,9 +50,19 @@ function Game() {
     });*/
 
     /********************************************* USE EFFECT *********************************************/
+
+    //Charger le knn initial
+    useEffect(() => {
+        knnClassifier.load('../myGestures-30.json', () => {
+            console.log('Données d\'entraînement chargées avec succès.');
+        });
+    }, []);
+
     //Pour gérer l'ajout des évènements
     useEffect(() => {
         if (isMovementStarted) {
+            console.log("L'écouteur d'évènements commence.'");
+
             const setupOrientationListener = () => {
                 if (window.DeviceOrientationEvent) {
                     window.addEventListener('deviceorientation', handleOrientation);
@@ -83,11 +88,13 @@ function Game() {
             }
 
             return () => {
-                console.log("L'écouteur d'évènement s'est arreté.'");
+                console.log("L'écouteur d'évènements s'est arreté.'");
                 window.removeEventListener('deviceorientation', handleOrientation);
                 window.removeEventListener('devicemotion', handleMotion);
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
+            console.log("Je rentre dans le else conditionnel'");
+
             let tabDataDone = normalizeData(finalData);
             tabDataDone = subSampleData(tabDataDone);
             tabDataDone = flattenData(tabDataDone);
@@ -115,6 +122,15 @@ function Game() {
         setOrientationData({ alpha, beta, gamma });
     };
 
+
+    /****************************************** FONCTIONS ******************************************/
+    const startMotion = () => {
+        setSimulationRunning(true);
+    };
+
+    const stopMotion = () => {
+        setSimulationRunning(false);
+    };
 
     /********************************************* ML5 *********************************************/
     // 1. Normalisation des données
@@ -233,8 +249,13 @@ function Game() {
                         <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
                         <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
                     </div>
-                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onMouseDown={() => setMovementStarted(true)} onMouseUp={() => setMovementStarted(false)} onMouseLeave={() => setMovementStarted(false)}>
+                    {/* <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onMouseDown={() => setMovementStarted(true)} onMouseUp={() => setMovementStarted(false)} onMouseLeave={() => setMovementStarted(false)}> */}
+                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={startMotion}>
                         {isMovementStarted ? "En cours" : "Commencer"}
+                    </button>
+
+                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopMotion}>
+                        Arrêter
                     </button>
                 </div>
             )}
