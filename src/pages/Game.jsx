@@ -93,13 +93,8 @@ function Game() {
             console.log("Je rentre dans le else conditionnel'");
 
             let tabDataDone = normalizeData(finalData);
-            console.log("Étape 1 ► Normaliser ", tabDataDone);
-
             tabDataDone = subSampleData(tabDataDone);
-            console.log("Étape 2 ► subSample ", tabDataDone);
-
             tabDataDone = flattenData(tabDataDone);
-            console.log("Étape 3 ► flatten ", tabDataDone);
 
             const predictedMovement = classifyData(tabDataDone);
             console.log("Étape 4 ► Le mouvement reconnu est : ", predictedMovement);
@@ -139,7 +134,7 @@ function Game() {
     };
 
     /********************************************* ML5 *********************************************/
-    // 1. Normalisation des données
+    // 1. Normalisation des données entre 0 et 1
     function normalizeData(data) {
         const normalizedData = [];
         const keys = Object.keys(data[0]);
@@ -207,6 +202,7 @@ function Game() {
                 console.error(error);
                 return;
             }
+            console.log("Résultat du classify : ", result)
             const resultsData = getLabel(result);
             // Récupérer le mouvement prédit
             const predictedMovement = resultsData.label;
@@ -244,7 +240,7 @@ function Game() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-orange-600">Le jeu est lancé</h1>
+            <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
             <h2 className="text-xl text-pink-200">Mouvement attendu : {movementRequired}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
