@@ -228,7 +228,12 @@ function Game() {
                 <div className="flex flex-col gap-6 justify-center items-center">
                     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
                     <p className="text-lg text-white">Mouvement reconnu : {movementRecognized}</p>
-                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-4 rounded" onMouseDown={() => setMovementStarted(true)} onMouseUp={() => setMovementStarted(false)} onMouseLeave={() => setMovementStarted(false)}>
+                    <div className="flex flex-col gap-2">
+                        <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
+                        <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
+                        <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
+                    </div>
+                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onMouseDown={() => setMovementStarted(true)} onMouseUp={() => setMovementStarted(false)} onMouseLeave={() => setMovementStarted(false)}>
                         {isMovementStarted ? "En cours" : "Commencer"}
                     </button>
                 </div>
