@@ -306,8 +306,10 @@ function Game() {
 
     socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
         if (!alreadyHasMovement) {
-            console.log("PWA ► J'ai reçu le mouvement : ", movement);
+            console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
             const objectMovement = movementsStore.getMovementById(movement);
+            console.log("START_MOVEMENT ► mouvement store : ", movementsStore);
+            console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
             setMovementRequiered(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
@@ -319,7 +321,7 @@ function Game() {
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
             <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
-            <h2 className="text-xl text-pink-200">{isMovementRunning && countdown ? countdown : ''}</h2>
+            <h2 className="text-xl text-pink-200">{isChronoStarted && countdown ? countdown : ''}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
                     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
