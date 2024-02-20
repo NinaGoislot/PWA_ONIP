@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 //import ml5 from 'https://unpkg.com/ml5@latest/dist/ml5.min.js';
 import { socket } from "../socket";
 
-function Game() {
+function GameTest() {
 
     const { movementsStore } = useContext(GlobalContext);
 
@@ -22,6 +22,7 @@ function Game() {
     const [timer, setTimer] = useState("");
     const [isMovementRunning, setMovementRunning] = useState(false);
     const [movementRecognized, setMovementRecognized] = useState("");
+    const [testObject, setTestObject] = useState("");
 
     //Données des mouvements
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
@@ -121,6 +122,8 @@ function Game() {
     //Pour gérer le chrono d'avant jeu #3
     useEffect(() => {
         let countdownInterval;
+        console.log("UD#3 ► Je Je rentre dans le useEffect");
+        
         if (isChronoStarted && countdown > 0) {
             console.log("useEffect ► Je diminue le countdown");
 
@@ -162,6 +165,11 @@ function Game() {
             clearInterval(timerInterval);
         };
     }, [isMovementRunning, timer]);
+
+
+    useEffect(() => {
+        console.log("Mouvement/objet enregistré dans le state : ", movementRequired);
+    }, [movementRequired]);
 
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
@@ -316,6 +324,7 @@ function Game() {
             console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
             console.log("START_MOVEMENT ► id du mouvement : ", objectMovement.id);
             setMovementRequiered(objectMovement);
+            setTestObject(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
             setHasMovement(true);
@@ -326,10 +335,10 @@ function Game() {
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
             <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
-            <h2 className="text-xl text-pink-200">{isChronoStarted && countdown ? countdown : ''}</h2>
+            <h2 className="text-xl text-pink-200">{isChronoStarted ? countdown : ''}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
-                    <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
+                    <p className="text-lg text-white">Mouvement attendu : {movementRequired.id}</p>
                     <p className="text-lg text-white">Mouvement reconnu : {movementRecognized}</p>
                     <div className="flex flex-col gap-2">
                         <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
@@ -349,5 +358,5 @@ function Game() {
         </main>
     )
 }
-export default Game;
+export default GameTest;
 
