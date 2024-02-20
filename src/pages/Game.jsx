@@ -305,6 +305,8 @@ function Game() {
     /********************************************* SOCKET *********************************************/
 
     socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
+        console.log("START_MOVEMENT ► Je reçois l'info du socket");
+
         if (!alreadyHasMovement) {
             console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
             const objectMovement = movementsStore.getMovementById(movement);
