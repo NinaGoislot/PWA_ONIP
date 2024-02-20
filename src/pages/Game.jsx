@@ -323,7 +323,7 @@ function GameTest() {
             console.log("START_MOVEMENT ► mouvement store : ", movementsStore);
             console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
             console.log("START_MOVEMENT ► id du mouvement : ", objectMovement.id);
-            setMovementRequiered(objectMovement);
+            //setMovementRequiered(objectMovement);
             setTestObject(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
