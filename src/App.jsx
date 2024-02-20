@@ -20,13 +20,13 @@ function App() {
     <GlobalContext.Provider value={store}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/ConnectPhone" element={<ConnectPhone />} />
-            <Route path="/Game" element={<Game />} />
-            <Route path="/GameTest" element={<GameTest />} />
-            <Route path="/Test" element={<Test />} />
-            <Route path="/Simulation" element={<Simulation />} />
-            <Route path="/Simulation/:id" element={<OneSimulation />} />
+            <Route path="/PWA/" element={<Home />} />
+            <Route path="/PWA/ConnectPhone" element={<ConnectPhone />} />
+            <Route path="/PWA/Game" element={<Game />} />
+            <Route path="/PWA/GameTest" element={<GameTest />} />
+            <Route path="/PWA/Test" element={<Test />} />
+            <Route path="/PWA/Simulation" element={<Simulation />} />
+            <Route path="/PWA/Simulation/:id" element={<OneSimulation />} />
           </Routes>
         </BrowserRouter>
       </GlobalContext.Provider>

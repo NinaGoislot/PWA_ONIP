@@ -45,6 +45,7 @@ class MovementsStore {
             ));
 
             console.log(this._movements);
+
         } catch (error) {
             console.error("Erreur lors du chargement des mouvements :", error);
         }

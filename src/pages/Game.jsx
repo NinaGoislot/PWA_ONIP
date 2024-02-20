@@ -12,7 +12,6 @@ function GameTest() {
     const [movementRequired, setMovementRequiered] = useState("");
     const [roomId, setRoomId] = useState("");
     const [numeroPlayer, setNumeroPlayer] = useState("");
-    const [alreadyHasMovement, setHasMovement] = useState(false);
 
     //Chrono
     const [countdown, setCountdown] = useState(3);
@@ -21,8 +20,6 @@ function GameTest() {
     //Suivre la reconnaissance de mouvements  
     const [timer, setTimer] = useState("");
     const [isMovementRunning, setMovementRunning] = useState(false);
-    const [movementRecognized, setMovementRecognized] = useState("");
-    const [testObject, setTestObject] = useState("");
 
     //Données des mouvements
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
@@ -101,17 +98,29 @@ function GameTest() {
             tabDataDone = subSampleData(tabDataDone);
             tabDataDone = flattenData(tabDataDone);
 
-            const predictedMovement = classifyData(tabDataDone);
-            console.log("Étape 4 ► Le mouvement reconnu est : ", predictedMovement);
+            classifyData(tabDataDone).then(predictedMovement => {
+                console.log("Le mouvement reconnu est : ", predictedMovement);
 
-            setMovementRecognized(predictedMovement);
-            if (predictedMovement == objectMovement.id){
-                score = objectMovement.point_per_moves;
-                console.log("Points gagnés : " + score);
-            }
-            setFinalData("");
-            setHasMovement(false);
-            socket.emit("MOVEMENT_DONE", score, roomId, numeroPlayer);
+                if (predictedMovement == objectMovement.id) {
+                    score = objectMovement.point_per_moves;
+                    console.log("Points gagnés : " + score);
+                }
+                setFinalData("");
+                socket.emit("MOVEMENT_DONE", score, roomId, numeroPlayer);
+            }).catch(error => {
+                console.error("Une erreur s'est produite lors de la classification :", error);
+            });
+
+
+            // const predictedMovement = classifyData(tabDataDone);
+            // console.log("Le mouvement reconnu est : ", predictedMovement);
+
+            // if (predictedMovement == objectMovement.id) {
+            //     score = objectMovement.point_per_moves;
+            //     console.log("Points gagnés : " + score);
+            // }
+            // setFinalData("");
+            // socket.emit("MOVEMENT_DONE", score, roomId, numeroPlayer);
         }
     }, [isMovementRunning]);
 
@@ -123,22 +132,20 @@ function GameTest() {
     //Pour gérer le chrono d'avant jeu #3
     useEffect(() => {
         let countdownInterval;
-        console.log("UD#3 ► Je Je rentre dans le useEffect");
-        
-        if (isChronoStarted && countdown > 0) {
-            console.log("useEffect ► Je diminue le countdown");
 
+        if (isChronoStarted && countdown > 0) {
             countdownInterval = setInterval(() => {
                 setCountdown((prevCountdown) => prevCountdown - 1);
             }, 1000);
-        } else if (countdown === 0 ) {
+        } else if (countdown === 0) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
-
             setChronoStarted(false);
-            if (objectMovement.timer) {
-                setTimer(objectMovement.timer);
-                setMovementRunning(true); //UE#1 UE#4
+
+            if (objectMovement.timer > 0) {
+                setTimer(objectMovement.timer); //UE#4
             }
+
+            setMovementRunning(true); //UE#1 UE#4
         }
 
         return () => {
@@ -150,9 +157,8 @@ function GameTest() {
     useEffect(() => {
         let timerInterval;
 
-        console.log("Je rentre dans l'effect du timer");
-
-        if(isMovementRunning && timer){
+        if (isMovementRunning && timer) {
+            console.log("UE4 ► Le timer est à : ", timer);
             if (timer > 0) {
                 timerInterval = setInterval(() => {
                     setTimer((prevTimerMovement) => prevTimerMovement - 1);
@@ -160,7 +166,7 @@ function GameTest() {
             }
             if (timer == 0) {
                 console.log("Le timer est fini");
-                stopMotion();
+                stopProcess();
             }
         }
 
@@ -169,16 +175,35 @@ function GameTest() {
         };
     }, [isMovementRunning, timer]);
 
+    /******************************************* SOCKET ********************************************/
+    //Je reçois le mouvement
+    useEffect(() => {
+        const handleStartMovement = (movement, roomId, numeroPlayer) => {
+            console.log("START_MOVEMENT ► Je reçois l'info du socket");
+            console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
+            setMovementRequiered(movement);
+            setRoomId(roomId);
+            setNumeroPlayer(numeroPlayer);
+            startProcess();
+        };
+
+        socket.on("START_MOVEMENT", handleStartMovement);
+
+        return () => {
+            socket.off("START_MOVEMENT", handleStartMovement);
+        };
+    }, []);
+
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
         const objectMovement = movementsStore.getMovementById(movementRequired);
         const seuil = objectMovement.thershold;
-        
-        if(acceleration.x > seuil || acceleration.y > seuil || acceleration.z > seuil) {
-            setMotionData({ acceleration, rotationRate });
+
+        if (acceleration.x > seuil || acceleration.y > seuil || acceleration.z > seuil) {
+            setMotionData({ acceleration, rotationRate }); //UE#2
         } else if (finalData.length > 1) {
-            stopMotion();
+            stopProcess();
         }
     };
 
@@ -187,22 +212,22 @@ function GameTest() {
         const objectMovement = movementsStore.getMovementById(movementRequired);
         const seuil = objectMovement.thershold;
 
-        if(orientationData.beta > seuil || orientationData.gamma > seuil || orientationData.alpha > seuil) {
-            setOrientationData({ alpha, beta, gamma });
+        if (beta > seuil || gamma > seuil || alpha > seuil) {
+            setOrientationData({ alpha, beta, gamma }); //UE#2
         } else if (seuil > 0 && finalData.length > 1) {
-            stopMotion();
+            stopProcess();
         }
     };
 
 
     /****************************************** FONCTIONS ******************************************/
-    const startMotion = () => {
-        console.log("startMotion ► Je démarre tout le processus")
+    const startProcess = () => {
+        console.log("startProcess() ► Je démarre tout le processus")
         setChronoStarted(true); // UE#3
     };
 
-    const stopMotion = () => {
-        console.log("startMotion ► J'arrête le processus.")
+    const stopProcess = () => {
+        console.log("stopProcess() ► J'arrête le processus.")
 
         setCountdown(3);
         setMovementRunning(false);
@@ -271,30 +296,56 @@ function GameTest() {
 
     // 4. Classification des données avec KNN
     function classifyData(data) {
-        console.log("Je rentre dans la fonction classifyData ");
+        console.log("Classify");
 
-        const knnClassifier = ml5.KNNClassifier();
-        knnClassifier.load('../myGestures-30.json', () => {
-            console.log('Données d\'entraînement chargées avec succès.');
+        // const knnClassifier = ml5.KNNClassifier();
+        // knnClassifier.load('../myGestures-30.json', () => {
+        //     console.log('Données d\'entraînement chargées avec succès.');
 
-            // Classer les données avec le modèle KNN
-            knnClassifier.classify(data, (error, result) => {
-                if (error) {
-                    console.error(error);
-                    return;
-                }
-                console.log("Résultat du classify : ", result)
-                const resultsData = getLabel(result);
-                // Récupérer le mouvement prédit
-                const recognizedMovement = resultsData.label;
+        //     // Classer les données avec le modèle KNN
+        //     knnClassifier.classify(data, (error, result) => {
+        //         if (error) {
+        //             console.error(error);
+        //             return;
+        //         }
+        //         console.log("Résultat du classify : ", result)
+        //         const resultsData = getLabel(result);
+        //         // Récupérer le mouvement prédit
+        //         const recognizedMovement = resultsData.label;
 
-                // Récupérer l'intervalle de confiance du mouvement prédit
-                const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
-                // Afficher le résultat
-                console.log('Mouvement prédit :', recognizedMovement);
-                console.log('Intervalle de confiance :', confidenceInterval);
+        //         // Récupérer l'intervalle de confiance du mouvement prédit
+        //         const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
+        //         // Afficher le résultat
+        //         console.log('Mouvement prédit :', recognizedMovement);
+        //         console.log('Intervalle de confiance :', confidenceInterval);
 
-                return recognizedMovement;
+        //         return recognizedMovement;
+        //     });
+        // });
+
+        return new Promise((resolve, reject) => {
+            const knnClassifier = ml5.KNNClassifier();
+            knnClassifier.load('../myGestures-30.json', () => {
+                console.log('Données d\'entraînement chargées avec succès.');
+
+                // Classer les données avec le modèle KNN
+                knnClassifier.classify(data, (error, result) => {
+                    if (error) {
+                        reject(error); // Rejeter la promesse en cas d'erreur
+                        return;
+                    }
+                    console.log("Résultat du classify : ", result)
+                    const resultsData = getLabel(result);
+                    // Récupérer le mouvement prédit
+                    const recognizedMovement = resultsData.label;
+
+                    // Récupérer l'intervalle de confiance du mouvement prédit
+                    const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
+                    // Afficher le résultat
+                    console.log('Mouvement prédit :', recognizedMovement);
+                    console.log('Intervalle de confiance :', confidenceInterval);
+                    resolve(recognizedMovement); // Résoudre la promesse avec le mouvement prédit
+                });
             });
         });
     }
@@ -312,45 +363,32 @@ function GameTest() {
         return { label: greatestConfidence[0], confidence: greatestConfidence[1] };
     }
 
-    /********************************************* SOCKET *********************************************/
 
-    socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
-        console.log("START_MOVEMENT ► Je reçois l'info du socket");
+    // socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
+    //     console.log("START_MOVEMENT ► Je reçois l'info du socket");
 
-        if (!alreadyHasMovement) {
-            console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
-            const objectMovement = movementsStore.getMovementById(movement);
-            console.log("START_MOVEMENT ► mouvement store : ", movementsStore);
-            console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
-            console.log("START_MOVEMENT ► id du mouvement : ", objectMovement.id);
-            setMovementRequiered(movement);
-            setTestObject(objectMovement);
-            setRoomId(roomId);
-            setNumeroPlayer(numeroPlayer);
-            setHasMovement(true);
-            startMotion();
-        }
-    });
+    //     if (!alreadyHasMovement) {
+    //         console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
+    //         setMovementRequiered(movement);
+    //         setRoomId(roomId);
+    //         setNumeroPlayer(numeroPlayer);
+    //         startProcess();
+    //     }
+    // });
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
             <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
             <h2 className="text-xl text-pink-200">{isChronoStarted ? countdown : ''}</h2>
-            {movementRequired && (
+            {isMovementRunning && (
                 <div className="flex flex-col gap-6 justify-center items-center">
                     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
-                    <p className="text-lg text-white">Mouvement reconnu : {movementRecognized}</p>
                     <div className="flex flex-col gap-2">
                         <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
                         <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
                         <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
                     </div>
-                    {/* <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onMouseDown={() => setMovementRunning(true)} onMouseUp={() => setMovementRunning(false)} onMouseLeave={() => setMovementRunning(false)}> */}
-                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={startMotion}>
-                        {isMovementRunning ? "En cours" : "Commencer"}
-                    </button>
-
-                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopMotion}>
+                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopProcess}>
                         Arrêter
                     </button>
                 </div>
