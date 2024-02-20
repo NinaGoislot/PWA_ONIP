@@ -207,7 +207,9 @@ function Game() {
                 console.log("Résultat du classify : ", result)
                 const resultsData = getLabel(result);
                 // Récupérer le mouvement prédit
-                const predictedMovement = resultsData.label;
+                const recognizedMovements = resultsData.label;
+                //const recognizedOneMovement = resultsData.label;
+
                 // Récupérer l'intervalle de confiance du mouvement prédit
                 const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
                 // Afficher le résultat
@@ -219,14 +221,20 @@ function Game() {
         });
     }
 
-    function getLabel(result, minConfidence = 50) {
+    function getLabel(result) {
         const entries = Object.entries(result.confidencesByLabel);
+        console.log("entries : ", entries);
         let greatestConfidence = entries[0];
+        console.log("greatestConfidence : ", greatestConfidence);
+
         for (let i = 0; i < entries.length; i++) {
             if (entries[i][1] > greatestConfidence[1]) {
                 greatestConfidence = entries[i];
             }
         }
+
+        console.log("greatestConfidence après modifs : ", greatestConfidence);
+
 
         //  console.log(greatestConfidence);
         return { label: greatestConfidence[0], confidence: greatestConfidence[1] };
