@@ -59,7 +59,7 @@ function ConnectPhone() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-center text-pink-600">{infos}</h1>
+            <h1 className="text-3xl text-center text-purple-600">{infos}</h1>
             {!start && (
                 <form onSubmit={submit} className="flex flex-col gap-6">
                     <div className="flex flex-col  text-xl text-white">

@@ -95,6 +95,7 @@ function GameTest() {
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
             console.log("Je rentre dans le else conditionnel'");
+            const objectMovement = movementsStore.getMovementById(movementRequired);
             let score;
             let tabDataDone = normalizeData(finalData);
             tabDataDone = subSampleData(tabDataDone);
@@ -104,8 +105,8 @@ function GameTest() {
             console.log("Étape 4 ► Le mouvement reconnu est : ", predictedMovement);
 
             setMovementRecognized(predictedMovement);
-            if (predictedMovement == movementRequired.id){
-                score = movementRequired.point_per_moves;
+            if (predictedMovement == objectMovement.id){
+                score = objectMovement.point_per_moves;
                 console.log("Points gagnés : " + score);
             }
             setFinalData("");
@@ -131,9 +132,11 @@ function GameTest() {
                 setCountdown((prevCountdown) => prevCountdown - 1);
             }, 1000);
         } else if (countdown === 0 ) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+
             setChronoStarted(false);
-            if (movementRequired.timer) {
-                setTimer(movementRequired.timer);
+            if (objectMovement.timer) {
+                setTimer(objectMovement.timer);
                 setMovementRunning(true); //UE#1 UE#4
             }
         }
@@ -166,15 +169,11 @@ function GameTest() {
         };
     }, [isMovementRunning, timer]);
 
-
-    useEffect(() => {
-        console.log("Mouvement/objet enregistré dans le state : ", movementRequired);
-    }, [movementRequired]);
-
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
-        const seuil = movementRequired.thershold;
+        const objectMovement = movementsStore.getMovementById(movementRequired);
+        const seuil = objectMovement.thershold;
         
         if(acceleration.x > seuil || acceleration.y > seuil || acceleration.z > seuil) {
             setMotionData({ acceleration, rotationRate });
@@ -185,7 +184,8 @@ function GameTest() {
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
-        const seuil = movementRequired.thershold;
+        const objectMovement = movementsStore.getMovementById(movementRequired);
+        const seuil = objectMovement.thershold;
 
         if(orientationData.beta > seuil || orientationData.gamma > seuil || orientationData.alpha > seuil) {
             setOrientationData({ alpha, beta, gamma });
@@ -323,7 +323,7 @@ function GameTest() {
             console.log("START_MOVEMENT ► mouvement store : ", movementsStore);
             console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
             console.log("START_MOVEMENT ► id du mouvement : ", objectMovement.id);
-            //setMovementRequiered(objectMovement);
+            setMovementRequiered(movement);
             setTestObject(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
@@ -338,7 +338,7 @@ function GameTest() {
             <h2 className="text-xl text-pink-200">{isChronoStarted ? countdown : ''}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
-                    <p className="text-lg text-white">Mouvement attendu : {movementRequired.id}</p>
+                    <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
                     <p className="text-lg text-white">Mouvement reconnu : {movementRecognized}</p>
                     <div className="flex flex-col gap-2">
                         <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
