@@ -38,14 +38,10 @@ class MovementsStore {
                 movement.id,
                 movement.description,
                 movement.image,
-                movement.type,
-                movement.api,
-                movement.thershold_general,
-                movement.thershold_penality,
+                movement.thershold,
                 movement.timer,
-                movement.repeat,
                 movement.point_per_moves,
-                movement.direction,
+                movement.repeat,
             ));
 
             console.log(this._movements);
@@ -55,7 +51,7 @@ class MovementsStore {
     }
 
     getMovementById(id) {
-        return this._movements.find(movement => movement.id === id);
+        return this._movements.find(movement => movement.id == id);
     }
 }
 

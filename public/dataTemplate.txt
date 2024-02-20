@@ -1,17 +1,16 @@
 [
     {
-      "id": numéro du mouvement
+      "id": type de mouvement suivit de son numéro ("BOD" pour body, "HAN" pour hands, "EXT" pour extra)
       "description": En quoi le mouvement consiste
       "image" : url de l'image
-      "type": est-ce un mouvement de main ou de corps
       "api": quelles api est utilisée (motion → Besoin de l'acceleration) (Orientation → besoin de l'orientation')
-      "thershold_general": Seuil accepté pour la reconnaissance de mouvement. Plus il est proche de 0 plus le mouvement sera sensible
-      "thershold_penality": 2,
-      "point_per_moves" : Point en cas du mouvement réussi
-      "direction": Tableau qui indique les directions à suivre 
+      "point_per_moves" : Point en cas du mouvement réussi. Cette valeurs est normalement donnée par le cocktail
 
-      VALEURS OPTIONNELLES 
+      TYPE DE MOUVEMENT (Au moins une d'entre elles est obligatoire)
       "timer" : Indique la durée du mouvement
-      
+      "thershold": Seuil accepté pour la reconnaissance de mouvement. Plus il est proche de 0 plus le mouvement sera sensible
+
+      OPTIONNEL SELON LE MOUVEMENT
+      "repetition": Certains mouvements ont besoin d'une répétition. Par défaut, c'est 1
     }
   ]

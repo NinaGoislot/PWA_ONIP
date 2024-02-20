@@ -6,15 +6,22 @@ import { socket } from "../socket";
 
 function Game() {
 
+    const { movementsStore } = useContext(GlobalContext);
+
     //Infos du serveur
     const [movementRequired, setMovementRequiered] = useState("");
     const [roomId, setRoomId] = useState("");
     const [numeroPlayer, setNumeroPlayer] = useState("");
     const [alreadyHasMovement, setHasMovement] = useState(false);
 
-    //Suivre la reconnaissance de mouvements
+    //Chrono
+    const [countdown, setCountdown] = useState(3);
+    const [isChronoStarted, setChronoStarted] = useState(false);
+
+    //Suivre la reconnaissance de mouvements  
+    const [timer, setTimer] = useState("");
+    const [isMovementRunning, setMovementRunning] = useState(false);
     const [movementRecognized, setMovementRecognized] = useState("");
-    const [isMovementStarted, setMovementStarted] = useState(false);
 
     //Données des mouvements
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
@@ -53,7 +60,7 @@ function Game() {
 
     //Pour gérer l'ajout des évènements
     useEffect(() => {
-        if (isMovementStarted) {
+        if (isMovementRunning) {
             console.log("L'écouteur d'évènements commence.'");
 
             const setupOrientationListener = () => {
@@ -87,7 +94,7 @@ function Game() {
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
             console.log("Je rentre dans le else conditionnel'");
-
+            let score;
             let tabDataDone = normalizeData(finalData);
             tabDataDone = subSampleData(tabDataDone);
             tabDataDone = flattenData(tabDataDone);
@@ -96,37 +103,94 @@ function Game() {
             console.log("Étape 4 ► Le mouvement reconnu est : ", predictedMovement);
 
             setMovementRecognized(predictedMovement);
-            const isMovementCorrect = predictedMovement == movementRequired;
+            if (predictedMovement == movementRequired.id){
+                score = movementRequired.point_per_moves;
+                console.log("Points gagnés : " + score);
+            }
             setFinalData("");
             setHasMovement(false);
-            socket.emit("MOVEMENT_DONE", isMovementCorrect, roomId, numeroPlayer);
+            socket.emit("MOVEMENT_DONE", score, roomId, numeroPlayer);
         }
-    }, [isMovementStarted]);
+    }, [isMovementRunning]);
 
     //Stocker les données de direction et motion dans un tableau
     useEffect(() => {
         setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
     }, [motionData, orientationData]);
 
+    //Pour gérer le chrono d'avant jeu
+    useEffect(() => {
+        let countdownInterval;
+        if (isChronoStarted && countdown > 0) {
+            countdownInterval = setInterval(() => {
+                setCountdown((prevCountdown) => prevCountdown - 1);
+            }, 1000);
+        } else if (countdown === 0 ) {
+            setChronoStarted(false);
+            if (movementRequired.timer) {
+                setTimer(movementRequired.timer);
+                setMovementRunning(true);
+            }
+        }
+
+        return () => {
+            clearInterval(countdownInterval);
+        };
+    }, [isChronoStarted, countdown]);
+
+    //Pour gérer le timer pendant la simulation
+    useEffect(() => {
+        let timerInterval;
+
+        if(isMovementRunning && timer){
+            if (timer > 0) {
+                timerInterval = setInterval(() => {
+                    setTimer((prevTimerMovement) => prevTimerMovement - 1);
+                }, 1000);
+            }
+            if (timer == 0) {
+                console.log("Le timer est fini");
+                stopMotion();
+            }
+        }
+
+        return () => {
+            clearInterval(timerInterval);
+        };
+    }, [isMovementRunning, timer]);
+
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
-        setMotionData({ acceleration, rotationRate });
+        const seuil = movementRequired.thershold;
+        
+        if(acceleration.x > seuil || acceleration.y > seuil || acceleration.z > seuil) {
+            setMotionData({ acceleration, rotationRate });
+        } else if (finalData.length > 1) {
+            stopMotion();
+        }
     };
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
-        setOrientationData({ alpha, beta, gamma });
+        const seuil = movementRequired.thershold;
+
+        if(orientationData.beta > seuil || orientationData.gamma > seuil || orientationData.alpha > seuil) {
+            setOrientationData({ alpha, beta, gamma });
+        } else if (seuil > 0 && finalData.length > 1) {
+            stopMotion();
+        }
     };
 
 
     /****************************************** FONCTIONS ******************************************/
     const startMotion = () => {
-        setMovementStarted(true);
+        setChronoStarted(true);
     };
 
     const stopMotion = () => {
-        setMovementStarted(false);
+        setCountdown(3);
+        setMovementRunning(false);
     };
 
     /********************************************* ML5 *********************************************/
@@ -207,34 +271,27 @@ function Game() {
                 console.log("Résultat du classify : ", result)
                 const resultsData = getLabel(result);
                 // Récupérer le mouvement prédit
-                const recognizedMovements = resultsData.label;
-                //const recognizedOneMovement = resultsData.label;
+                const recognizedMovement = resultsData.label;
 
                 // Récupérer l'intervalle de confiance du mouvement prédit
                 const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
                 // Afficher le résultat
-                console.log('Mouvement prédit :', predictedMovement);
+                console.log('Mouvement prédit :', recognizedMovement);
                 console.log('Intervalle de confiance :', confidenceInterval);
 
-                return predictedMovement;
+                return recognizedMovement;
             });
         });
     }
 
     function getLabel(result) {
         const entries = Object.entries(result.confidencesByLabel);
-        console.log("entries : ", entries);
         let greatestConfidence = entries[0];
-        console.log("greatestConfidence : ", greatestConfidence);
-
         for (let i = 0; i < entries.length; i++) {
             if (entries[i][1] > greatestConfidence[1]) {
                 greatestConfidence = entries[i];
             }
         }
-
-        console.log("greatestConfidence après modifs : ", greatestConfidence);
-
 
         //  console.log(greatestConfidence);
         return { label: greatestConfidence[0], confidence: greatestConfidence[1] };
@@ -245,7 +302,8 @@ function Game() {
     socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
         if (!alreadyHasMovement) {
             console.log("PWA ► J'ai reçu le mouvement : ", movement);
-            setMovementRequiered(movement);
+            const objectMovement = movementsStore.getMovementById(movement);
+            setMovementRequiered(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
             setHasMovement(true);
@@ -255,7 +313,7 @@ function Game() {
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
             <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
-            <h2 className="text-xl text-pink-200">Mouvement attendu : {movementRequired}</h2>
+            <h2 className="text-xl text-pink-200">{!isMovementRunning && countdown ? countdown : ''}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
                     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
@@ -265,9 +323,9 @@ function Game() {
                         <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
                         <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
                     </div>
-                    {/* <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onMouseDown={() => setMovementStarted(true)} onMouseUp={() => setMovementStarted(false)} onMouseLeave={() => setMovementStarted(false)}> */}
+                    {/* <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onMouseDown={() => setMovementRunning(true)} onMouseUp={() => setMovementRunning(false)} onMouseLeave={() => setMovementRunning(false)}> */}
                     <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={startMotion}>
-                        {isMovementStarted ? "En cours" : "Commencer"}
+                        {isMovementRunning ? "En cours" : "Commencer"}
                     </button>
 
                     <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopMotion}>
