@@ -122,6 +122,8 @@ function Game() {
     useEffect(() => {
         let countdownInterval;
         if (isChronoStarted && countdown > 0) {
+            console.log("useEffect ► Je diminue le countdown");
+
             countdownInterval = setInterval(() => {
                 setCountdown((prevCountdown) => prevCountdown - 1);
             }, 1000);
@@ -185,10 +187,13 @@ function Game() {
 
     /****************************************** FONCTIONS ******************************************/
     const startMotion = () => {
+        console.log("startMotion ► Je démarre tout le processus")
         setChronoStarted(true);
     };
 
     const stopMotion = () => {
+        console.log("startMotion ► J'arrête le processus.")
+
         setCountdown(3);
         setMovementRunning(false);
     };
@@ -307,13 +312,14 @@ function Game() {
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
             setHasMovement(true);
+            startMotion();
         }
     });
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
             <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
-            <h2 className="text-xl text-pink-200">{!isMovementRunning && countdown ? countdown : ''}</h2>
+            <h2 className="text-xl text-pink-200">{isMovementRunning && countdown ? countdown : ''}</h2>
             {movementRequired && (
                 <div className="flex flex-col gap-6 justify-center items-center">
                     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>

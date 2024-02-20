@@ -7,7 +7,7 @@ import { socket } from "../socket";
 function ConnectPhone() {
 
     const [start, setStart] = useState(false);
-    const [infos, setInfos] = useState("Le téléphone n'est pas connecté au serveur");
+    const [infos, setInfos] = useState("Indique ton pseudo");
     const navigate = useNavigate();
 
     // const handleJoinClick = () => {
@@ -59,7 +59,7 @@ function ConnectPhone() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-red-600">{infos}</h1>
+            <h1 className="text-3xl text-center text-red-600">{infos}</h1>
             {!start && (
                 <form onSubmit={submit} className="flex flex-col gap-6">
                     <div className="flex flex-col  text-xl text-white">
@@ -69,12 +69,6 @@ function ConnectPhone() {
                     <button type="submit" className="bg-slate-400 hover:bg-slate-500 w-fit h-fit p-4 rounded">Se connecter</button>
                 </form>
             )}
-
-            {/* <h1>Mobile</h1>
-                <p id="waitingText"></p>
-                <div id="infos"></div>
-                <button id="btnJoin" onClick={handleJoinClick} disabled>Connecter le téléphone</button>
-                <input type="text" id="inputRoomId" /> */}
         </main>
     )
 }
