@@ -58,7 +58,7 @@ function Game() {
 
     /********************************************* USE EFFECT *********************************************/
 
-    //Pour gérer l'ajout des évènements
+    //Pour gérer l'ajout des évènements #1
     useEffect(() => {
         if (isMovementRunning) {
             console.log("L'écouteur d'évènements commence.'");
@@ -113,12 +113,12 @@ function Game() {
         }
     }, [isMovementRunning]);
 
-    //Stocker les données de direction et motion dans un tableau
+    //Stocker les données de direction et motion dans un tableau #2
     useEffect(() => {
         setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
     }, [motionData, orientationData]);
 
-    //Pour gérer le chrono d'avant jeu
+    //Pour gérer le chrono d'avant jeu #3
     useEffect(() => {
         let countdownInterval;
         if (isChronoStarted && countdown > 0) {
@@ -131,7 +131,7 @@ function Game() {
             setChronoStarted(false);
             if (movementRequired.timer) {
                 setTimer(movementRequired.timer);
-                setMovementRunning(true);
+                setMovementRunning(true); //UE#1 UE#4
             }
         }
 
@@ -140,9 +140,11 @@ function Game() {
         };
     }, [isChronoStarted, countdown]);
 
-    //Pour gérer le timer pendant la simulation
+    //Pour gérer le timer pendant la simulation #4
     useEffect(() => {
         let timerInterval;
+
+        console.log("Je rentre dans l'effect du timer");
 
         if(isMovementRunning && timer){
             if (timer > 0) {
@@ -188,7 +190,7 @@ function Game() {
     /****************************************** FONCTIONS ******************************************/
     const startMotion = () => {
         console.log("startMotion ► Je démarre tout le processus")
-        setChronoStarted(true);
+        setChronoStarted(true); // UE#3
     };
 
     const stopMotion = () => {
@@ -312,11 +314,12 @@ function Game() {
             const objectMovement = movementsStore.getMovementById(movement);
             console.log("START_MOVEMENT ► mouvement store : ", movementsStore);
             console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
+            console.log("START_MOVEMENT ► id du mouvement : ", objectMovement.id);
             setMovementRequiered(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
-            // setHasMovement(true);
-            // startMotion();
+            setHasMovement(true);
+            startMotion();
         }
     });
 
