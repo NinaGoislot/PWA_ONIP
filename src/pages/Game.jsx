@@ -312,11 +312,11 @@ function Game() {
             const objectMovement = movementsStore.getMovementById(movement);
             console.log("START_MOVEMENT ► mouvement store : ", movementsStore);
             console.log("START_MOVEMENT ► Objet retrouvé avec l'id : ", objectMovement);
-            /*setMovementRequiered(objectMovement);
+            setMovementRequiered(objectMovement);
             setRoomId(roomId);
             setNumeroPlayer(numeroPlayer);
-            setHasMovement(true);
-            startMotion();*/
+            // setHasMovement(true);
+            // startMotion();
         }
     });
 
