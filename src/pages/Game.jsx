@@ -1,17 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GlobalContext } from '../App.jsx';
 import { Link } from 'react-router-dom';
 //import ml5 from 'https://unpkg.com/ml5@latest/dist/ml5.min.js';
 import { socket } from "../socket";
 
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 function GameTest() {
 
+    const MIN_POINTS = 70,
+        THRESHOLD_PTS_REGISTERED = 20;
+
     const { movementsStore } = useContext(GlobalContext);
+    const { partieStore } = useContext(GlobalContext);
+
+    const navigate = useNavigate();
 
     //Infos du serveur
     const [movementRequired, setMovementRequiered] = useState("");
-    const [roomId, setRoomId] = useState("");
-    const [numeroPlayer, setNumeroPlayer] = useState("");
 
     //Chrono
     const [countdown, setCountdown] = useState(3);
@@ -19,40 +27,14 @@ function GameTest() {
 
     //Suivre la reconnaissance de mouvements  
     const [timer, setTimer] = useState("");
+    const [isBeyondThreshold, setBeyondThreshold] = useState(false);
     const [isMovementRunning, setMovementRunning] = useState(false);
 
     //Données des mouvements
     const [motionData, setMotionData] = useState({ acceleration: { x: 0, y: 0, z: 0 }, rotationRate: { alpha: 0, beta: 0, gamma: 0 } });
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [finalData, setFinalData] = useState([]);
-
-    /*const inferenceActive = ref(false);
-    const scaleFactor = ref(10);
-    const motionData = ref([]);
-    const fixedRecordingLength = ref(30);
-    const saveFilename = ref("myGestures");
-    const className = ref("");
-    const currentdetectedClass = ref("");
-    const currentdetectedClassConfidence = ref(0);
-    const gesturePauseMaxDelay = ref(1000);
-
-    const gestureDelay = ref(null);
-    const orientationRunning = ref(false);
-    const recordingOrientation = ref(false);
-    const lastAcceleration = ref(null);
-    const lastRotationRate = ref(null);
-
-    const touchzone = ref(null);
-    const useOrientation = ref(true);
-    const useAccel = ref(true);
-    const useRotRate = ref(true);
-
-    const currentSessionData = reactive({ countByLabel: null, numLabels: 0 });
-
-    const currentLabelExamplesCount = computed(() => {
-        let count = className.value != "" ? currentSessionData.countByLabel[className.value] || 0 : 0;
-        return count;
-    });*/
+    const [accData, setAccData] = useState([]);
 
     /********************************************* USE EFFECT *********************************************/
 
@@ -84,6 +66,9 @@ function GameTest() {
             if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
                 DeviceMotionEvent.requestPermission();
             }
+            if (DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function") {
+                DeviceOrientationEvent.requestPermission();
+            }
 
             return () => {
                 console.log("L'écouteur d'évènements s'est arreté.'");
@@ -91,43 +76,119 @@ function GameTest() {
                 window.removeEventListener('devicemotion', handleMotion);
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
-            console.log("Je rentre dans le else conditionnel'");
-            const objectMovement = movementsStore.getMovementById(movementRequired);
-            let score;
-            let tabDataDone = normalizeData(finalData);
-            tabDataDone = subSampleData(tabDataDone);
-            tabDataDone = flattenData(tabDataDone);
+            let score = 0;
 
-            classifyData(tabDataDone).then(predictedMovement => {
-                console.log("Le mouvement reconnu est : ", predictedMovement);
+            console.log("finalData.length : " + finalData.length);
 
-                if (predictedMovement == objectMovement.id) {
-                    score = objectMovement.point_per_moves;
-                    console.log("Points gagnés : " + score);
-                }
+            // Vérifier si la longueur des données est suffisante pour la comparaison
+            if (finalData.length < MIN_POINTS) {
+                console.log("Mouvement trop court");
+                setBeyondThreshold(false);
                 setFinalData("");
-                socket.emit("MOVEMENT_DONE", score, roomId, numeroPlayer);
-            }).catch(error => {
-                console.error("Une erreur s'est produite lors de la classification :", error);
-            });
+                socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+            } else {
+                const objectMovement = movementsStore.getMovementById(movementRequired);
+                let tabDataDone = normalizeData(finalData);
+                tabDataDone = subSampleData(tabDataDone);
+                tabDataDone = flattenData(tabDataDone);
 
+                classifyData(tabDataDone).then(predictedMovement => {
+                    console.log("Le mouvement reconnu est : ", predictedMovement);
 
-            // const predictedMovement = classifyData(tabDataDone);
-            // console.log("Le mouvement reconnu est : ", predictedMovement);
-
-            // if (predictedMovement == objectMovement.id) {
-            //     score = objectMovement.point_per_moves;
-            //     console.log("Points gagnés : " + score);
-            // }
-            // setFinalData("");
-            // socket.emit("MOVEMENT_DONE", score, roomId, numeroPlayer);
+                    if (predictedMovement == objectMovement.id) {
+                        score = objectMovement.point_per_moves;
+                        console.log("Points gagnés : " + score);
+                    }
+                    setFinalData("");
+                    setBeyondThreshold(false);
+                    socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+                }).catch(error => {
+                    console.error("Une erreur s'est produite lors de la classification :", error);
+                });
+            }
         }
     }, [isMovementRunning]);
 
     //Stocker les données de direction et motion dans un tableau #2
     useEffect(() => {
-        setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
-    }, [motionData, orientationData]);
+        if (movementRequired) {
+            // const higherThanThreshold = () => {
+            //     const objectMovement = movementsStore.getMovementById(movementRequired);
+            //     const seuil = objectMovement.threshold;
+
+            //     let isHigher;
+            //     if (!isBeyondThreshold) {
+            //         if (Math.abs(motionData.acceleration.x) > seuil || Math.abs(motionData.acceleration.y) > seuil || Math.abs(motionData.acceleration.z) > seuil) {
+            //             isHigher = true;
+            //         } else { isHigher = false }
+            //     } else if (Math.abs(motionData.acceleration.x) < seuil && Math.abs(motionData.acceleration.y) < seuil && Math.abs(motionData.acceleration.z) < seuil) {
+            //         console.log("Je tombe en dessous du seuil.");
+            //         isHigher = false;
+            //     } else { isHigher = true }
+
+            //     console.log(isHigher);
+            //     return isHigher;
+            // }
+
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            const seuil = objectMovement.threshold;
+            let accData_copy = accData;
+            let movementMean = 0;
+            let currentMovementMagnitude = 0;
+            accData_copy.push({ x: motionData.acceleration.x, y: motionData.acceleration.y, z: motionData.acceleration.z });
+
+            if (accData_copy.length > THRESHOLD_PTS_REGISTERED) {
+                accData_copy.shift();
+            }
+
+            //si j'ai 20 points dans mon tableau, je fais un tableau qui calcul chaque magnétude de chaque accélaration pour en faire une moyenne
+            if (accData_copy.length == THRESHOLD_PTS_REGISTERED) {
+
+                for (var i = 0; i < THRESHOLD_PTS_REGISTERED; i++) {
+                    movementMean += calculateAccelerationMagnitude(accData_copy[i]);
+                }
+                currentMovementMagnitude = movementMean / THRESHOLD_PTS_REGISTERED;
+            }
+
+            const isHigher = currentMovementMagnitude > seuil;
+            if (isHigher) {
+                if (!isBeyondThreshold && isMovementRunning) {
+                    //Si c'est la première fois que le seuil est dépassé pendant que le mouvement est en cours
+                    setBeyondThreshold(true);
+                } else {
+                    //J'enregistre les données du mouvement
+                    setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
+                }
+            } else {
+                //Si je suis plus bas que le seuil après l'avoir déjà dépassé
+                if (isBeyondThreshold) {
+                    stopProcess();
+                }
+            }
+            setAccData(accData_copy);
+
+            // console.log(isHigher);
+            // return isHigher;
+
+
+            // if (higherThanThreshold()) {
+            //     //Si je dépasse le seuil
+            //     if (!isBeyondThreshold && isMovementRunning) {
+            //         //Si c'est la première fois que le seuil est dépassé pendant que le mouvement est en cours
+            //         setBeyondThreshold(true);
+            //     } else {
+            //         //J'enregistre les données du mouvement
+            //         setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
+            //     }
+            // } else {
+            //     //Si je suis plus bas que le seuil après l'avoir déjà dépassé
+            //     if (isBeyondThreshold) {
+            //         stopProcess();
+            //     }
+            // }
+        }
+
+    }, [motionData, orientationData, isBeyondThreshold]);
 
     //Pour gérer le chrono d'avant jeu #3
     useEffect(() => {
@@ -155,10 +216,10 @@ function GameTest() {
 
     //Pour gérer le timer pendant la simulation #4
     useEffect(() => {
+        const objectMovement = movementsStore.getMovementById(movementRequired);
         let timerInterval;
 
-        if (isMovementRunning && timer) {
-            console.log("UE4 ► Le timer est à : ", timer);
+        if (isMovementRunning && objectMovement.timer > 0) {
             if (timer > 0) {
                 timerInterval = setInterval(() => {
                     setTimer((prevTimerMovement) => prevTimerMovement - 1);
@@ -175,15 +236,25 @@ function GameTest() {
         };
     }, [isMovementRunning, timer]);
 
+    // Initialisation d'AOS
+    useEffect(() => {
+        AOS.init();
+    }, []);
+
     /******************************************* SOCKET ********************************************/
+    //J'ai chargé la page
+    useEffect(() => {
+        socket.emit("MOBILE_READY", partieStore.roomId, partieStore.numeroPlayer);
+    }, []);
+
     //Je reçois le mouvement
     useEffect(() => {
-        const handleStartMovement = (movement, roomId, numeroPlayer) => {
+        console.log("Je passe dans le useEffect");
+
+        const handleStartMovement = (movement) => {
             console.log("START_MOVEMENT ► Je reçois l'info du socket");
             console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
             setMovementRequiered(movement);
-            setRoomId(roomId);
-            setNumeroPlayer(numeroPlayer);
             startProcess();
         };
 
@@ -194,35 +265,41 @@ function GameTest() {
         };
     }, []);
 
+    //Je reçois l'annonce de fin des mouvements
+    useEffect(() => {
+        const handleStartServing = () => {
+            navigate("/Serve");
+        };
+
+        socket.on("MOVEMENTS_FINISHED", handleStartServing);
+
+        return () => {
+            socket.off("MOVEMENTS_FINISHED", handleStartServing);
+        };
+    }, []);
+
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
-        const objectMovement = movementsStore.getMovementById(movementRequired);
-        const seuil = objectMovement.thershold;
-
-        if (acceleration.x > seuil || acceleration.y > seuil || acceleration.z > seuil) {
-            setMotionData({ acceleration, rotationRate }); //UE#2
-        } else if (finalData.length > 1) {
-            stopProcess();
-        }
+        setMotionData({ acceleration, rotationRate }); //UE#2
+        //setAccData(accData.push({ x: acceleration.x, y: acceleration.y, z: acceleration.z })); //UE#2
     };
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
-        const objectMovement = movementsStore.getMovementById(movementRequired);
-        const seuil = objectMovement.thershold;
-
-        if (beta > seuil || gamma > seuil || alpha > seuil) {
-            setOrientationData({ alpha, beta, gamma }); //UE#2
-        } else if (seuil > 0 && finalData.length > 1) {
-            stopProcess();
-        }
+        setOrientationData({ alpha, beta, gamma }); //UE#2
     };
 
 
     /****************************************** FONCTIONS ******************************************/
     const startProcess = () => {
-        console.log("startProcess() ► Je démarre tout le processus")
+        console.log("startProcess() ► Je démarre tout le processus");
+        // Vérifier si l'API Vibration est prise en charge par le navigateur
+        if ("vibrate" in navigator) {
+            navigator.vibrate([200, 100, 200]); // Un tableau de motifs de vibration. Le chiffre du milieu représente une pause en ms
+        } else {
+            console.log("L'API Vibration n'est pas prise en charge par ce navigateur.");
+        }
         setChronoStarted(true); // UE#3
     };
 
@@ -232,6 +309,12 @@ function GameTest() {
         setCountdown(3);
         setMovementRunning(false);
     };
+
+    //calcul de la magnitude du vecteur de l'accélérometre ** (exposant)
+    function calculateAccelerationMagnitude(accelData) {
+        const magnitude = Math.sqrt(accelData.x ** 2 + accelData.y ** 2 + accelData.z ** 2);
+        return magnitude;
+    }
 
     /********************************************* ML5 *********************************************/
     // 1. Normalisation des données entre 0 et 1
@@ -261,7 +344,7 @@ function GameTest() {
     }
 
     // 2. Sous-échantillonnage des données
-    function subSampleData(data, rate = 30) {
+    function subSampleData(data, rate = MIN_POINTS) {
         if (data.length <= rate) {
             return data;
         }
@@ -296,36 +379,11 @@ function GameTest() {
 
     // 4. Classification des données avec KNN
     function classifyData(data) {
-        console.log("Classify");
-
-        // const knnClassifier = ml5.KNNClassifier();
-        // knnClassifier.load('../myGestures-30.json', () => {
-        //     console.log('Données d\'entraînement chargées avec succès.');
-
-        //     // Classer les données avec le modèle KNN
-        //     knnClassifier.classify(data, (error, result) => {
-        //         if (error) {
-        //             console.error(error);
-        //             return;
-        //         }
-        //         console.log("Résultat du classify : ", result)
-        //         const resultsData = getLabel(result);
-        //         // Récupérer le mouvement prédit
-        //         const recognizedMovement = resultsData.label;
-
-        //         // Récupérer l'intervalle de confiance du mouvement prédit
-        //         const confidenceInterval = Math.round(resultsData.confidence * 100) / 100; //arrondir
-        //         // Afficher le résultat
-        //         console.log('Mouvement prédit :', recognizedMovement);
-        //         console.log('Intervalle de confiance :', confidenceInterval);
-
-        //         return recognizedMovement;
-        //     });
-        // });
+        console.log("Classification en cours...");
 
         return new Promise((resolve, reject) => {
             const knnClassifier = ml5.KNNClassifier();
-            knnClassifier.load('../myGestures-30.json', () => {
+            knnClassifier.load('../myGestures-70.json', () => {
                 console.log('Données d\'entraînement chargées avec succès.');
 
                 // Classer les données avec le modèle KNN
@@ -363,36 +421,33 @@ function GameTest() {
         return { label: greatestConfidence[0], confidence: greatestConfidence[1] };
     }
 
-
-    // socket.on("START_MOVEMENT", (movement, roomId, numeroPlayer) => {
-    //     console.log("START_MOVEMENT ► Je reçois l'info du socket");
-
-    //     if (!alreadyHasMovement) {
-    //         console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
-    //         setMovementRequiered(movement);
-    //         setRoomId(roomId);
-    //         setNumeroPlayer(numeroPlayer);
-    //         startProcess();
-    //     }
-    // });
-
     return (
-        <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-pink-600">Le jeu est lancé</h1>
-            <h2 className="text-xl text-pink-200">{isChronoStarted ? countdown : ''}</h2>
-            {isMovementRunning && (
-                <div className="flex flex-col gap-6 justify-center items-center">
-                    <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
-                    <div className="flex flex-col gap-2">
-                        <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
-                        <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
-                        <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
+        <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
+            <div className={`${!isChronoStarted ? 'absolute h-screen w-screen bg-black opacity-60' : 'hidden'}`}></div>
+            <div className={`${!isChronoStarted ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
+                {!isChronoStarted && (<h1 className="text-3xl text-center text-light text-opacity-50">En attente d'instructions...</h1>)}
+                {isChronoStarted && (<h2 className="text-3xl text-center text-pink-200">{countdown}</h2>)}
+                {isMovementRunning && (
+                    <div className="relative h-full w-full flex justify-center items-center">
+                        <img data-aos="fade-left" className="" src="/PWA/pictures/texte-balaie.webp" alt="" />
+                        <div className="flex flex-col justify-between items-center w-full h-full absolute">
+                            <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
+                            <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
+                        </div>
                     </div>
-                    <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopProcess}>
-                        Arrêter
-                    </button>
-                </div>
-            )}
+                    // <div className="flex flex-col gap-6 justify-center items-center">
+                    //     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
+                    //     <div className="flex flex-col gap-2">
+                    //         <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
+                    //         <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
+                    //         <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
+                    //     </div>
+                    //     <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopProcess}>
+                    //         Arrêter
+                    //     </button>
+                    // </div>
+                )}
+            </div>
         </main>
     )
 }

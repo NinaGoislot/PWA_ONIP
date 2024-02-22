@@ -6,21 +6,19 @@ import { socket } from "@/socket";
 function Home() {
 
     const [connected, setConnected] = useState(false);
-    const [infos, setInfos] = useState("Le téléphone n'est pas connecté au serveur");
 
     //afficher l'état de connection au départ
     socket.on("CONNECTED", () => {
         console.log("Connexion au serveur réussie");
         setConnected(true);
-        setInfos("Connexion au serveur établie");
     });
 
     return (
-        <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-center text-red-600">{infos}</h1>
-            <Link to="/PWA/Test"><button className="bg-slate-400 hover:bg-slate-500 h-fit p-4 rounded">Voir les chiffres</button></Link>
+        <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6 bg-cover bg-center"  style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
+            <h1 className="text-5xl text-center text-light">Bienvenue sur l'application One Night In Paradoxe ! </h1>
+            <Link to="/Options"><button className="bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Options</button></Link>
             {connected && (
-                <Link to="/PWA/ConnectPhone"><button className="bg-slate-400 hover:bg-slate-500 h-fit p-4 rounded">Connecter son téléphone</button></Link>
+                <Link to="/ConnectPhone"><button className="bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Connecter son téléphone</button></Link>
             )}
         </main>
     )

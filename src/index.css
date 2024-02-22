@@ -1,3 +1,24 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+         @apply font-soria;
+    }
+
+    main {
+        @apply p-6
+    }
+}
+
+@layer components {
+   
+}
+
+@layer utilities {
+    @font-face {
+        font-family: 'Soria';
+        src: url('../fonts/soria-font.ttf') format('truetype');
+    }
+}

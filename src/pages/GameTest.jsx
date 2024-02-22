@@ -174,7 +174,7 @@ function GameTest() {
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
-        const seuil = movementRequired.thershold;
+        const seuil = movementRequired.threshold;
         
         if(acceleration.x > seuil || acceleration.y > seuil || acceleration.z > seuil) {
             setMotionData({ acceleration, rotationRate });
@@ -185,7 +185,7 @@ function GameTest() {
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
-        const seuil = movementRequired.thershold;
+        const seuil = movementRequired.threshold;
 
         if(orientationData.beta > seuil || orientationData.gamma > seuil || orientationData.alpha > seuil) {
             setOrientationData({ alpha, beta, gamma });

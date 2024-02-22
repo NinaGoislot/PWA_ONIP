@@ -30,7 +30,7 @@ class MovementsStore {
     async loadArticles() {
         try {
             // Charger le fichier JSON
-            const response = await fetch("../movements.json");
+            const response = await fetch("../PWA/movements.json");
             const data = await response.json();
 
             // Transformer les données en objets movement et les stocker dans this._articles
@@ -38,10 +38,12 @@ class MovementsStore {
                 movement.id,
                 movement.description,
                 movement.image,
-                movement.thershold,
+                movement.threshold,
                 movement.timer,
                 movement.point_per_moves,
                 movement.repeat,
+                movement.idRoom,
+                movement.nbPlayer,
             ));
 
             console.log(this._movements);
@@ -49,6 +51,10 @@ class MovementsStore {
         } catch (error) {
             console.error("Erreur lors du chargement des mouvements :", error);
         }
+    }
+
+    setNewMovements(tab){
+        this.movements = tab;
     }
 
     getMovementById(id) {

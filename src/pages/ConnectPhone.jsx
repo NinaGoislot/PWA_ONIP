@@ -10,6 +10,8 @@ function ConnectPhone() {
     const [infos, setInfos] = useState("Entre le code de partie");
     const navigate = useNavigate();
 
+    const { partieStore } = useContext(GlobalContext);
+
     // const handleJoinClick = () => {
     //     if (roomId.trim() === "") {
     //         setInfos("Veuillez entrer un code de partie.");
@@ -25,11 +27,6 @@ function ConnectPhone() {
         socket.emit("JOIN_GAME_MOBILE", roomId);
     }
 
-    //   const search = (formData) => {
-    //     const query = formData.get("query");
-    //     alert(`Vous avez recherché « ${query} »`);
-    // };
-
     //si mauvais game id
     socket.on("BAD_GAME_ID_MOBILE", () => {
         setInfos("Le code n'est pas bon");
@@ -40,11 +37,12 @@ function ConnectPhone() {
         setInfos("Un téléphone est déjà connecté à ce joueur");
     });
 
-    socket.on("READY_TO_PLAY", () => {
+    socket.on("READY_TO_PLAY", (numeroPlayer, roomId) => {
+        console.log("CONNECT_PHONE ► Mon téléphone est connecté");
+        partieStore.updateRoomAndPlayer(roomId, numeroPlayer);
         setInfos("Shaker connecté !");
-        navigate("/PWA/Game");
+        navigate("/Wait");
     });
-
 
     // socket.on("GO_PLAY", () => {
     //     lobby.setAttribute('hidden', '');
@@ -58,15 +56,14 @@ function ConnectPhone() {
     // });
 
     return (
-        <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6">
-            <h1 className="text-3xl text-center text-blue-600">{infos}</h1>
+        <main className="h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
             {!start && (
                 <form onSubmit={submit} className="flex flex-col gap-6">
                     <div className="flex flex-col  text-xl text-white">
-                        <label htmlFor="roomId">Code de connexion</label>
+                        <label className="text-xl text-light" htmlFor="roomId">Code de partie</label>
                         <input className="text-black p-2" type="text" name="roomId" id="roomId" required="required" minLength="5" maxLength="5" />
                     </div>
-                    <button type="submit" className="bg-slate-400 hover:bg-slate-500 w-fit h-fit p-4 rounded">Se connecter</button>
+                    <button type="submit" className="w-fit mx-auto bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Se connecter</button>
                 </form>
             )}
         </main>

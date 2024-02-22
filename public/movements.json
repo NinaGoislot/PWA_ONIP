@@ -2,17 +2,17 @@
   "id": "BOD1",
   "description": "Secoue à gauche et à droite de la tête",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 2,
+  "timer": 10,
   "point_per_moves": 10,
   "repeat": 1
 },
 {
   "id": "BOD2",
-  "description": "Secoue au niveau des genoux puis élance en diagonal",
+  "description": "Secoue au niveau des genoux puis élance en diagonale",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 2,
+  "timer": 10,
   "point_per_moves": 10,
   "repeat": 1
 },
@@ -20,8 +20,8 @@
   "id": "BOD3",
   "description": "Berce ton téléphone",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 2,
+  "timer": 10,
   "point_per_moves": 10,
   "repeat": 1
 },
@@ -29,8 +29,8 @@
   "id": "BOD4",
   "description": "Fais un cercle",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 0,
+  "timer": 2,
   "point_per_moves": 10,
   "repeat": 1
 },
@@ -38,8 +38,8 @@
   "id": "BOD5",
   "description": "Fais le mouvement infini",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 0,
+  "timer": 3,
   "point_per_moves": 10,
   "repeat": 1
 },
@@ -47,8 +47,8 @@
   "id": "BOD6",
   "description": "Fais un carré",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 0,
+  "timer": 3,
   "point_per_moves": 10,
   "repeat": 1
 },
@@ -56,7 +56,7 @@
   "id": "BOD7",
   "description": "Secoue au niveau des genoux puis remonte vers le visage",
   "image": "",
-  "thershold": 0,
+  "threshold": 0,
   "timer": 4,
   "point_per_moves": 10,
   "repeat": 1
@@ -65,8 +65,8 @@
   "id": "BOD8",
   "description": "Tend le téléphone devant puis ramène le en faisant un arc de cercle",
   "image": "",
-  "thershold": 0,
-  "timer": 4,
+  "threshold": 0,
+  "timer": 2,
   "point_per_moves": 10,
   "repeat": 1
 },
@@ -74,7 +74,7 @@
     "id": "HAN1",
     "description": "Secoue d'en bas à gauche à en haut à droite, en diagonal",
     "image": "",
-    "thershold": 0,
+    "threshold": 0,
     "timer": 4,
     "point_per_moves": 10,
     "repeat": 1
@@ -83,7 +83,7 @@
     "id": "HAN2",
     "description": "Secoue de haut en bas",
     "image": "",
-    "thershold": 0,
+    "threshold": 0,
     "timer": 4,
     "point_per_moves": 10,
     "repeat": 1
@@ -92,7 +92,7 @@
     "id": "HAN3",
     "description": "Secoue de gauche à droite",
     "image": "",
-    "thershold": 0,
+    "threshold": 0,
     "timer": 4,
     "point_per_moves": 10,
     "repeat": 1
@@ -101,7 +101,7 @@
     "id": "HAN4",
     "description": "Fait basculer ton téléphone de haut en bas en faisant un arc de cercle",
     "image": "",
-    "thershold": 0,
+    "threshold": 0,
     "timer": 4,
     "point_per_moves": 10,
     "repeat": 1
@@ -110,7 +110,7 @@
     "id": "HAN5",
     "description": "Fait pivoter en rond ton téléphone",
     "image": "",
-    "thershold": 0,
+    "threshold": 0,
     "timer": 4,
     "point_per_moves": 10,
     "repeat": 1

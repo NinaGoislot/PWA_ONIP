@@ -188,7 +188,7 @@ function Test() {
     }, []); // Le tableau vide signifie que cela ne s'exécutera qu'une fois à l'initialisation
 
     return (
-        <main className="h-screen w-screen bg-slate-700">
+        <main className="h-screen w-screen bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
             {simulationStart && (
                 <Modal onClose={closeModal}>
                     <h2 className="text-xl font-bold mb-4 text-red-500">{displayText}</h2>
@@ -215,46 +215,48 @@ function Test() {
                 </Modal>
             )}
             <div className={`${simulationStart ? 'absolute h-screen w-screen bg-black opacity-50' : 'hidden'}`}></div>
-            <div className={`${simulationStart ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center`}>
-                <div className="flex gap-4 justify-center items-center h-full">
-                    <Link to="/PWA/"><button className="w-fit bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600">Retourner à l'accueil</button></Link>
-                    <button onClick={openModal} className="w-fit bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600">
+            <div className={`${simulationStart ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
+                <div className="absolute flex gap-4 mx-auto top-0">
+                    <Link to="/"><button className="bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-2 rounded transition-all transform ease-in-out">Retourner à l'accueil</button></Link>
+                    <button onClick={openModal} className="bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-2 rounded transition-all transform ease-in-out">
                         Démarrer la simulation
                     </button>
                 </div>
-                <h2 className="font-bold text-2xl text-white w-full text-center">{direction}</h2>
-                <div className="flex flex-col justify-center items-center h-full">
-                    <div className="flex gap-8 justify-auround py-4">
-                        <p className="text-white">Point culminant Positif en X : {dataX}</p>
-                        <p className="text-white">Point culminant Positif en Y : {dataY}</p>
-                        <p className="text-white">Point culminant Positif en Z : {dataZ}</p>
-                    </div>
-                    <div className="flex gap-8 justify-auround py-4">
-                        <p className="text-white">Point culminant Négatif en X : {dataX2}</p>
-                        <p className="text-white">Point culminant Négatif en Y : {dataY2}</p>
-                        <p className="text-white">Point culminant Négatif en Z : {dataZ2}</p>
-                    </div>
-                </div>
-                <div className="flex flex-col bg-slate-300 h-fit">
-                    {orientationData && (
-                        <div>
-                            <p>Alpha: {orientationData.alpha}</p>
-                            <p>Beta: {orientationData.beta}</p>
-                            <p>Gamma: {orientationData.gamma}</p>
+                <div className="flex flex-col justify-center items-center w-full">
+                    <h2 className="font-bold text-2xl text-white w-full text-center">{direction}</h2>
+                    <div className="flex flex-col justify-center items-center h-full">
+                        <div className="flex gap-8 justify-auround py-4">
+                            <p className="text-white">Point culminant Positif en X : {dataX}</p>
+                            <p className="text-white">Point culminant Positif en Y : {dataY}</p>
+                            <p className="text-white">Point culminant Positif en Z : {dataZ}</p>
                         </div>
-                    )}
-                </div>
-                <div className="flex flex-col bg-red-300 h-fit">
-                    {motionData && (
-                        <div>
-                            <p>Acceleration X: {motionData.acceleration.x}</p>
-                            <p>Acceleration Y: {motionData.acceleration.y}</p>
-                            <p>Acceleration Z: {motionData.acceleration.z}</p>
-                            <p>Rotation Rate Alpha: {motionData.rotationRate.alpha}</p>
-                            <p>Rotation Rate Beta: {motionData.rotationRate.beta}</p>
-                            <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
+                        <div className="flex gap-8 justify-auround py-4">
+                            <p className="text-white">Point culminant Négatif en X : {dataX2}</p>
+                            <p className="text-white">Point culminant Négatif en Y : {dataY2}</p>
+                            <p className="text-white">Point culminant Négatif en Z : {dataZ2}</p>
                         </div>
-                    )}
+                    </div>
+                    <div className="flex flex-col bg-slate-300 h-fit w-full">
+                        {orientationData && (
+                            <div>
+                                <p>Alpha: {orientationData.alpha}</p>
+                                <p>Beta: {orientationData.beta}</p>
+                                <p>Gamma: {orientationData.gamma}</p>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex flex-col bg-red-300 h-fit w-full">
+                        {motionData && (
+                            <div>
+                                <p>Acceleration X: {motionData.acceleration.x}</p>
+                                <p>Acceleration Y: {motionData.acceleration.y}</p>
+                                <p>Acceleration Z: {motionData.acceleration.z}</p>
+                                <p>Rotation Rate Alpha: {motionData.rotationRate.alpha}</p>
+                                <p>Rotation Rate Beta: {motionData.rotationRate.beta}</p>
+                                <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </main>
