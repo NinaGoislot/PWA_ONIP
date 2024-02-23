@@ -101,6 +101,9 @@ function GameTest() {
                     }
                     setFinalData("");
                     setBeyondThreshold(false);
+                    console.log("Partie de partieStore : ", partieStore);
+                    console.log("Room id : ", partieStore.roomId);
+                    console.log("Numéro  : ", partieStore.numeroPlayer);
                     socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
                 }).catch(error => {
                     console.error("Une erreur s'est produite lors de la classification :", error);
@@ -423,13 +426,14 @@ function GameTest() {
 
     return (
         <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
-            <div className={`${!isChronoStarted ? 'absolute h-screen w-screen bg-black opacity-60' : 'hidden'}`}></div>
-            <div className={`${!isChronoStarted ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
-                {!isChronoStarted && (<h1 className="text-3xl text-center text-light text-opacity-50">En attente d'instructions...</h1>)}
-                {isChronoStarted && (<h2 className="text-3xl text-center text-pink-200">{countdown}</h2>)}
+            <div className={`${!isMovementRunning ? 'absolute h-screen w-screen bg-black opacity-60' : 'hidden'}`}></div>
+            <div className={`${!isMovementRunning ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
+                {!isMovementRunning && (<h1 className="text-3xl text-center text-black text-opacity-50">En attente d'instructions...</h1>)}
+                {countdown > 0 && isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">Prêt ?</h2>)}
+                {isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">{countdown}</h2>)}
                 {isMovementRunning && (
                     <div className="relative h-full w-full flex justify-center items-center">
-                        <img data-aos="fade-left" className="" src="/PWA/pictures/texte-balaie.webp" alt="" />
+                        <h1 data-aos="fade-left"  className="text-7xl italic font-semibold text-light">Bouge ! </h1>
                         <div className="flex flex-col justify-between items-center w-full h-full absolute">
                             <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
                             <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />

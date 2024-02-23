@@ -11,7 +11,7 @@ function Serve() {
     const navigate = useNavigate();
 
     const serveCustomer = () => {
-        socket.emit("MOVEMENT_DONE", partieStore.roomId, partieStore.numeroPlayer);
+        socket.emit("SERVE_CUSTOMER", partieStore.roomId, partieStore.numeroPlayer);
         navigate("/Wait");
     };
 

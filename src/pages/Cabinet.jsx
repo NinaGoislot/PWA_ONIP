@@ -55,15 +55,15 @@ function Cabinet() {
             </Swipeable> */}
             <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
                 <div className="flex w-1/3 justify-center p-3">
-                    <img className="w-full block h-fit rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img className="w-16 block rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
                 </div>
                 <div className="flex gap-6 items-center">
-                    <img className="h-fit block w-1/3 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                    <img className="h-fit block w-1/3 hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
-                    <img className="h-fit block w-1/3 rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img className="w-16 block hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img className="w-20 block hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
+                    <img className="w-16 block rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
                 </div>
                 <div className="flex w-1/3 justify-center p-3">
-                    <img className="w-full block h-fit -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img className="w-16 block -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
                 </div>
             </div>
         </main >
