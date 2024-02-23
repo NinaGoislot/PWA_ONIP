@@ -34,7 +34,10 @@ function Cabinet() {
             socket.off("GO_TO_POUR", goToPour);
         };
     }, []);
-
+    
+    function sendMoveCursor(move) {
+        socket.emit("MOVE_CURSOR", move,  partieStore.roomId, partieStore.numeroPlayer);
+    };
 
     return (
         <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-manette-bg-V2.webp')" }}>
@@ -55,17 +58,18 @@ function Cabinet() {
             </Swipeable> */}
             <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
                 <div className="flex w-1/3 justify-center p-3">
-                    <img className="w-16 block rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img onClick={() => sendMoveCursor("UP")} className="w-16 block scale-100 rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
                 </div>
                 <div className="flex gap-6 items-center">
-                    <img className="w-16 block hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                    <img className="w-20 block hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
-                    <img className="w-16 block rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img onClick={() => sendMoveCursor("LEFT")} className="w-16 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img onClick={() => sendMoveCursor("CLICK")} className="w-20 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
+                    <img onClick={() => sendMoveCursor("RIGHT")} className="w-16 block scale-100 rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
                 </div>
                 <div className="flex w-1/3 justify-center p-3">
-                    <img className="w-16 block -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <img onClick={() => sendMoveCursor("DOWN")} className="w-16 block scale-100 -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
                 </div>
             </div>
+            
         </main >
     )
 }
