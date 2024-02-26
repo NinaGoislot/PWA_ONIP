@@ -20,11 +20,42 @@ function ConnectPhone() {
     //     }
     // };
 
+    // function submit(event) {
+    //     event.preventDefault(); //Éviter un rechargement de la page
+    //     // Request permission for iOS 13+ devices
+    //     if (
+    //         DeviceMotionEvent &&
+    //         typeof DeviceMotionEvent.requestPermission === "function"
+    //     ) {
+    //         DeviceMotionEvent.requestPermission();
+    //     }
+    //     const formData = new FormData(event.target);
+    //     const roomId = formData.get("roomId");
+    //     socket.emit("JOIN_GAME_MOBILE", roomId);
+    // }
+
     function submit(event) {
         event.preventDefault(); //Éviter un rechargement de la page
-        const formData = new FormData(event.target);
-        const roomId = formData.get("roomId");
-        socket.emit("JOIN_GAME_MOBILE", roomId);
+
+        // Request permission for iOS 13+ devices
+        if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") {
+            DeviceMotionEvent.requestPermission()
+                .then(permissionState => {
+                    if (permissionState === 'granted') {
+                        // Autorisation accordée
+                        const formData = new FormData(event.target);
+                        const roomId = formData.get("roomId");
+                        socket.emit("JOIN_GAME_MOBILE", roomId);
+                    } else {
+                        // L'autorisation a été refusée
+                        console.log('Permission denied for Device Motion Events.');
+                    }
+                })
+                .catch(console.error);
+        } else {
+            // Le navigateur ne supporte pas la demande d'autorisation
+            console.log('Permission API not supported for Device Motion Events.');
+        }
     }
 
     //si mauvais game id
