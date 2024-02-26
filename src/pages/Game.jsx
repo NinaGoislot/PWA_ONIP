@@ -203,12 +203,13 @@ function GameTest() {
             }, 1000);
         } else if (countdown === 0) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
+            console.log("ObjectMovement : ", objectMovement);
+            console.log("ObjectMovement.timer : ", objectMovement.timer);
             setChronoStarted(false);
 
             if (objectMovement.timer > 0) {
                 setTimer(objectMovement.timer); //UE#4
             }
-
             setMovementRunning(true); //UE#1 UE#4
         }
 
