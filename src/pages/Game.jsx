@@ -27,6 +27,8 @@ function GameTest() {
 
     //Suivre la reconnaissance de mouvements  
     const [timer, setTimer] = useState("");
+    const [timerDone, setTimerDone] = useState(false);
+    
     const [isBeyondThreshold, setBeyondThreshold] = useState(false);
     const [isMovementRunning, setMovementRunning] = useState(false);
 
@@ -40,6 +42,8 @@ function GameTest() {
 
     //Pour gérer l'ajout des évènements #1
     useEffect(() => {
+        console.log('isMovementRunning',isMovementRunning);
+        let score = 0;
         if (isMovementRunning) {
             console.log("L'écouteur d'évènements commence.'");
 
@@ -76,7 +80,6 @@ function GameTest() {
                 window.removeEventListener('devicemotion', handleMotion);
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
-            let score = 0;
 
             console.log("finalData.length : " + finalData.length);
 
@@ -84,6 +87,7 @@ function GameTest() {
             if (finalData.length < MIN_POINTS) {
                 console.log("Mouvement trop court");
                 setBeyondThreshold(false);
+                setTimerDone(false);
                 setFinalData("");
                 socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
             } else {
@@ -101,6 +105,7 @@ function GameTest() {
                     }
                     setFinalData("");
                     setBeyondThreshold(false);
+                    setTimerDone(false);
                     console.log("Partie de partieStore : ", partieStore);
                     console.log("Room id : ", partieStore.roomId);
                     console.log("Numéro  : ", partieStore.numeroPlayer);
@@ -109,6 +114,10 @@ function GameTest() {
                     console.error("Une erreur s'est produite lors de la classification :", error);
                 });
             }
+        }
+        else if(timerDone) {
+            console.log('dernier else');
+            socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
         }
     }, [isMovementRunning]);
 
@@ -165,6 +174,7 @@ function GameTest() {
             } else {
                 //Si je suis plus bas que le seuil après l'avoir déjà dépassé
                 if (isBeyondThreshold) {
+                    console.log("isBeyondThreshold pose pb");
                     stopProcess();
                 }
             }
@@ -203,7 +213,7 @@ function GameTest() {
             }, 1000);
         } else if (countdown === 0) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
-            console.log("ObjectMovement : ", objectMovement);
+            // console.log("ObjectMovement : ", objectMovement);
             console.log("ObjectMovement.timer : ", objectMovement.timer);
             setChronoStarted(false);
 
@@ -256,9 +266,9 @@ function GameTest() {
         console.log("Je passe dans le useEffect");
 
         const handleStartMovement = (movement) => {
-            console.log("START_MOVEMENT ► Je reçois l'info du socket");
             console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
             setMovementRequiered(movement);
+            setTimerDone(false);
             startProcess();
         };
 
@@ -272,6 +282,7 @@ function GameTest() {
     //Je reçois l'annonce de fin des mouvements
     useEffect(() => {
         const handleStartServing = () => {
+            console.log("change vers le serve")
             navigate("/Serve");
         };
 
@@ -279,6 +290,19 @@ function GameTest() {
 
         return () => {
             socket.off("MOVEMENTS_FINISHED", handleStartServing);
+        };
+    }, []);
+
+    useEffect(() => {
+        const handleStopServing = () => {
+            console.log("change vers le wait")
+            navigate("/Wait");
+        };
+
+        socket.on("STOP_MOVEMENT", handleStopServing);
+
+        return () => {
+            socket.off("STOP_MOVEMENT", handleStopServing);
         };
     }, []);
 
@@ -312,6 +336,7 @@ function GameTest() {
 
         setCountdown(3);
         setMovementRunning(false);
+        setTimerDone(true);
     };
 
     //calcul de la magnitude du vecteur de l'accélérometre ** (exposant)

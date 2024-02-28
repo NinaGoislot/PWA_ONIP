@@ -4,7 +4,16 @@
 
 @layer base {
     * {
-         @apply font-soria;
+        @apply font-soria;
+    }
+
+    html {
+        -webkit-user-select: none;
+        /* Safari */
+        -ms-user-select: none;
+        /* IE 10 and IE 11 */
+        user-select: none;
+        /* Standard syntax */
     }
 
     main {
@@ -12,9 +21,7 @@
     }
 }
 
-@layer components {
-   
-}
+@layer components {}
 
 @layer utilities {
     @font-face {

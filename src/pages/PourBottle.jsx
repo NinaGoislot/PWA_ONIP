@@ -8,6 +8,9 @@ function PourBottle() {
 
     const { partieStore } = useContext(GlobalContext);
     const navigate = useNavigate();
+    const [isPouring, setIsPouring] = useState(false);
+    const [hasPouring, setHasPouring] = useState(false);
+
 
     //Je reçois l'annonce de fin des mouvements
     useEffect(() => {
@@ -35,18 +38,35 @@ function PourBottle() {
         };
     }, []);
 
- const [isPouring, setIsPouring] = useState(false);
+    // Le joueur a été dévancé -> changement to next client
+    useEffect(() => {
+        const goToWait = () => {
+            navigate("/Wait");
+        };
+
+        socket.on("CHANGE_TO_NEXT_CUSTOMER", goToWait);
+
+        return () => {
+            socket.off("CHANGE_TO_NEXT_CUSTOMER", goToWait);
+        };
+    }, []);
+
 
     const startPour = () => {
-        console.log("POURING : ", true);
-        socket.emit("POURING", true, partieStore.roomId, partieStore.numeroPlayer);
-        setIsPouring(true);
+        if(!hasPouring){
+            console.log("POURING : ", true);
+            socket.emit("POURING", true, partieStore.roomId, partieStore.numeroPlayer);
+            setIsPouring(true);
+        }
     };
 
     const stopPour = () => {
-        console.log("POURING : ", false);
-        socket.emit("POURING", false, partieStore.roomId, partieStore.numeroPlayer);
-        setIsPouring(false);
+        if(!hasPouring){
+            console.log("POURING : ", false);
+            socket.emit("POURING", false, partieStore.roomId, partieStore.numeroPlayer);
+            setIsPouring(false);
+            setHasPouring(true);
+        }
     };
 
     return (

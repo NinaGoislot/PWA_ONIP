@@ -11,6 +11,7 @@ function Serve() {
     const navigate = useNavigate();
 
     const serveCustomer = () => {
+        console.log("click sur serveCustomer");
         socket.emit("SERVE_CUSTOMER", partieStore.roomId, partieStore.numeroPlayer);
         navigate("/Wait");
     };

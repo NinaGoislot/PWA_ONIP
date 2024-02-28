@@ -34,6 +34,19 @@ function Cabinet() {
             socket.off("GO_TO_POUR", goToPour);
         };
     }, []);
+
+    // Le joueur a été dévancé -> changement to next client
+    useEffect(() => {
+        const goToWait = () => {
+            navigate("/Wait");
+        };
+
+        socket.on("CHANGE_TO_NEXT_CUSTOMER", goToWait);
+
+        return () => {
+            socket.off("CHANGE_TO_NEXT_CUSTOMER", goToWait);
+        };
+    }, []);
     
     function sendMoveCursor(move) {
         socket.emit("MOVE_CURSOR", move,  partieStore.roomId, partieStore.numeroPlayer);
