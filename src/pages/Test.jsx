@@ -239,21 +239,21 @@ function Test() {
                     <div className="flex flex-col bg-slate-300 h-fit w-full">
                         {orientationData && (
                             <div>
-                                <p>Alpha: {orientationData.alpha}</p>
-                                <p>Beta: {orientationData.beta}</p>
-                                <p>Gamma: {orientationData.gamma}</p>
+                                <p>Alpha: {Math.round(orientationData.alpha)}</p>
+                                <p>Beta: {Math.round(orientationData.beta)}</p>
+                                <p>Gamma: {Math.round(orientationData.gamma)}</p>
                             </div>
                         )}
                     </div>
                     <div className="flex flex-col bg-red-300 h-fit w-full">
                         {motionData && (
                             <div>
-                                <p>Acceleration X: {motionData.acceleration.x}</p>
-                                <p>Acceleration Y: {motionData.acceleration.y}</p>
-                                <p>Acceleration Z: {motionData.acceleration.z}</p>
-                                <p>Rotation Rate Alpha: {motionData.rotationRate.alpha}</p>
-                                <p>Rotation Rate Beta: {motionData.rotationRate.beta}</p>
-                                <p>Rotation Rate Gamma: {motionData.rotationRate.gamma}</p>
+                                <p>Acceleration X: {Math.round(motionData.acceleration.x * 100)}</p>
+                                <p>Acceleration Y: {Math.round(motionData.acceleration.y * 100)}</p>
+                                <p>Acceleration Z: {Math.round(motionData.acceleration.z * 100)}</p>
+                                <p>Rotation Rate Alpha:{Math.round(motionData.rotationRate.alpha * 100)}</p>
+                                <p>Rotation Rate Beta: {Math.round(motionData.rotationRate.beta * 100)}</p>
+                                <p>Rotation Rate Gamma: {Math.round(motionData.rotationRate.gamma * 100)}</p>
                             </div>
                         )}
                     </div>

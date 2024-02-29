@@ -35,9 +35,11 @@ function ConnectPhone() {
     // }
 
     function submit(event) {
+        console.log("Je submit le pseudo");
         event.preventDefault(); //Éviter un rechargement de la page
         const formData = new FormData(event.target);
         const roomId = formData.get("roomId");
+        console.log("J'emit avec la room : " + roomId);
         socket.emit("JOIN_GAME_MOBILE", roomId);
 
         // Request permission for iOS 13+ devices

@@ -9,18 +9,9 @@ import { useLocation } from 'react-router-dom';
 function Cabinet() {
     const { partieStore } = useContext(GlobalContext);
     const navigate = useNavigate();
-
-    const handleSwipeLeft = () => {
-        console.log("Swiped left!");
-        socket.emit("SWIPE_WAIT", partieStore.roomId, partieStore.numeroPlayer);
-        navigate("/Wait");
-    };
-
-    const handleSwipeRight = () => {
-        console.log("Swiped right!");
-        socket.emit("SWIPE_WAIT", partieStore.roomId, partieStore.numeroPlayer);
-        navigate("/Wait");
-    };
+    const [startX, setStartX] = useState(null);
+    const [endX, setEndX] = useState(null);
+    const swipeThreshold = 150;
 
     //Je reçois l'annonce de fin des mouvements
     useEffect(() => {
@@ -47,9 +38,48 @@ function Cabinet() {
             socket.off("CHANGE_TO_NEXT_CUSTOMER", goToWait);
         };
     }, []);
-    
+
+    const handleTouchStart = (e) => {
+        setStartX(e.touches[0].clientX);
+    };
+
+    const handleTouchMove = (e) => {
+        setEndX(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        if (startX && endX) {
+            const distance = startX - endX;
+            if (Math.abs(distance) >= swipeThreshold) {
+                if (endX < startX) {
+                    // Swiped left
+                    handleSwipeLeft();
+                } else if (endX > startX) {
+                    // Swiped right
+                    handleSwipeRight();
+                }
+            }
+        }
+        // Reset startX and endX
+        setStartX(null);
+        setEndX(null);
+    };
+
+
+    const handleSwipeLeft = () => {
+        console.log("Swiped left!");
+        socket.emit("SWIPE_WAIT", partieStore.roomId, partieStore.numeroPlayer);
+        navigate("/Wait");
+    };
+
+    const handleSwipeRight = () => {
+        console.log("Swiped right!");
+        socket.emit("SWIPE_WAIT", partieStore.roomId, partieStore.numeroPlayer);
+        navigate("/Wait");
+    };
+
     function sendMoveCursor(move) {
-        socket.emit("MOVE_CURSOR", move,  partieStore.roomId, partieStore.numeroPlayer);
+        socket.emit("MOVE_CURSOR", move, partieStore.roomId, partieStore.numeroPlayer);
     };
 
     return (
@@ -69,20 +99,26 @@ function Cabinet() {
                     </div>
                 </div>
             </Swipeable> */}
-            <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
-                <div className="flex w-1/3 justify-center p-3">
-                    <img onClick={() => sendMoveCursor("UP")} className="w-16 block scale-100 rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                </div>
-                <div className="flex gap-6 items-center">
-                    <img onClick={() => sendMoveCursor("LEFT")} className="w-16 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                    <img onClick={() => sendMoveCursor("CLICK")} className="w-20 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
-                    <img onClick={() => sendMoveCursor("RIGHT")} className="w-16 block scale-100 rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                </div>
-                <div className="flex w-1/3 justify-center p-3">
-                    <img onClick={() => sendMoveCursor("DOWN")} className="w-16 block scale-100 -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+            <div
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
+                    <div className="flex w-1/3 justify-center p-3">
+                        <img onClick={() => sendMoveCursor("UP")} className="w-16 block scale-100 rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    </div>
+                    <div className="flex gap-6 items-center">
+                        <img onClick={() => sendMoveCursor("LEFT")} className="w-16 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                        <img onClick={() => sendMoveCursor("CLICK")} className="w-20 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
+                        <img onClick={() => sendMoveCursor("RIGHT")} className="w-16 block scale-100 rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    </div>
+                    <div className="flex w-1/3 justify-center p-3">
+                        <img onClick={() => sendMoveCursor("DOWN")} className="w-16 block scale-100 -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    </div>
                 </div>
             </div>
-            
         </main >
     )
 }
