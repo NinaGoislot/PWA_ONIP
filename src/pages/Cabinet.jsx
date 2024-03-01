@@ -106,25 +106,16 @@ function Cabinet() {
         };
     }, []);
 
+    const backToBottlesCard = () => {
+        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer);
+    };
+
+
     /******************************************************************************************/
 
     return (
-        <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-manette-bg-V2.webp')" }}>
-            {/* <Swipeable onSwipedLeft={handleSwipeLeft} onSwipedRight={handleSwipeRight}>
-                <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
-                    <div className="flex">
-                        <img className="w-fit block h-26 rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                    </div>
-                    <div className="flex gap-6 items-center">
-                        <img className="h-fit block w-26 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                        <img className="w-fit block h-26 hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
-                        <img className="h-fit block w-26 rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                    </div>
-                    <div className="flex">
-                        <img className="w-fit block h-26 -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                    </div>
-                </div>
-            </Swipeable> */}
+        <main className="relative h-screen w-screen flex flex-col justify-between items-center" style={{ backgroundImage: "url('/PWA/pictures/fond-manette.webp')", backgroundSize: '100% 100%' }}>
+            <div className="h-[20%] w-full bg-contain transform transition-all hover:scale-80" onClick={backToBottlesCard} style={{ backgroundImage: "url('/PWA/pictures/btn-manette-retour.webp')", backgroundSize: '100% 100%' }}></div>
             <div
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
@@ -147,6 +138,7 @@ function Cabinet() {
                     </div>
                 </div>
             </div>
+            <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-bouge.webp')", backgroundSize: '100% 100%' }}></div>
         </main >
     )
 }

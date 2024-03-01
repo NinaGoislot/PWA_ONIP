@@ -11,8 +11,6 @@ function PourBottle() {
     const [isPouring, setIsPouring] = useState(false);
     const [alreadyPourOnce, setAlreadyPourOnce] = useState(false);
     const [angle, setAngle] = useState(false);
-    const [doAction, setAction] = useState(false);
-
 
     //Je reçois l'annonce de fin des mouvements
     useEffect(() => {
@@ -87,7 +85,7 @@ function PourBottle() {
                     const normalizedSpeed = Math.abs(angle) / 90; // Convertir l'inclinaison en une valeur entre 0 et 1
                     const pourSpeed = normalizedSpeed * 0.1; // Normaliser entre 0 et 0.01
                     console.log("Angle après normalisation : ", pourSpeed);
-        
+
                     socket.emit("POURING_SPEED", partieStore.roomId, partieStore.numeroPlayer, pourSpeed);
                 }
             } else {
@@ -103,8 +101,11 @@ function PourBottle() {
     }, [angle, alreadyPourOnce, isPouring]);
 
     return (
-        <main className="h-screen w-screen relative flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-bouteille-modele.webp')" }}>
-
+        <main className="h-screen w-screenp-0 m-0" style={{ backgroundImage: "url('/PWA/pictures/tel-bouteille-fond.webp')", backgroundSize: '100% 100%' }}>
+            <div className="absolute bottom-0 left-0 w-full h-auto">
+                <img className="w-3/5 mx-auto translate-y-8" src="/PWA/pictures/bouteille-bouchon.webp" alt="Incline ton téléphone pour verser le liquide" />
+                <img className="w-full" src="/PWA/pictures/bouteille-sans-bouchon.webp" alt="Image du bouchon de la bouteille" />
+            </div>
         </main>
     );
 }
