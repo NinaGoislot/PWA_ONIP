@@ -13,10 +13,9 @@ import 'aos/dist/aos.css';
 function Wait() {
 
     const [canMove, setCanMove] = useState(false);
-    const [roomId, setRoomId] = useState("");
-    const [numeroPlayer, setNumeroPlayer] = useState("");
-
-    const location = useLocation();
+    const [startX, setStartX] = useState(null);
+    const [endX, setEndX] = useState(null);
+    const swipeThreshold = 150;
     const navigate = useNavigate();
     const { partieStore } = useContext(GlobalContext);
 
@@ -40,9 +39,6 @@ function Wait() {
         AOS.init();
     }, []);
 
-    const [startX, setStartX] = useState(null);
-    const [endX, setEndX] = useState(null);
-
     const handleTouchStart = (e) => {
         setStartX(e.touches[0].clientX);
     };
@@ -53,19 +49,21 @@ function Wait() {
 
     const handleTouchEnd = () => {
         if (startX && endX) {
-            if (endX < startX) {
-                // Swiped left
-                handleSwipeLeft();
-            } else if (endX > startX) {
-                // Swiped right
-                handleSwipeRight();
+            const distance = startX - endX;
+            if (Math.abs(distance) >= swipeThreshold) {
+                if (endX < startX) {
+                    // Swiped left
+                    handleSwipeLeft();
+                } else if (endX > startX) {
+                    // Swiped right
+                    handleSwipeRight();
+                }
             }
         }
         // Reset startX and endX
         setStartX(null);
         setEndX(null);
     };
-
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");

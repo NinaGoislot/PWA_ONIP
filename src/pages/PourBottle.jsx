@@ -9,7 +9,9 @@ function PourBottle() {
     const { partieStore } = useContext(GlobalContext);
     const navigate = useNavigate();
     const [isPouring, setIsPouring] = useState(false);
-    const [hasPouring, setHasPouring] = useState(false);
+    const [alreadyPourOnce, setAlreadyPourOnce] = useState(false);
+    const [angle, setAngle] = useState(false);
+    const [doAction, setAction] = useState(false);
 
 
     //Je reçois l'annonce de fin des mouvements
@@ -51,54 +53,18 @@ function PourBottle() {
         };
     }, []);
 
-    //Détecter le versement
+    //Écouteur d'évènement (Étape 1)
     useEffect(() => {
         const handleOrientationChange = event => {
-            let tiltAngle = event.beta; // Angle d'inclinaison vers le bas
-
-            console.log("Orientation beta : " + tiltAngle);
+            let tiltAngle = event.beta;
             if (tiltAngle < 0) {
-                //tiltAngle = Math.abs(tiltAngle);
-                if (!hasPouring) {
-                    setHasPouring(true);
-                }
-
-                if (tiltAngle > 90) {
-                    console.log("J'ai réarrangé l'angle d'inclinaison.")
-                    tiltAngle = 180 - tiltAngle;
-                }
-                
-            
-                const normalizedSpeed = (tiltAngle + 90) / 180; // Convertir l'inclinaison en une valeur entre 0 et 1
-                console.log("Normalization : ", normalizedSpeed);
-                const pourSpeed = normalizedSpeed * 0.1; // Normaliser entre 0 et 0.01
-                console.log("Normalization 2 : ", pourSpeed);
-
-                socket.emit("POURING", true, partieStore.roomId, partieStore.numeroPlayer, pourSpeed);
-            } else {
-                if (hasPouring) {
-                    console.log("POURING avec l'inclinaison : ", false);
-                    socket.emit("POURING", false, partieStore.roomId, partieStore.numeroPlayer, 0);
+                if (Math.abs(tiltAngle) > 90) {
+                    console.log("Ancien angle d'inclinaison. ", tiltAngle);
+                    tiltAngle = -(180 - Math.abs(tiltAngle));
+                    console.log("Nouvel angle d'inclinaison. ", tiltAngle);
                 }
             }
-
-            // if (tiltAngle < 0) {
-            //    
-            //   
-            //     const normalizedSpeed = tiltAngle / 50; 
-            //     console.log("Deuxième normalization : ",normalizedSpeed);
-
-            //     const pourSpeed = normalizedSpeed * 0.1; // Normaliser entre 0 et 0.01
-            //     console.log("Troisième normalization : ", pourSpeed);
-
-
-            //     socket.emit("POURING", true, partieStore.roomId, partieStore.numeroPlayer, pourSpeed);
-            // } else {
-            //     if (hasPouring) {
-            //         console.log("POURING avec l'inclinaison : ", false);
-            //         socket.emit("POURING", false, partieStore.roomId, partieStore.numeroPlayer, 0);
-            //     }
-            // }
+            setAngle(tiltAngle);
         };
 
         window.addEventListener('deviceorientation', handleOrientationChange);
@@ -106,33 +72,39 @@ function PourBottle() {
         return () => {
             window.removeEventListener('deviceorientation', handleOrientationChange);
         };
-    }, [hasPouring]);
+    }, []);
 
-
-    const startPour = () => {
-        if (!hasPouring) {
-            console.log("POURING : ", true);
-            socket.emit("POURING", true, partieStore.roomId, partieStore.numeroPlayer);
-            setIsPouring(true);
+    //Détecter le versement (Étape 2)
+    useEffect(() => {
+        //Si je n'ai pas déjà versé
+        if (!alreadyPourOnce) {
+            if (angle < 0) {
+                if (!isPouring) {
+                    setIsPouring(true);
+                    console.log("isPouring devient true");
+                    socket.emit("IS_POURING_TRUE", true, partieStore.roomId, partieStore.numeroPlayer);
+                } else if (isPouring) {
+                    const normalizedSpeed = Math.abs(angle) / 90; // Convertir l'inclinaison en une valeur entre 0 et 1
+                    const pourSpeed = normalizedSpeed * 0.1; // Normaliser entre 0 et 0.01
+                    console.log("Angle après normalisation : ", pourSpeed);
+        
+                    socket.emit("POURING_SPEED", partieStore.roomId, partieStore.numeroPlayer, pourSpeed);
+                }
+            } else {
+                if (isPouring) {
+                    console.log("POURING ► L'angle est au dessus de 0 et je suis en train de verser: " + angle);
+                    setIsPouring(false);
+                    setAlreadyPourOnce(true);
+                    console.log("isPouring devient false");
+                    socket.emit("IS_POURING_FALSE", false, partieStore.roomId, partieStore.numeroPlayer);
+                }
+            }
         }
-    };
-
-    const stopPour = () => {
-        if (!hasPouring) {
-            console.log("POURING : ", false);
-            socket.emit("POURING", false, partieStore.roomId, partieStore.numeroPlayer);
-            setIsPouring(false);
-            setHasPouring(true);
-        }
-    };
+    }, [angle, alreadyPourOnce, isPouring]);
 
     return (
         <main className="h-screen w-screen relative flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-bouteille-modele.webp')" }}>
-            <div
-                className={`absolute bottom-0 h-[70%] w-full opacity-80`}
-                onTouchStart={startPour}
-                onTouchEnd={stopPour}
-            ></div>
+
         </main>
     );
 }

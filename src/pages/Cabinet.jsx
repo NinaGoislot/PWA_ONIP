@@ -68,19 +68,45 @@ function Cabinet() {
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");
-        socket.emit("SWIPE_WAIT", partieStore.roomId, partieStore.numeroPlayer);
-        navigate("/Wait");
+        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer);
     };
 
     const handleSwipeRight = () => {
         console.log("Swiped right!");
-        socket.emit("SWIPE_WAIT", partieStore.roomId, partieStore.numeroPlayer);
-        navigate("/Wait");
+        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer);
     };
 
     function sendMoveCursor(move) {
         socket.emit("MOVE_CURSOR", move, partieStore.roomId, partieStore.numeroPlayer);
     };
+
+    /***************************************** SOCKET *****************************************/
+
+    // useEffect(() => {
+    //     const navigateFictiveScene = () => {
+    //         navigate("/SwipePage");
+    //     };
+
+    //     socket.on("SWIPE_WAIT", navigateFictiveScene);
+
+    //     return () => {
+    //         socket.off("SWIPE_WAIT", navigateFictiveScene);
+    //     };
+    // }, []);
+
+    useEffect(() => {
+        const navigateFictiveScene = () => {
+            navigate("/SwipePage");
+        };
+
+        socket.on("NAVIGATE_FICTIVESCENE", navigateFictiveScene);
+
+        return () => {
+            socket.off("NAVIGATE_FICTIVESCENE", navigateFictiveScene);
+        };
+    }, []);
+
+    /******************************************************************************************/
 
     return (
         <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-manette-bg-V2.webp')" }}>
@@ -107,15 +133,17 @@ function Cabinet() {
             >
                 <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
                     <div className="flex w-1/3 justify-center p-3">
-                        <img onClick={() => sendMoveCursor("UP")} className="w-16 block scale-100 rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                        <img onClick={() => sendMoveCursor("UP")} className="block scale-100 rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
                     </div>
                     <div className="flex gap-6 items-center">
-                        <img onClick={() => sendMoveCursor("LEFT")} className="w-16 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                        <img onClick={() => sendMoveCursor("CLICK")} className="w-20 block scale-100 hover:scale-90 transition-all" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
-                        <img onClick={() => sendMoveCursor("RIGHT")} className="w-16 block scale-100 rotate-180 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                        <img onClick={() => sendMoveCursor("LEFT")} className="w-1/3 block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                        <div className="flex w-1/3 justify-center p-1">
+                            <img onClick={() => sendMoveCursor("CLICK")} className="block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
+                        </div>
+                        <img onClick={() => sendMoveCursor("RIGHT")} className="w-1/3 block scale-100 rotate-180 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
                     </div>
                     <div className="flex w-1/3 justify-center p-3">
-                        <img onClick={() => sendMoveCursor("DOWN")} className="w-16 block scale-100 -rotate-90 hover:scale-90 transition-all" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                        <img onClick={() => sendMoveCursor("DOWN")} className="block scale-100 -rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
                     </div>
                 </div>
             </div>
