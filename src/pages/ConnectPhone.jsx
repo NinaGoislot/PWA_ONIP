@@ -63,6 +63,10 @@ function ConnectPhone() {
         // }
     }
 
+    const returnMenu = () => {
+        navigate("/");
+    };
+
     //si mauvais game id
     socket.on("BAD_GAME_ID_MOBILE", () => {
         setInfos("Le code n'est pas bon");
@@ -92,16 +96,21 @@ function ConnectPhone() {
     // });
 
     return (
-        <main className="h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
-            {!start && (
+        <main className="h-screen w-screen flex flex-col justify-between items-center bg-center" style={{ backgroundImage: "url('/PWA/pictures/connexion.webp')", backgroundSize: '100% 100%' }}>
+            <div className="h-[20%] w-full bg-contain" onClick={returnMenu} style={{ backgroundImage: "url('/PWA/pictures/btn-retour.webp')", backgroundSize: '100% 100%' }}></div>
+            <div className="flex flex-col gap-16 px-4">
                 <form onSubmit={submit} className="flex flex-col gap-6">
-                    <div className="flex flex-col  text-xl text-white">
-                        <label className="text-xl text-light" htmlFor="roomId">Code de partie</label>
-                        <input className="text-black p-2 uppercase" type="text" name="roomId" id="roomId" required="required" minLength="5" maxLength="5" />
+                    <div className="flex flex-col justify-center text-xl text-white gap-6">
+                        <label className="text-3xl text-light text-center" htmlFor="roomId">Entre le code de la partie</label>
+                        <input className="tracking-[0.3em] text-black px-2 py-6 uppercase text-center rounded-[20px] border-2 border-white bg-[#8FA1C9] mx-6" type="text" name="roomId" id="roomId" required="required" minLength="5" maxLength="5" />
                     </div>
-                    <button type="submit" className="w-fit mx-auto bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Se connecter</button>
                 </form>
-            )}
+            </div>
+            <div className="h-[20%] w-full bg-contain flex items-end" style={{ backgroundImage: "url('/PWA/pictures/zone-violette.webp')", backgroundSize: '100% 100%' }}>
+                <div className="h-[75%] flex justify-center items-center w-full">
+                    <button type="submit" className="hover:scale-90 transition-all transform ease-in-out"><img src="/PWA/pictures/btn-valider.webp" alt="valider le code de la partie" /></button>
+                </div>
+            </div>
         </main>
     )
 }

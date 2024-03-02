@@ -3,7 +3,6 @@ import { GlobalContext } from '@/App.jsx';
 import { Link } from 'react-router-dom';
 import { socket } from "@/socket";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
 
 function Serve() {
 

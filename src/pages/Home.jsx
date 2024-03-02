@@ -14,12 +14,16 @@ function Home() {
     });
 
     return (
-        <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6 bg-cover bg-center"  style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
-            <h1 className="text-4xl text-center text-light">Bienvenue sur l'application One Night In Paradoxe ! </h1>
-            <Link to="/Options"><button className="bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Options</button></Link>
-            {connected && (
-                <Link to="/ConnectPhone"><button className="bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Connecter son téléphone</button></Link>
-            )}
+        <main className="h-screen w-screen flex flex-col justify-between items-center bg-center" style={{ backgroundImage: "url('/PWA/pictures/connexion.webp')", backgroundSize: '100% 100%' }}>
+            <div className="h-[20%] w-full bg-contain rotate-180" style={{ backgroundImage: "url('/PWA/pictures/zone-violette.webp')", backgroundSize: '100% 100%' }}></div>
+            <div className="flex flex-col gap-16 px-4">
+                <h1 className="text-3xl text-center text-light">Bienvenue sur l'application One Night In Paradoxe ! </h1>
+                {connected && (
+                    <Link to="/ConnectPhone" className="mx-auto"><img src="/PWA/pictures/btn-connecter.webp" alt="Bouton de connexion" /></Link>
+                )}
+                <Link to="/Options" className="mx-auto"><img src="/PWA/pictures/btn-options.webp" alt="Bouton de connexion" /></Link>
+            </div>
+            <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-violette.webp')", backgroundSize: '100% 100%' }}></div>
         </main>
     )
 }
