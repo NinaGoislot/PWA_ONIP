@@ -15,12 +15,26 @@ function SwipePage() {
     const { partieStore } = useContext(GlobalContext);
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
+    const [canSwipe, setSwipe] = useState(false);
 
     const swipeThreshold = 150;
 
     // Initialisation d'AOS
     useEffect(() => {
         AOS.init();
+    }, []);
+
+    // Je peux swipe
+    useEffect(() => {
+        const canSwipe = () => {
+            setSwipe(true);
+        };
+    
+        socket.on("CAN_SWIPE", canSwipe);
+    
+        return () => {
+            socket.off("CAN_SWIPE", canSwipe);
+        };
     }, []);
 
     const handleTouchStart = (e) => {
@@ -51,12 +65,14 @@ function SwipePage() {
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");
-        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "droite";
+        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer, sens);
     };
 
     const handleSwipeRight = () => {
         console.log("Swiped right!");
-        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "gauche";
+        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer, sens);
     };
 
     /***************************************** SOCKET *****************************************/
@@ -85,11 +101,14 @@ function SwipePage() {
         };
     }, []);
 
+
+
     /******************************************************************************************/
 
     return (
         <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
             <div className={`flex w-full h-full flex-col gap-6 justify-center items-center`}>
+            {canSwipe && (
                 <div onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
@@ -103,6 +122,7 @@ function SwipePage() {
                         </div>
                     </div>
                 </div>
+            )}
             </div>
         </main>
     )

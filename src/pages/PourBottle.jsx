@@ -15,6 +15,7 @@ function PourBottle() {
     //Je reçois l'annonce de fin des mouvements
     useEffect(() => {
         const handleStartGame = () => {
+            console.log('PourBottle change to Game movement');
             navigate("/Game");
         };
 

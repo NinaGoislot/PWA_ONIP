@@ -11,6 +11,7 @@ function Cabinet() {
     const navigate = useNavigate();
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
+    const [canSwipe, setSwipe] = useState(false);
     const swipeThreshold = 150;
 
     //Je reçois l'annonce de fin des mouvements
@@ -36,6 +37,19 @@ function Cabinet() {
 
         return () => {
             socket.off("CHANGE_TO_NEXT_CUSTOMER", goToWait);
+        };
+    }, []);
+
+    // Je peux swipe
+    useEffect(() => {
+        const canSwipe = () => {
+            setSwipe(true);
+        };
+
+        socket.on("CAN_SWIPE", canSwipe);
+
+        return () => {
+            socket.off("CAN_SWIPE", canSwipe);
         };
     }, []);
 
@@ -68,12 +82,14 @@ function Cabinet() {
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");
-        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "droite";
+        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer, sens);
     };
 
     const handleSwipeRight = () => {
         console.log("Swiped right!");
-        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "gauche";
+        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer, sens);
     };
 
     function sendMoveCursor(move) {
@@ -107,7 +123,7 @@ function Cabinet() {
     }, []);
 
     const backToBottlesCard = () => {
-        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer);
+        socket.emit("NAVIGATE_FICTIVESCENE", partieStore.roomId, partieStore.numeroPlayer, "droite");
     };
 
 
@@ -116,6 +132,7 @@ function Cabinet() {
     return (
         <main className="relative h-screen w-screen flex flex-col justify-between items-center" style={{ backgroundImage: "url('/PWA/pictures/fond-manette.webp')", backgroundSize: '100% 100%' }}>
             <div className="h-[20%] w-full bg-contain transform transition-all hover:scale-80" onClick={backToBottlesCard} style={{ backgroundImage: "url('/PWA/pictures/btn-manette-retour.webp')", backgroundSize: '100% 100%' }}></div>
+            {canSwipe && (
             <div
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
@@ -138,6 +155,7 @@ function Cabinet() {
                     </div>
                 </div>
             </div>
+            )}
             <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-bouge.webp')", backgroundSize: '100% 100%' }}></div>
         </main >
     )

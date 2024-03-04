@@ -66,13 +66,15 @@ function Wait() {
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");
-        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "droite";
+        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer, sens);
         navigate("/Cabinet");
     };
 
     const handleSwipeRight = () => {
         console.log("Swiped right!");
-        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "gauche";
+        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer, sens);
         navigate("/Cabinet");
     };
 
