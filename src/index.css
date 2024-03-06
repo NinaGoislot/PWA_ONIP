@@ -14,10 +14,11 @@
         /* IE 10 and IE 11 */
         user-select: none;
         /* Standard syntax */
+        @apply overflow-hidden;
     }
 
     main {
-        @apply p-6
+        @apply p-6;
     }
 }
 

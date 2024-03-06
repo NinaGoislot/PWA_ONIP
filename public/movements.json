@@ -5,7 +5,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD2",
@@ -14,7 +15,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD3",
@@ -23,7 +25,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD4",
@@ -32,7 +35,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD5",
@@ -41,7 +45,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD6",
@@ -50,7 +55,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD7",
@@ -59,7 +65,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
   "id": "BOD8",
@@ -68,7 +75,8 @@
   "threshold": 2,
   "timer": 20,
   "point_per_moves": 10,
-  "repeat": 1
+  "repeat": 1,
+  "type": "quality"
 },
 {
     "id": "HAN1",
@@ -77,7 +85,9 @@
     "threshold": 2,
     "timer": 20,
     "point_per_moves": 10,
-    "repeat": 1
+    "repeat": 1,
+    "type": "quantity",
+    "direction": ["Nord", "Sud"]
   },
   {
     "id": "HAN2",
@@ -86,7 +96,9 @@
     "threshold": 2,
     "timer": 20,
     "point_per_moves": 10,
-    "repeat": 1
+    "repeat": 1,
+    "type": "quantity",
+    "direction": ["Nord", "Sud"]
   },
   {
     "id": "HAN3",
@@ -95,7 +107,9 @@
     "threshold": 2,
     "timer": 20,
     "point_per_moves": 10,
-    "repeat": 1
+    "repeat": 1,
+    "type": "quantity",
+    "direction": ["Ouest", "Est"]
   },
   {
     "id": "HAN4",
@@ -104,7 +118,9 @@
     "threshold": 2,
     "timer": 4,
     "point_per_moves": 10,
-    "repeat": 1
+    "repeat": 1,
+    "type": "quantity",
+    "orientation": ["Nord", "Sud"]
   },
   {
     "id": "HAN5",
@@ -113,6 +129,8 @@
     "threshold": 2,
     "timer": 4,
     "point_per_moves": 10,
-    "repeat": 1
+    "repeat": 1,
+    "type": "quantity",
+    "orientation": ["Nord", "Sud"]
   }
 ]

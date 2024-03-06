@@ -10,7 +10,14 @@
       {
         "src": "/PWA/logo_onip",
         "sizes": "192x192",
-        "type": "image/png"
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/PWA/Logo_Couleur4x.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
       }
     ]
   }

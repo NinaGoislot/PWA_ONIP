@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="tel-manette" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 115.47 115.47">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-4 {
+        fill: #cb6f44;
+        stroke: #ffba63;
+        stroke-width: .5px;
+      }
+
+      .cls-4, .cls-5 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3 {
+        fill: #000;
+      }
+
+      .cls-5 {
+        fill: #bf4b2d;
+        stroke: #000;
+        stroke-width: 3px;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-2" x="33.88" y="164.22" width="48.46" height="104.54"/>
+    </clipPath>
+  </defs>
+  <g id="design-bas">
+    <g id="lignes-déco-bas">
+      <g class="cls-1">
+        <path class="cls-3" d="M25.2,109.92c-.19.21-.36.53-.56.61-1.09.47-2.18.97-3.27,1.31-3.31,1.02-6.34,3.24-9.21,6.19-.54.55-1.1,1.07-1.67,1.56-.59.51-.84.42-.87-.41-.04-1.32-.51-2.12-1.35-2.55-.19-.1-.36-.26-.53-.4-.49-.43-.64-.95-.3-1.95,1.05-3.04,2.01-6.11,3.01-9.16,4.92,1.6,9.83,3.21,14.75,4.81Z"/>
+      </g>
+    </g>
+  </g>
+  <g id="fleches">
+    <g id="centre">
+      <g>
+        <circle class="cls-5" cx="57.74" cy="57.74" r="56.24"/>
+        <circle class="cls-4" cx="57.74" cy="57.74" r="31.49"/>
+      </g>
+    </g>
+  </g>
+</svg>

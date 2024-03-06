@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="connecter-tel-code" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 305.49 160.66">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #4c4179;
+        stroke: #242234;
+        stroke-miterlimit: 10;
+        stroke-width: 3px;
+      }
+    </style>
+  </defs>
+  <g id="haut-4" data-name="haut">
+    <path class="cls-1" d="M153.41,41.31c50.14-5.31,97.74-14.7,140.1-38.7,4.75-2.69,10.48,1.02,10.48,6.75v142.19c0,4.21-3.59,7.61-7.54,7.61H8.66c-3.95,0-7.16-3.41-7.16-7.62V9.02C1.5,3.29,7.6-.3,12.35,2.4c42.86,24.32,90.7,33.6,141.6,38.87"/>
+  </g>
+</svg>

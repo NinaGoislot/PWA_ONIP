@@ -8,10 +8,13 @@ import { socket } from "../socket";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-function GameTest() {
+function Game() {
 
     const MIN_POINTS = 70,
-        THRESHOLD_PTS_REGISTERED = 20;
+        MIN_POINTS_SHORT = 50,
+        MIN_POINTS_MEDIUM = 110,
+        MIN_POINTS_LONG = 250,
+        THRESHOLD_PTS_REGISTERED = 30;
 
     const { movementsStore } = useContext(GlobalContext);
     const { partieStore } = useContext(GlobalContext);
@@ -19,7 +22,7 @@ function GameTest() {
     const navigate = useNavigate();
 
     //Infos du serveur
-    const [movementRequired, setMovementRequiered] = useState("");
+    const [movementRequired, setMovementRequiered] = useState(""); // est un id
 
     //Chrono
     const [countdown, setCountdown] = useState(3);
@@ -28,7 +31,7 @@ function GameTest() {
     //Suivre la reconnaissance de mouvements  
     const [timer, setTimer] = useState("");
     const [timerDone, setTimerDone] = useState(false);
-    
+
     const [isBeyondThreshold, setBeyondThreshold] = useState(false);
     const [isMovementRunning, setMovementRunning] = useState(false);
 
@@ -37,12 +40,25 @@ function GameTest() {
     const [orientationData, setOrientationData] = useState({ alpha: 0, beta: 0, gamma: 0 });
     const [finalData, setFinalData] = useState([]);
     const [accData, setAccData] = useState([]);
+    const [direction, setDirection] = useState("None");
+    const [orientation, setOrientation] = useState("None");
+    const [sequenceIndex, setSequenceIndex] = useState(0);
+
+    //Scores finaux en manuel
+    const [score, setScore] = useState(0);
+    const [nbMoves, setNbMoves] = useState(0);
+
 
     /********************************************* USE EFFECT *********************************************/
-
-    //Pour gérer l'ajout des évènements #1
+    // Initialisation d'AOS
     useEffect(() => {
-        console.log('isMovementRunning',isMovementRunning);
+        AOS.init();
+    }, []);
+
+    // --------------------------------------------------------
+    // --------- Pour gérer l'ajout des évènements #1 --------- 
+    useEffect(() => {
+        console.log('isMovementRunning', isMovementRunning);
         let score = 0;
         if (isMovementRunning) {
             console.log("L'écouteur d'évènements commence.'");
@@ -81,10 +97,23 @@ function GameTest() {
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
 
+            let minPoints = 0
+
+            if (finalData.length >= MIN_POINTS_SHORT) {
+                minPoints = MIN_POINTS_SHORT;
+            }
+            if (finalData.length >= MIN_POINTS_MEDIUM) {
+                minPoints = MIN_POINTS_MEDIUM;
+            }
+            if (finalData.length >= MIN_POINTS_LONG) {
+                minPoints = MIN_POINTS_LONG;
+            }
+
             console.log("finalData.length : " + finalData.length);
+            console.log("Points considérés : " + minPoints);
 
             // Vérifier si la longueur des données est suffisante pour la comparaison
-            if (finalData.length < MIN_POINTS) {
+            if (minPoints < MIN_POINTS_SHORT) {
                 console.log("Mouvement trop court");
                 setBeyondThreshold(false);
                 setTimerDone(false);
@@ -93,11 +122,11 @@ function GameTest() {
             } else {
                 const objectMovement = movementsStore.getMovementById(movementRequired);
                 let tabDataDone = normalizeData(finalData);
-                tabDataDone = subSampleData(tabDataDone);
+                tabDataDone = subSampleData(tabDataDone, minPoints);
                 tabDataDone = flattenData(tabDataDone);
 
-                classifyData(tabDataDone).then(predictedMovement => {
-                    console.log("Le mouvement reconnu est : ", predictedMovement);
+                classifyData(tabDataDone, minPoints).then(predictedMovement => {
+                    console.log("Le mouvement voulu est : ", movementRequired);
 
                     if (predictedMovement == objectMovement.id) {
                         score = objectMovement.point_per_moves;
@@ -115,34 +144,25 @@ function GameTest() {
                 });
             }
         }
-        else if(timerDone) {
-            console.log('dernier else');
-            socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+        else if (timerDone) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            if (objectMovement.type == "quality") {
+                console.log("Mon mouvement est de type quantity");
+                setFinalData("");
+                setBeyondThreshold(false);
+                setTimerDone(false);
+                console.log("Aucun mouvement n'a été fait mais le timer est fini. j'arrete le processus.");
+                socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+            }
         }
     }, [isMovementRunning]);
 
-    //Stocker les données de direction et motion dans un tableau #2
+    // --------------------------------------------------------
+    // ------------- Sensibilité de detection #2 --------------
     useEffect(() => {
         if (movementRequired) {
-            // const higherThanThreshold = () => {
-            //     const objectMovement = movementsStore.getMovementById(movementRequired);
-            //     const seuil = objectMovement.threshold;
-
-            //     let isHigher;
-            //     if (!isBeyondThreshold) {
-            //         if (Math.abs(motionData.acceleration.x) > seuil || Math.abs(motionData.acceleration.y) > seuil || Math.abs(motionData.acceleration.z) > seuil) {
-            //             isHigher = true;
-            //         } else { isHigher = false }
-            //     } else if (Math.abs(motionData.acceleration.x) < seuil && Math.abs(motionData.acceleration.y) < seuil && Math.abs(motionData.acceleration.z) < seuil) {
-            //         console.log("Je tombe en dessous du seuil.");
-            //         isHigher = false;
-            //     } else { isHigher = true }
-
-            //     console.log(isHigher);
-            //     return isHigher;
-            // }
-
             const objectMovement = movementsStore.getMovementById(movementRequired);
+            //console.log("objectMovement : ", objectMovement);
             const seuil = objectMovement.threshold;
             let accData_copy = accData;
             let movementMean = 0;
@@ -153,7 +173,7 @@ function GameTest() {
                 accData_copy.shift();
             }
 
-            //si j'ai 20 points dans mon tableau, je fais un tableau qui calcul chaque magnétude de chaque accélaration pour en faire une moyenne
+            //si j'ai 20 points dans mon tableau, je fais un tableau qui calcule chaque magnétude de chaque accélaration pour en faire une moyenne
             if (accData_copy.length == THRESHOLD_PTS_REGISTERED) {
 
                 for (var i = 0; i < THRESHOLD_PTS_REGISTERED; i++) {
@@ -163,76 +183,64 @@ function GameTest() {
             }
 
             const isHigher = currentMovementMagnitude > seuil;
-            if (isHigher) {
-                if (!isBeyondThreshold && isMovementRunning) {
-                    //Si c'est la première fois que le seuil est dépassé pendant que le mouvement est en cours
+            if (objectMovement.type == "quantity" && !isBeyondThreshold) {
+                if (isHigher || isBeyondThreshold) {
                     setBeyondThreshold(true);
-                } else {
-                    //J'enregistre les données du mouvement
-                    setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
                 }
-            } else {
-                //Si je suis plus bas que le seuil après l'avoir déjà dépassé
-                if (isBeyondThreshold) {
-                    console.log("isBeyondThreshold pose pb");
-                    stopProcess();
+            } else if (objectMovement.type == "quality") {
+                if (isHigher) {
+                    if (!isBeyondThreshold && isMovementRunning) {
+                        //Si c'est la première fois que le seuil est dépassé pendant que le mouvement est en cours
+                        setBeyondThreshold(true);
+                    } else {
+                        //J'enregistre les données du mouvement
+                        setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
+                    }
+                } else {
+                    //Si je suis plus bas que le seuil après l'avoir déjà dépassé
+                    if (isBeyondThreshold) {
+                        console.log("isBeyondThreshold pose pb");
+                        stopProcess();
+                    }
                 }
             }
             setAccData(accData_copy);
-
-            // console.log(isHigher);
-            // return isHigher;
-
-
-            // if (higherThanThreshold()) {
-            //     //Si je dépasse le seuil
-            //     if (!isBeyondThreshold && isMovementRunning) {
-            //         //Si c'est la première fois que le seuil est dépassé pendant que le mouvement est en cours
-            //         setBeyondThreshold(true);
-            //     } else {
-            //         //J'enregistre les données du mouvement
-            //         setFinalData(prevData => [...prevData, { x: orientationData.beta, y: orientationData.gamma, z: orientationData.alpha, accX: motionData.acceleration.x, accY: motionData.acceleration.y, accZ: motionData.acceleration.z, rotRateX: motionData.rotationRate.beta, rotRateY: motionData.rotationRate.gamma, rotRateZ: motionData.rotationRate.alpha }]);
-            //     }
-            // } else {
-            //     //Si je suis plus bas que le seuil après l'avoir déjà dépassé
-            //     if (isBeyondThreshold) {
-            //         stopProcess();
-            //     }
-            // }
         }
 
     }, [motionData, orientationData, isBeyondThreshold]);
 
-    //Pour gérer le chrono d'avant jeu #3
+    // --------------------------------------------------------
+    // --------------- Countdown d'avant jeu #3 ---------------
     useEffect(() => {
-        let countdownInterval;
+        if (movementRequired) {
+            let countdownInterval;
 
-        if (isChronoStarted && countdown > 0) {
-            countdownInterval = setInterval(() => {
-                setCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
-        } else if (countdown === 0) {
-            const objectMovement = movementsStore.getMovementById(movementRequired);
-            // console.log("ObjectMovement : ", objectMovement);
-            console.log("ObjectMovement.timer : ", objectMovement.timer);
-            setChronoStarted(false);
+            if (isChronoStarted && countdown > 0) {
+                countdownInterval = setInterval(() => {
+                    setCountdown((prevCountdown) => prevCountdown - 1);
+                }, 1000);
+            } else if (countdown === 0) {
+                const objectMovement = movementsStore.getMovementById(movementRequired);
+                console.log("ObjectMovement.timer : ", objectMovement.timer);
+                setChronoStarted(false);
 
-            if (objectMovement.timer > 0) {
-                setTimer(objectMovement.timer); //UE#4
+                if (objectMovement.timer > 0) {
+                    setTimer(objectMovement.timer); //UE#4
+                }
+                setMovementRunning(true); //UE#1 UE#4
             }
-            setMovementRunning(true); //UE#1 UE#4
+
+            return () => {
+                clearInterval(countdownInterval);
+            };
         }
+    }, [isChronoStarted, countdown, movementRequired]);
 
-        return () => {
-            clearInterval(countdownInterval);
-        };
-    }, [isChronoStarted, countdown]);
-
-    //Pour gérer le timer pendant la simulation #4
+    // --------------------------------------------------------
+    // ------------ Timer pendant la simulation #4 ------------
     useEffect(() => {
         const objectMovement = movementsStore.getMovementById(movementRequired);
         let timerInterval;
-
         if (isMovementRunning && objectMovement.timer > 0) {
             if (timer > 0) {
                 timerInterval = setInterval(() => {
@@ -241,19 +249,102 @@ function GameTest() {
             }
             if (timer == 0) {
                 console.log("Le timer est fini");
+                setTimerDone(true);
                 stopProcess();
             }
         }
-
         return () => {
             clearInterval(timerInterval);
         };
     }, [isMovementRunning, timer]);
 
-    // Initialisation d'AOS
+    // --------------------------------------------------------
+    // ------- Gérer le mouvement selon l'orientation #5 ------
     useEffect(() => {
-        AOS.init();
-    }, []);
+        //Si j'ai des données, une orientation, démarré un mouvement et si le timer est toujours en cours.
+        if (motionData && orientation !== "None" && isBeyondThreshold && !timerDone) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            console.log("objectMovement : ", objectMovement);
+
+            const threshold = objectMovement.thershold;  // Seuil pour considérer un mouvement significatif
+            let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
+            let acceleration = motionData.acceleration;
+
+            if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                console.log("orientation vaut " + orientation)
+                switch (orientation) {
+                    case "N":
+                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                            currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+                        }
+                        break;
+                    case "E":
+                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                            currentDirection = acceleration.x > 0 ? "Nord" : "Sud";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Ouest" : "Est";
+                        }
+                        break;
+                    case "S":
+                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                            currentDirection = acceleration.x > 0 ? "Est" : "Ouest";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Nord" : "Sud";
+                        }
+                        break;
+                    case "O":
+                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                            currentDirection = acceleration.x > 0 ? "Sud" : "Nord";
+                        } else {
+                            currentDirection = acceleration.y > 0 ? "Est" : "Ouest";
+                        }
+                        break;
+                    default:
+                        console.log("Aucune donnée reconnue")
+                        break;
+                }
+                console.log("direction vaut " + currentDirection)
+            }
+
+            /***************** Logique de jeu Timer *****************/
+            if (currentDirection !== "None") {
+                setDirection(currentDirection);
+            }
+        }
+    }, [motionData, orientation, isBeyondThreshold, timerDone]);
+
+    // --------------------------------------------------------
+    // ---------- Suivi des mouvements du tableau #6 ----------
+    useEffect(() => {
+        if (isBeyondThreshold && !timerDone) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
+                if (objectMovement.direction[sequenceIndex] === direction) {
+                    console.log("Je set l'index");
+                    setSequenceIndex(sequenceIndex + 1);
+                }
+            } else if (objectMovement.direction.length == sequenceIndex) {
+                setNbMoves(nbMoves + 1);
+                console.log("Je set le score");
+                setScore(score + objectMovement.point_per_moves);
+                setSequenceIndex(0);
+            }
+        }
+    }, [direction, sequenceIndex, timerDone]);
+
+    // --------------------------------------------------------
+    // ------------ Fin des mouvements en manuel #7 -----------
+    useEffect(() => {
+        if (isBeyondThreshold && timerDone) {
+            console.log("Score : ", score);
+            console.log("Nb de coups : ", nbMoves);
+
+            setNbMoves(0);
+            setScore(0);
+        }
+    }, [score, isBeyondThreshold, timerDone]);
 
     /******************************************* SOCKET ********************************************/
     //J'ai chargé la page
@@ -269,7 +360,7 @@ function GameTest() {
             console.log("START_MOVEMENT ► J'ai reçu le mouvement : ", movement);
             setMovementRequiered(movement);
             setTimerDone(false);
-            startProcess();
+            startProcess(); // lance le processus
         };
 
         socket.on("START_MOVEMENT", handleStartMovement);
@@ -279,10 +370,11 @@ function GameTest() {
         };
     }, []);
 
-    //Je reçois l'annonce de fin des mouvements
+    // --------------------------------------------------------
+    // ------------------ Changement de page ------------------
     useEffect(() => {
         const handleStartServing = () => {
-            console.log("change vers le serve")
+            console.log("change vers le serve");
             navigate("/Serve");
         };
 
@@ -310,14 +402,33 @@ function GameTest() {
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;
         setMotionData({ acceleration, rotationRate }); //UE#2
-        //setAccData(accData.push({ x: acceleration.x, y: acceleration.y, z: acceleration.z })); //UE#2
     };
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
+
+        let angle = 360 / 8; //angle de 45°
+
+        switch (true) {
+            case (alpha > 0 && alpha <= angle) || (alpha > angle * 7):
+                setOrientation("N");
+                break;
+            case alpha > angle * 5 && alpha <= angle * 7:
+                setOrientation("E");
+                break;
+            case alpha > angle * 3 && alpha <= angle * 5:
+                setOrientation("S");
+                break;
+            case alpha > angle && alpha <= angle * 3:
+                setOrientation("O");
+                break;
+            default:
+                setOrientation("None");
+                break;
+        }
+
         setOrientationData({ alpha, beta, gamma }); //UE#2
     };
-
 
     /****************************************** FONCTIONS ******************************************/
     const startProcess = () => {
@@ -335,8 +446,8 @@ function GameTest() {
         console.log("stopProcess() ► J'arrête le processus.")
 
         setCountdown(3);
-        setMovementRunning(false);
-        setTimerDone(true);
+        setMovementRunning(false); // UE#1
+        //setTimerDone(true);
     };
 
     //calcul de la magnitude du vecteur de l'accélérometre ** (exposant)
@@ -373,7 +484,7 @@ function GameTest() {
     }
 
     // 2. Sous-échantillonnage des données
-    function subSampleData(data, rate = MIN_POINTS) {
+    function subSampleData(data, rate) {
         if (data.length <= rate) {
             return data;
         }
@@ -406,13 +517,15 @@ function GameTest() {
         return flattenedData;
     }
 
-    // 4. Classification des données avec KNN
-    function classifyData(data) {
+    // 4. Classification des données avec un KNN
+    function classifyData(data, rate) {
         console.log("Classification en cours...");
+
+        const loadPath = `./Moves-${rate}.json`;
 
         return new Promise((resolve, reject) => {
             const knnClassifier = ml5.KNNClassifier();
-            knnClassifier.load('../myGestures-70.json', () => {
+            knnClassifier.load(loadPath, () => {
                 console.log('Données d\'entraînement chargées avec succès.');
 
                 // Classer les données avec le modèle KNN
@@ -454,32 +567,21 @@ function GameTest() {
         <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
             <div className={`${!isMovementRunning ? 'absolute h-screen w-screen bg-black opacity-60' : 'hidden'}`}></div>
             <div className={`${!isMovementRunning ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
-                {!isMovementRunning && (<h1 className="text-3xl text-center text-black text-opacity-50">En attente d'instructions...</h1>)}
+                {!isMovementRunning && (<h1 className="text-3xl text-center text-white text-opacity-50">Suivez la commande sur l'ordinateur !</h1>)}
                 {countdown > 0 && isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">Prêt ?</h2>)}
                 {isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">{countdown}</h2>)}
                 {isMovementRunning && (
                     <div className="relative h-full w-full flex justify-center items-center">
-                        <h1 data-aos="fade-left"  className="text-7xl italic font-semibold text-light">Bouge ! </h1>
+                        <h1 data-aos="fade-left" className="text-7xl italic font-semibold text-light">Bouge ! </h1>
                         <div className="flex flex-col justify-between items-center w-full h-full absolute">
                             <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
                             <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
                         </div>
                     </div>
-                    // <div className="flex flex-col gap-6 justify-center items-center">
-                    //     <p className="text-lg text-white">Mouvement attendu : {movementRequired}</p>
-                    //     <div className="flex flex-col gap-2">
-                    //         <p className='text-white'>alpha : {Math.round(orientationData.alpha * 100) / 100}</p>
-                    //         <p className='text-white'>beta : {Math.round(orientationData.beta * 100) / 100}</p>
-                    //         <p className='text-white'>gamma : {Math.round(orientationData.gamma * 100) / 100}</p>
-                    //     </div>
-                    //     <button className="bg-slate-400 hover:bg-slate-500 h-fit p-8 rounded" onClick={stopProcess}>
-                    //         Arrêter
-                    //     </button>
-                    // </div>
                 )}
             </div>
         </main>
     )
 }
-export default GameTest;
+export default Game;
 

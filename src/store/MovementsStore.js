@@ -42,8 +42,9 @@ class MovementsStore {
                 movement.timer,
                 movement.point_per_moves,
                 movement.repeat,
-                movement.idRoom,
-                movement.nbPlayer,
+                movement.type,
+                movement.orientation,
+                movement.direction,
             ));
 
             console.log(this._movements);

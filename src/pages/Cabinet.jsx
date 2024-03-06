@@ -11,7 +11,7 @@ function Cabinet() {
     const navigate = useNavigate();
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
-    const swipeThreshold = 150;
+    const swipeThreshold = 50;
 
     //Je reçois l'annonce de fin des mouvements
     useEffect(() => {
@@ -115,14 +115,14 @@ function Cabinet() {
 
     return (
         <main className="relative h-screen w-screen flex flex-col justify-between items-center" style={{ backgroundImage: "url('/PWA/pictures/fond-manette.webp')", backgroundSize: '100% 100%' }}>
-            <div className="h-[20%] w-full bg-contain transform transition-all hover:scale-80" onClick={backToBottlesCard} style={{ backgroundImage: "url('/PWA/pictures/btn-manette-retour.webp')", backgroundSize: '100% 100%' }}></div>
+            <div className="h-[20%] w-full bg-contain transform transition-all hover:scale-80" onClick={backToBottlesCard} style={{ backgroundImage: "url('/PWA/pictures/btn-manette-retour.svg')", backgroundSize: '100% 100%' }}></div>
             <div
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
                 style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-                <div className="flex w-full h-full flex-col gap-6 justify-center items-center">
+                <div className="flex w-full h-full flex-col gap-10 justify-center items-center">
                     <div className="flex w-1/3 justify-center p-3">
                         <img onClick={() => sendMoveCursor("UP")} className="block scale-100 rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
                     </div>
@@ -138,7 +138,7 @@ function Cabinet() {
                     </div>
                 </div>
             </div>
-            <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-bouge.webp')", backgroundSize: '100% 100%' }}></div>
+            <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-bouge.svg')", backgroundSize: '100% 100%' }}></div>
         </main >
     )
 }

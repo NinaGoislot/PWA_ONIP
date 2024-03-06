@@ -16,7 +16,7 @@ function SwipePage() {
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
 
-    const swipeThreshold = 150;
+    const swipeThreshold = 50;
 
     // Initialisation d'AOS
     useEffect(() => {
@@ -88,22 +88,20 @@ function SwipePage() {
     /******************************************************************************************/
 
     return (
-        <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
-            <div className={`flex w-full h-full flex-col gap-6 justify-center items-center`}>
-                <div onTouchStart={handleTouchStart}
+        <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center overflow-hidden" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe-fond.webp')" }}>
+                <div
+                    onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <div className="relative h-full w-full flex flex-col justify-center items-center">
-                        <img data-aos="fade-left" className="" src="/PWA/pictures/texte-balaie.webp" alt="" />
-                        <button onClick={handleSwipeLeft} type="button" className="z-30 bg-light bg-opacity-50 text-dark font-semibold text-xl hover:bg-opacity-100 hover:scale-110 h-fit p-4 rounded transition-all transform ease-in-out">Ouvrir l'amoire</button>
-                        <div className="flex flex-col justify-between items-center w-full h-full absolute z-[-1]">
-                            <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
-                            <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
-                        </div>
+                    style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    className="flex w-full h-full flex-col gap-6 justify-center items-center"
+                >
+                    <div className="relative h-full w-full flex flex-col justify-between items-center">
+                        <img data-aos="fade-left" className="h-[10%]" src="/PWA/pictures/fleche-swipe-flip.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
+                        <img data-aos="fade-left" className="" src="/PWA/pictures/txt-balaie.svg" alt="" />
+                        <img data-aos="fade-right" className="h-[10%]" src="/PWA/pictures/fleche-swipe.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
                     </div>
                 </div>
-            </div>
         </main>
     )
 }

@@ -17,7 +17,7 @@ function Serve() {
 
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/ecran-servir-bg.webp')" }}>
-            <img className="w-fit block h-26 hover:scale-90 transition-all" src="/PWA/pictures/btn-servir.webp" alt="" onClick={serveCustomer} />
+            <img className="w-4/5 hover:scale-90 transition-all" src="/PWA/pictures/btn-servir.svg" alt="" onClick={serveCustomer} />
         </main>
     )
 }

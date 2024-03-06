@@ -10,13 +10,13 @@ class Movements {
     _timer;
     _point_per_moves;
     _repeat;
-
-    _idRoom;
-    _nbPlayer;
+    _type;
+    _orientation;
+    _direction;
 
 
     // Constructeur
-    constructor(id, description, image, threshold, timer, point_per_moves, repeat ) {
+    constructor(id, description, image, threshold, timer, point_per_moves, repeat, type, orientation, direction ) {
         this._id = id;
         this._description = description;
         this._image = image;
@@ -24,8 +24,9 @@ class Movements {
         this._timer = timer;
         this._point_per_moves = point_per_moves;
         this._repeat = repeat;
-        this._idRoom = 0;
-        this._nbPlayer = 0;
+        this._type = type;
+        this._orientation = orientation;
+        this._direction = direction;
         makeAutoObservable(this);
     }
 
@@ -37,14 +38,15 @@ class Movements {
     get timer() { return this._timer; }
     get point_per_moves() { return this._point_per_moves; }
     get repeat() { return this._repeat; }
-    get idRoom() { return this._idRoom; }
-    get nbPlayer() { return this._nbPlayer; }
+    get type() { return this._type; }
+    get orientation() { return this._orientation; }
+    get direction() { return this._direction; }
 
     // Accesseurs d'écriture
     set threshold(threshold) { this._threshold = threshold; }
     set repeat(repeat) { this._repeat = repeat; }
     set point_per_moves(point_per_moves) { this._point_per_moves = point_per_moves; }
-    set idRoom(idRoom) { this._idRoom = idRoom; }
-    set nbPlayer(nbPlayer) { this._nbPlayer = nbPlayer; }
+    set orientation(orientation) { this._orientation = orientation; }
+    set direction(direction) { this._direction = direction; }
 }
 export default Movements;

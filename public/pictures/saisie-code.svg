@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="connecter-tel-code" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 218.72 86.99">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8fa1c9;
+        stroke: #fff4e3;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <g id="contenu-milieu">
+    <rect class="cls-1" x="1" y="1" width="216.72" height="84.99" rx="15.95" ry="15.95"/>
+  </g>
+</svg>

@@ -5,12 +5,12 @@
       "image" : url de l'image
       "api": quelles api est utilisée (motion → Besoin de l'acceleration) (Orientation → besoin de l'orientation')
       "point_per_moves" : Point en cas du mouvement réussi. Cette valeurs est normalement donnée par le cocktail
-
-      TYPE DE MOUVEMENT (Au moins une d'entre elles est obligatoire)
-      "timer" : Indique la durée du mouvement
+      "timer" : Indique la durée maximale du mouvement
       "thershold": Seuil accepté pour la reconnaissance de mouvement. Plus il est proche de 0 plus le mouvement sera sensible
 
       OPTIONNEL SELON LE MOUVEMENT
-      "repetition": Certains mouvements ont besoin d'une répétition. Par défaut, c'est 1
+      "repeat": Certains mouvements ont besoin d'une répétition. Par défaut, c'est 1
+      "orientation" : le mouvement (doit etre de type quantity) est calculé selon son passage à une suite d'orientation du téléphone
+      "direction" : le mouvement (doit etre de type quality) est calculé selon son passage à une suite de direction (mouvements) du téléphone
     }
   ]
