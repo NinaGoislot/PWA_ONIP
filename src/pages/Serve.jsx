@@ -15,6 +15,32 @@ function Serve() {
         navigate("/Wait");
     };
 
+    useEffect(() => {
+        const navigateToWait = () => {
+            console.log("Fin du jeu --> vers le wait")
+            navigate("/Wait");
+        };
+
+        socket.on("GAME_OVER", navigateToWait);
+
+        return () => {
+            socket.off("GAME_OVER", navigateToWait);
+        };
+    }, []);
+
+    useEffect(() => {
+        const navigateToWait = () => {
+            console.log("Fin du temps pour servir --> vers le wait")
+            navigate("/Wait");
+        };
+
+        socket.on("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+
+        return () => {
+            socket.off("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+        };
+    }, []);
+
     return (
         <main className="h-screen w-screen flex flex-col justify-center items-center bg-slate-700 gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/ecran-servir-bg.webp')" }}>
             <img className="w-fit block h-26 hover:scale-90 transition-all" src="/PWA/pictures/btn-servir.webp" alt="" onClick={serveCustomer} />

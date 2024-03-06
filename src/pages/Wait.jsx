@@ -33,6 +33,19 @@ function Wait() {
         };
     }, []);
 
+    useEffect(() => {
+        const navigateToWait = () => {
+            console.log("Fin du temps après servir --> wait instructions")
+            // navigate("/Wait");
+        };
+
+        socket.on("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+
+        return () => {
+            socket.off("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+        };
+    }, []);
+
     // Initialisation d'AOS
     useEffect(() => {
         AOS.init();
