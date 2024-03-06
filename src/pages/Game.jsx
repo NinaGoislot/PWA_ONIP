@@ -398,6 +398,32 @@ function Game() {
         };
     }, []);
 
+    useEffect(() => {
+        const navigateToWait = () => {
+            console.log("Fin du jeu --> vers le wait")
+            navigate("/Wait");
+        };
+
+        socket.on("GAME_OVER", navigateToWait);
+
+        return () => {
+            socket.off("GAME_OVER", navigateToWait);
+        };
+    }, []);
+
+    useEffect(() => {
+        const navigateToWait = () => {
+            console.log("Fin du temps pour servir --> vers le wait")
+            navigate("/Wait");
+        };
+
+        socket.on("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+
+        return () => {
+            socket.off("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+        };
+    }, []);
+
     /***************************************** Évènements ******************************************/
     const handleMotion = (event) => {
         const { acceleration, rotationRate } = event;

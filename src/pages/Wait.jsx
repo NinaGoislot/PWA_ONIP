@@ -33,6 +33,19 @@ function Wait() {
         };
     }, []);
 
+    useEffect(() => {
+        const navigateToWait = () => {
+            console.log("Fin du temps après servir --> wait instructions")
+            // navigate("/Wait");
+        };
+
+        socket.on("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+
+        return () => {
+            socket.off("COUNTDOWN_TO_SERVE_FINISHED", navigateToWait);
+        };
+    }, []);
+
     // Initialisation d'AOS
     useEffect(() => {
         AOS.init();
@@ -66,13 +79,15 @@ function Wait() {
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");
-        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "droite";
+        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer, sens);
         navigate("/Cabinet");
     };
 
     const handleSwipeRight = () => {
         console.log("Swiped right!");
-        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "gauche";
+        socket.emit("SWIPE_CABINET", partieStore.roomId, partieStore.numeroPlayer, sens);
         navigate("/Cabinet");
     };
 

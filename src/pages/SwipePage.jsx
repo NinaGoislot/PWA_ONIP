@@ -15,12 +15,26 @@ function SwipePage() {
     const { partieStore } = useContext(GlobalContext);
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
+    const [canSwipe, setSwipe] = useState(false);
 
     const swipeThreshold = 50;
 
     // Initialisation d'AOS
     useEffect(() => {
         AOS.init();
+    }, []);
+
+    // Je peux swipe
+    useEffect(() => {
+        const canSwipe = () => {
+            setSwipe(true);
+        };
+
+        socket.on("CAN_SWIPE", canSwipe);
+
+        return () => {
+            socket.off("CAN_SWIPE", canSwipe);
+        };
     }, []);
 
     const handleTouchStart = (e) => {
@@ -51,12 +65,14 @@ function SwipePage() {
 
     const handleSwipeLeft = () => {
         console.log("Swiped left!");
-        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "droite";
+        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer, sens);
     };
 
     const handleSwipeRight = () => {
         console.log("Swiped right!");
-        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer);
+        const sens = "gauche";
+        socket.emit("NAVIGATE_CABINETSCENE", partieStore.roomId, partieStore.numeroPlayer, sens);
     };
 
     /***************************************** SOCKET *****************************************/
@@ -85,10 +101,13 @@ function SwipePage() {
         };
     }, []);
 
+
+
     /******************************************************************************************/
 
     return (
         <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center overflow-hidden" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe-fond.webp')" }}>
+            {canSwipe && (
                 <div
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
@@ -102,6 +121,7 @@ function SwipePage() {
                         <img data-aos="fade-right" className="h-[10%]" src="/PWA/pictures/fleche-swipe.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
                     </div>
                 </div>
+            )}
         </main>
     )
 }
