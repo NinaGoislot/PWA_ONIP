@@ -11,7 +11,7 @@ function Cabinet() {
     const navigate = useNavigate();
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
-    const [canSwipe, setSwipe] = useState(true);
+    const [canSwipe, setSwipe] = useState(false);
     const swipeThreshold = 50;
 
     //Je reçois l'annonce de fin des mouvements

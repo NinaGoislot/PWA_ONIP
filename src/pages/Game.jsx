@@ -25,7 +25,7 @@ function Game() {
     const [movementRequired, setMovementRequiered] = useState(""); // est un id
 
     //Chrono
-    const [countdown, setCountdown] = useState(3);
+    const [countdown, setCountdown] = useState(1);
     const [isChronoStarted, setChronoStarted] = useState(false);
 
     //Suivre la reconnaissance de mouvements  
@@ -111,45 +111,44 @@ function Game() {
 
             console.log("finalData.length : " + finalData.length);
             console.log("Points considérés : " + minPoints);
+            const objectMovement = movementsStore.getMovementById(movementRequired);
 
             // Vérifier si la longueur des données est suffisante pour la comparaison
-            if (minPoints < MIN_POINTS_SHORT) {
-                console.log("Mouvement trop court");
-                setBeyondThreshold(false);
-                setTimerDone(false);
-                setFinalData("");
-                socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
-            } else {
-                const objectMovement = movementsStore.getMovementById(movementRequired);
-                let tabDataDone = normalizeData(finalData);
-                tabDataDone = subSampleData(tabDataDone, minPoints);
-                tabDataDone = flattenData(tabDataDone);
-
-                classifyData(tabDataDone, minPoints).then(predictedMovement => {
-                    console.log("Le mouvement voulu est : ", movementRequired);
-
-                    if (predictedMovement == objectMovement.id) {
-                        finalScore = objectMovement.point_per_moves;
-                        console.log("Points gagnés : " + finalScore);
-                    }
-                    setFinalData("");
+            if (objectMovement.type == "quality") {
+                if (minPoints < MIN_POINTS_SHORT) {
+                    console.log("Mouvement trop court");
                     setBeyondThreshold(false);
                     setTimerDone(false);
-                    console.log("Partie de partieStore : ", partieStore);
-                    console.log("Room id : ", partieStore.roomId);
-                    console.log("Numéro  : ", partieStore.numeroPlayer);
+                    setFinalData("");
                     socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
-                }).catch(error => {
-                    console.error("Une erreur s'est produite lors de la classification :", error);
-                });
+                } else {
+                    let tabDataDone = normalizeData(finalData);
+                    tabDataDone = subSampleData(tabDataDone, minPoints);
+                    tabDataDone = flattenData(tabDataDone);
+
+                    classifyData(tabDataDone, minPoints).then(predictedMovement => {
+                        console.log("Le mouvement voulu est : ", movementRequired);
+
+                        if (predictedMovement == objectMovement.id) {
+                            finalScore = objectMovement.point_per_moves;
+                            console.log("Points gagnés : " + finalScore);
+                        }
+                        setFinalData("");
+                        setBeyondThreshold(false);
+                        setTimerDone(false);
+                        console.log("Partie de partieStore : ", partieStore);
+                        socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+                    }).catch(error => {
+                        console.error("Une erreur s'est produite lors de la classification :", error);
+                    });
+                }
             }
         }
         else if (timerDone) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
-            if (objectMovement.type == "quality") {
+            if (objectMovement.type == "quality" && !isBeyondThreshold) {
                 console.log("Mon mouvement est de type quality");
                 setFinalData("");
-                setBeyondThreshold(false);
                 setTimerDone(false);
                 console.log("Aucun mouvement n'a été fait mais le timer est fini. j'arrete le processus.");
                 socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
@@ -157,7 +156,6 @@ function Game() {
             if (objectMovement.type == "quantity") {
                 console.log("Mon mouvement est de type quantity");
                 finalScore = score;
-                setBeyondThreshold(false);
                 setTimerDone(false);
                 setOrientation("None");
                 setDirection("None");
@@ -167,7 +165,7 @@ function Game() {
                 socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
             }
         }
-    }, [isMovementRunning]);
+    }, [isMovementRunning, isBeyondThreshold]);
 
     // --------------------------------------------------------
     // ------------- Sensibilité de detection #2 --------------
@@ -196,7 +194,8 @@ function Game() {
 
             const isHigher = currentMovementMagnitude > seuil;
             if (objectMovement.type == "quantity" && !isBeyondThreshold) {
-                if (isHigher || isBeyondThreshold) {
+                if (isHigher) {
+                    console.log("Mouvement quantité. Je dépasse le seuil.")
                     setBeyondThreshold(true);
                 }
             } else if (objectMovement.type == "quality") {
@@ -211,7 +210,7 @@ function Game() {
                 } else {
                     //Si je suis plus bas que le seuil après l'avoir déjà dépassé
                     if (isBeyondThreshold) {
-                        console.log("isBeyondThreshold pose pb");
+                        console.log("Je redescend en dessous du seuil après etre déhja passé");
                         stopProcess();
                     }
                 }
@@ -334,26 +333,11 @@ function Game() {
     useEffect(() => {
         if (isBeyondThreshold && !timerDone) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
-            if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
-                if (objectMovement.direction[sequenceIndex] === direction) {
-                    console.log("Je set l'index");
-                    setSequenceIndex(sequenceIndex + 1);
-                }
-            } else if (objectMovement.direction.length == sequenceIndex) {
-                setNbMoves(nbMoves + 1);
-                console.log("Je set le score");
-                setScore(score + objectMovement.point_per_moves);
-                setSequenceIndex(0);
-            }
-        }
-    }, [direction, sequenceIndex, timerDone]);
-
-    useEffect(() => {
-        if (isBeyondThreshold && !timerDone) {
-            const objectMovement = movementsStore.getMovementById(movementRequired);
-            if (objectMovement.type == "quantity" && objectMovement.hasOwnProperty('orientation')) {
-                if (objectMovement.direction.length > sequenceIndex && orientation !== "None") {
-                    if (objectMovement.orientation[sequenceIndex] === direction) {
+            if (objectMovement.type == "quantity" && objectMovement.hasOwnProperty('direction')) {
+                console.log("Suivit du tableau de mouvement de direction");
+                console.log("Tableau de direction : ", objectMovement.direction);
+                if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
+                    if (objectMovement.direction[sequenceIndex] === direction) {
                         console.log("Je set l'index");
                         setSequenceIndex(sequenceIndex + 1);
                     }
@@ -365,22 +349,45 @@ function Game() {
                 }
             }
         }
+    }, [direction, sequenceIndex, timerDone]);
+
+    useEffect(() => {
+        if (isBeyondThreshold && !timerDone) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            if (objectMovement.type == "quantity" && objectMovement.hasOwnProperty('orientation')) {
+                console.log("Suivit du tableau de mouvement d'orientation'");
+                console.log("objectMouvement' : ", objectMovement);
+                console.log("Tableau d'orientation' : ", objectMovement.orientation);
+                console.log("Orientation actuelle' : ", orientation);
+                if (objectMovement.orientation.length > sequenceIndex && orientation !== "None") {
+                    if (objectMovement.orientation[sequenceIndex] === orientation) {
+                        console.log("Je set l'index");
+                        setSequenceIndex(sequenceIndex + 1);
+                    }
+                } else if (objectMovement.orientation.length == sequenceIndex) {
+                    setNbMoves(nbMoves + 1);
+                    console.log("Je set le score");
+                    setScore(score + objectMovement.point_per_moves);
+                    setSequenceIndex(0);
+                }
+            }
+        }
     }, [orientation, sequenceIndex, timerDone]);
 
     // --------------------------------------------------------
     // ------------ Fin des mouvements en manuel #7 -----------
-    useEffect(() => {
-        if (isBeyondThreshold && timerDone) {
-            const objectMovement = movementsStore.getMovementById(movementRequired);
-            if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
-                console.log("Score : ", score);
-                console.log("Nb de coups : ", nbMoves);
+    // useEffect(() => {
+    //     if (isBeyondThreshold && timerDone) {
+    //         const objectMovement = movementsStore.getMovementById(movementRequired);
+    //         if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
+    //             console.log("Score : ", score);
+    //             console.log("Nb de coups : ", nbMoves);
 
-                setNbMoves(0);
-                setScore(0);
-            }
-        }
-    }, [score, isBeyondThreshold, timerDone]);
+    //             setNbMoves(0);
+    //             setScore(0);
+    //         }
+    //     }
+    // }, [score, isBeyondThreshold, timerDone]);
 
     /******************************************* SOCKET ********************************************/
     //J'ai chargé la page
@@ -506,9 +513,10 @@ function Game() {
 
     const stopProcess = () => {
         console.log("stopProcess() ► J'arrête le processus.")
-
-        setCountdown(3);
+        
+        setCountdown(1);
         setMovementRunning(false); // UE#1
+        setBeyondThreshold(false);
         //setTimerDone(true);
     };
 
@@ -611,6 +619,7 @@ function Game() {
             });
         });
     }
+
 
     function getLabel(result) {
         const entries = Object.entries(result.confidencesByLabel);
