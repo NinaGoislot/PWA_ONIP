@@ -4,7 +4,7 @@
   "image": "",
   "threshold": 2,
   "timer": 10,
-  "point_per_moves": 10,
+  "point_per_moves": 50,
   "repeat": 1,
   "type": "quality"
 },
@@ -14,7 +14,7 @@
   "image": "",
   "threshold": 2,
   "timer": 5,
-  "point_per_moves": 10,
+  "point_per_moves": 150,
   "repeat": 1,
   "type": "quality"
 },
@@ -24,7 +24,7 @@
   "image": "",
   "threshold": 2,
   "timer": 3,
-  "point_per_moves": 10,
+  "point_per_moves": 70,
   "repeat": 1,
   "type": "quality"
 },
@@ -34,7 +34,7 @@
   "image": "",
   "threshold": 2,
   "timer": 3,
-  "point_per_moves": 10,
+  "point_per_moves": 150,
   "repeat": 1,
   "type": "quality"
 },
@@ -44,7 +44,7 @@
   "image": "",
   "threshold": 2,
   "timer": 3,
-  "point_per_moves": 10,
+  "point_per_moves": 200,
   "repeat": 1,
   "type": "quality"
 },
@@ -54,7 +54,7 @@
   "image": "",
   "threshold": 2,
   "timer": 5,
-  "point_per_moves": 10,
+  "point_per_moves": 200,
   "repeat": 1,
   "type": "quality"
 },
@@ -64,7 +64,7 @@
   "image": "",
   "threshold": 2,
   "timer": 5,
-  "point_per_moves": 10,
+  "point_per_moves": 70,
   "repeat": 1,
   "type": "quality"
 },
@@ -74,7 +74,7 @@
   "image": "",
   "threshold": 2,
   "timer": 3,
-  "point_per_moves": 5,
+  "point_per_moves": 100,
   "repeat": 1,
   "type": "quality"
 },
@@ -84,7 +84,7 @@
     "image": "",
     "threshold": 2,
     "timer": 5,
-    "point_per_moves": 10,
+    "point_per_moves": 200,
     "repeat": 1,
     "type": "quality",
     "direction": ["Nord", "Sud"]
@@ -95,7 +95,7 @@
     "image": "",
     "threshold": 2,
     "timer": 5,
-    "point_per_moves": 10,
+    "point_per_moves": 200,
     "repeat": 1,
     "type": "quality",
     "direction": ["Nord", "Sud"]
@@ -106,7 +106,7 @@
     "image": "",
     "threshold": 2,
     "timer": 5,
-    "point_per_moves": 10,
+    "point_per_moves": 200,
     "repeat": 1,
     "type": "quality",
     "direction": ["Ouest", "Est"]
@@ -117,7 +117,7 @@
     "image": "",
     "threshold": 2,
     "timer": 5,
-    "point_per_moves": 10,
+    "point_per_moves": 200,
     "repeat": 1,
     "type": "quality",
     "orientation": ["Nord", "Sud"]
@@ -128,7 +128,7 @@
     "image": "",
     "threshold": 2,
     "timer": 5,
-    "point_per_moves": 10,
+    "point_per_moves": 200,
     "repeat": 1,
     "type": "quality",
     "orientation": ["Nord", "Sud"]
