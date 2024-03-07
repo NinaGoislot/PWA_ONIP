@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="tel-manette" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93.34 93.34">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #ffba63;
+      }
+
+      .cls-1, .cls-2 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        fill: #913333;
+        stroke: #000;
+        stroke-width: 3px;
+      }
+    </style>
+  </defs>
+  <g id="fleches">
+    <g id="gauche">
+      <g>
+        <path class="cls-2" d="M14.58,49.2c-1.95-1.12-1.95-3.93,0-5.05l36.59-21.12L87.75,1.9c1.95-1.12,4.38.28,4.38,2.53v42.25s0,42.25,0,42.25c0,2.25-2.43,3.65-4.38,2.53l-36.59-21.12L14.58,49.2Z"/>
+        <line class="cls-1" x1="78.61" y1="17.06" x2="26.53" y2="46.31"/>
+        <line class="cls-1" x1="25.86" y1="46.34" x2="78.22" y2="76.28"/>
+      </g>
+    </g>
+  </g>
+</svg>

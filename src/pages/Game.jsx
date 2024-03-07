@@ -59,7 +59,7 @@ function Game() {
     // --------- Pour gérer l'ajout des évènements #1 --------- 
     useEffect(() => {
         console.log('isMovementRunning', isMovementRunning);
-        let score = 0;
+        let finalScore = 0;
         if (isMovementRunning) {
             console.log("L'écouteur d'évènements commence.'");
 
@@ -118,7 +118,7 @@ function Game() {
                 setBeyondThreshold(false);
                 setTimerDone(false);
                 setFinalData("");
-                socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+                socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
             } else {
                 const objectMovement = movementsStore.getMovementById(movementRequired);
                 let tabDataDone = normalizeData(finalData);
@@ -129,8 +129,8 @@ function Game() {
                     console.log("Le mouvement voulu est : ", movementRequired);
 
                     if (predictedMovement == objectMovement.id) {
-                        score = objectMovement.point_per_moves;
-                        console.log("Points gagnés : " + score);
+                        finalScore = objectMovement.point_per_moves;
+                        console.log("Points gagnés : " + finalScore);
                     }
                     setFinalData("");
                     setBeyondThreshold(false);
@@ -138,7 +138,7 @@ function Game() {
                     console.log("Partie de partieStore : ", partieStore);
                     console.log("Room id : ", partieStore.roomId);
                     console.log("Numéro  : ", partieStore.numeroPlayer);
-                    socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+                    socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
                 }).catch(error => {
                     console.error("Une erreur s'est produite lors de la classification :", error);
                 });
@@ -147,12 +147,24 @@ function Game() {
         else if (timerDone) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
             if (objectMovement.type == "quality") {
-                console.log("Mon mouvement est de type quantity");
+                console.log("Mon mouvement est de type quality");
                 setFinalData("");
                 setBeyondThreshold(false);
                 setTimerDone(false);
                 console.log("Aucun mouvement n'a été fait mais le timer est fini. j'arrete le processus.");
-                socket.emit("MOVEMENT_DONE", score, partieStore.roomId, partieStore.numeroPlayer);
+                socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+            }
+            if (objectMovement.type == "quantity") {
+                console.log("Mon mouvement est de type quantity");
+                finalScore = score;
+                setBeyondThreshold(false);
+                setTimerDone(false);
+                setOrientation("None");
+                setDirection("None");
+                setSequenceIndex(0);
+                setNbMoves(0);
+                setScore(0);
+                socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
             }
         }
     }, [isMovementRunning]);
@@ -264,53 +276,55 @@ function Game() {
         //Si j'ai des données, une orientation, démarré un mouvement et si le timer est toujours en cours.
         if (motionData && orientation !== "None" && isBeyondThreshold && !timerDone) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
-            console.log("objectMovement : ", objectMovement);
 
-            const threshold = objectMovement.thershold;  // Seuil pour considérer un mouvement significatif
-            let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
-            let acceleration = motionData.acceleration;
+            if (objectMovement.type == "quantity" && objectMovement.hasOwnProperty('direction')) {
+                const threshold = objectMovement.thershold;  // Seuil pour considérer un mouvement significatif
+                let currentDirection = "None";  // Variable d'état pour suivre la direction actuelle
+                let acceleration = motionData.acceleration;
 
-            if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
-                console.log("orientation vaut " + orientation)
-                switch (orientation) {
-                    case "N":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
-                        }
-                        break;
-                    case "E":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Nord" : "Sud";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Ouest" : "Est";
-                        }
-                        break;
-                    case "S":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Est" : "Ouest";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Nord" : "Sud";
-                        }
-                        break;
-                    case "O":
-                        if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
-                            currentDirection = acceleration.x > 0 ? "Sud" : "Nord";
-                        } else {
-                            currentDirection = acceleration.y > 0 ? "Est" : "Ouest";
-                        }
-                        break;
-                    default:
-                        console.log("Aucune donnée reconnue")
-                        break;
+                if (Math.abs(acceleration.x) > threshold && Math.abs(acceleration.y) > threshold) {
+                    console.log("orientation vaut " + orientation)
+                    switch (orientation) {
+                        case "N":
+                            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                                currentDirection = acceleration.x > 0 ? "Ouest" : "Est";
+                            } else {
+                                currentDirection = acceleration.y > 0 ? "Sud" : "Nord";
+                            }
+                            break;
+                        case "E":
+                            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                                currentDirection = acceleration.x > 0 ? "Nord" : "Sud";
+                            } else {
+                                currentDirection = acceleration.y > 0 ? "Ouest" : "Est";
+                            }
+                            break;
+                        case "S":
+                            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+
+                                currentDirection = acceleration.x > 0 ? "Est" : "Ouest";
+                            } else {
+                                currentDirection = acceleration.y > 0 ? "Nord" : "Sud";
+                            }
+                            break;
+                        case "O":
+                            if (Math.abs(acceleration.x) > Math.abs(acceleration.y)) {
+                                currentDirection = acceleration.x > 0 ? "Sud" : "Nord";
+                            } else {
+                                currentDirection = acceleration.y > 0 ? "Est" : "Ouest";
+                            }
+                            break;
+                        default:
+                            console.log("Aucune donnée reconnue")
+                            break;
+                    }
+                    console.log("direction vaut " + currentDirection)
                 }
-                console.log("direction vaut " + currentDirection)
-            }
 
-            /***************** Logique de jeu Timer *****************/
-            if (currentDirection !== "None") {
-                setDirection(currentDirection);
+                /***************** Logique de jeu Timer *****************/
+                if (currentDirection !== "None") {
+                    setDirection(currentDirection);
+                }
             }
         }
     }, [motionData, orientation, isBeyondThreshold, timerDone]);
@@ -334,15 +348,37 @@ function Game() {
         }
     }, [direction, sequenceIndex, timerDone]);
 
+    useEffect(() => {
+        if (isBeyondThreshold && !timerDone) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            if (objectMovement.type == "quantity" && objectMovement.hasOwnProperty('orientation')) {
+                if (objectMovement.direction.length > sequenceIndex && orientation !== "None") {
+                    if (objectMovement.orientation[sequenceIndex] === direction) {
+                        console.log("Je set l'index");
+                        setSequenceIndex(sequenceIndex + 1);
+                    }
+                } else if (objectMovement.direction.length == sequenceIndex) {
+                    setNbMoves(nbMoves + 1);
+                    console.log("Je set le score");
+                    setScore(score + objectMovement.point_per_moves);
+                    setSequenceIndex(0);
+                }
+            }
+        }
+    }, [orientation, sequenceIndex, timerDone]);
+
     // --------------------------------------------------------
     // ------------ Fin des mouvements en manuel #7 -----------
     useEffect(() => {
         if (isBeyondThreshold && timerDone) {
-            console.log("Score : ", score);
-            console.log("Nb de coups : ", nbMoves);
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
+                console.log("Score : ", score);
+                console.log("Nb de coups : ", nbMoves);
 
-            setNbMoves(0);
-            setScore(0);
+                setNbMoves(0);
+                setScore(0);
+            }
         }
     }, [score, isBeyondThreshold, timerDone]);
 

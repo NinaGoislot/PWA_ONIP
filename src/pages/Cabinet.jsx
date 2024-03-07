@@ -11,7 +11,7 @@ function Cabinet() {
     const navigate = useNavigate();
     const [startX, setStartX] = useState(null);
     const [endX, setEndX] = useState(null);
-    const [canSwipe, setSwipe] = useState(false);
+    const [canSwipe, setSwipe] = useState(true);
     const swipeThreshold = 50;
 
     //Je reçois l'annonce de fin des mouvements
@@ -140,18 +140,18 @@ function Cabinet() {
                 style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
                 <div className="flex w-full h-full flex-col gap-10 justify-center items-center">
-                    <div className="flex w-1/3 justify-center p-3">
-                        <img onClick={() => sendMoveCursor("UP")} className="block scale-100 rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <div className="flex w-1/3 justify-center p-2">
+                        <img onClick={() => sendMoveCursor("UP")} className="w-full scale-100 rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
                     </div>
-                    <div className="flex gap-6 items-center">
-                        <img onClick={() => sendMoveCursor("LEFT")} className="w-1/3 block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
-                        <div className="flex w-1/3 justify-center p-1">
-                            <img onClick={() => sendMoveCursor("CLICK")} className="block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/fleche-directionnelle.webp" alt="" />
+                    <div className="flex gap-4 items-center">
+                        <img onClick={() => sendMoveCursor("LEFT")} className="p-2 w-1/3 block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
+                        <div className="flex w-1/3 justify-center">
+                            <img onClick={() => sendMoveCursor("CLICK")} className="w-full scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/fleche-directionnelle.svg" alt="" />
                         </div>
-                        <img onClick={() => sendMoveCursor("RIGHT")} className="w-1/3 block scale-100 rotate-180 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                        <img onClick={() => sendMoveCursor("RIGHT")} className="w-1/3 p-2 scale-100 rotate-180 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
                     </div>
-                    <div className="flex w-1/3 justify-center p-3">
-                        <img onClick={() => sendMoveCursor("DOWN")} className="block scale-100 -rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.webp" alt="" />
+                    <div className="flex w-1/3 justify-center p-2">
+                        <img onClick={() => sendMoveCursor("DOWN")} className="scale-100 -rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
                     </div>
                 </div>
             </div>
