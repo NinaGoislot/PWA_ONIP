@@ -18,26 +18,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { createContext } from 'react';
 import React from 'react';
 import { store } from './store/store';
-import { socket } from "./socket";
-import { useNavigate } from "react-router-dom";
 
 export const GlobalContext = createContext();
-const navigate = useNavigate();
-
 function App() {
-
-  useEffect(() => {
-    const restart = () => {
-      navigate("/");
-      window.location.reload();
-    };
-
-    socket.on("GAME_OVER", restart);
-
-    return () => {
-        socket.off("GAME_OVER", restart);
-    };
-}, []);
 
   return (
    <div className="App">
