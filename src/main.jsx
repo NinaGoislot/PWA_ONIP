@@ -9,4 +9,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>,
 )
 
-MobileConsole.startListening(true);
+// MobileConsole.startListening(true);

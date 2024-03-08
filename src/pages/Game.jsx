@@ -25,7 +25,7 @@ function Game() {
     const [movementRequired, setMovementRequiered] = useState(""); // est un id
 
     //Chrono
-    const [countdown, setCountdown] = useState(1);
+    const [countdown, setCountdown] = useState(3);
     const [isChronoStarted, setChronoStarted] = useState(false);
 
     //Suivre la reconnaissance de mouvements  
@@ -514,7 +514,7 @@ function Game() {
     const stopProcess = () => {
         console.log("stopProcess() ► J'arrête le processus.")
         
-        setCountdown(1);
+        setCountdown(3);
         setMovementRunning(false); // UE#1
         setBeyondThreshold(false);
         //setTimerDone(true);
