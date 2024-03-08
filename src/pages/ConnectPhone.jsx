@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { GlobalContext } from '../App.jsx';
 import { Link } from 'react-router-dom';
 import { socket } from "../socket";
+import Deconnexion from "../components/Deconnexion.jsx";
 
 function ConnectPhone() {
 
@@ -96,22 +97,24 @@ function ConnectPhone() {
     // });
 
     return (
-        <main className="h-screen w-screen flex flex-col justify-between items-center bg-center" style={{ backgroundImage: "url('/PWA/pictures/connexion.webp')", backgroundSize: '100% 100%' }}>
-            <form onSubmit={submit} className="flex flex-col h-full w-full justify-between gap-6">
-                <div className="h-[20%] w-full bg-contain" onClick={returnMenu} style={{ backgroundImage: "url('/PWA/pictures/btn-retour.webp')", backgroundSize: '100% 100%' }}></div>
-                <div className="flex flex-col gap-6 px-4">
-                    <div className="flex flex-col justify-center text-xl text-white gap-6">
-                        <label className="text-3xl text-light text-center" htmlFor="roomId">Entre le code de la partie</label>
-                        <input className="tracking-[0.3em] text-4xl text-black px-2 py-4 uppercase text-center rounded-[20px] border-2 border-white bg-[#8FA1C9] mx-6" type="text" name="roomId" id="roomId" required="required" minLength="5" maxLength="5" />
+        <Deconnexion>
+            <main className="h-screen w-screen flex flex-col justify-between items-center bg-center" style={{ backgroundImage: "url('/PWA/pictures/connexion.webp')", backgroundSize: '100% 100%' }}>
+                <form onSubmit={submit} className="flex flex-col h-full w-full justify-between gap-6">
+                    <div className="h-[20%] w-full bg-contain" onClick={returnMenu} style={{ backgroundImage: "url('/PWA/pictures/btn-retour.webp')", backgroundSize: '100% 100%' }}></div>
+                    <div className="flex flex-col gap-6 px-4">
+                        <div className="flex flex-col justify-center text-xl text-white gap-6">
+                            <label className="text-3xl text-light text-center" htmlFor="roomId">Entre le code de la partie</label>
+                            <input className="tracking-[0.3em] text-4xl text-black px-2 py-4 uppercase text-center rounded-[20px] border-2 border-white bg-[#8FA1C9] mx-6" type="text" name="roomId" id="roomId" required="required" minLength="5" maxLength="5" />
+                        </div>
                     </div>
-                </div>
-                <div className="h-[20%] w-full bg-contain flex items-end" style={{ backgroundImage: "url('/PWA/pictures/zone-violette.webp')", backgroundSize: '100% 100%' }}>
-                    <div className="h-[75%] flex justify-center items-center w-full">
-                        <button type="submit" className="w-1/2 h-auto hover:scale-90 transition-all transform ease-in-out"><img src="/PWA/pictures/btn-valider.svg" alt="valider le code de la partie" /></button>
+                    <div className="h-[20%] w-full bg-contain flex items-end" style={{ backgroundImage: "url('/PWA/pictures/zone-violette.webp')", backgroundSize: '100% 100%' }}>
+                        <div className="h-[75%] flex justify-center items-center w-full">
+                            <button type="submit" className="w-1/2 h-auto hover:scale-90 transition-all transform ease-in-out"><img src="/PWA/pictures/btn-valider.svg" alt="valider le code de la partie" /></button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </main>
+                </form>
+            </main>
+        </Deconnexion>
     )
 }
 export default ConnectPhone;

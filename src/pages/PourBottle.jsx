@@ -3,6 +3,7 @@ import { GlobalContext } from '@/App.jsx';
 import { Link } from 'react-router-dom';
 import { socket } from "@/socket";
 import { useNavigate } from "react-router-dom";
+import Deconnexion from "../components/Deconnexion";
 
 function PourBottle() {
 
@@ -102,12 +103,14 @@ function PourBottle() {
     }, [angle, alreadyPourOnce, isPouring]);
 
     return (
-        <main className="h-screen w-screenp-0 m-0" style={{ backgroundImage: "url('/PWA/pictures/tel-bouteille-fond.webp')", backgroundSize: '100% 100%' }}>
-            <div className="absolute bottom-0 left-0 w-full h-auto">
-                <img className="w-3/5 mx-auto translate-y-8" src="/PWA/pictures/bouteille-bouchon.webp" alt="Incline ton téléphone pour verser le liquide" />
-                <img className="w-full" src="/PWA/pictures/bouteille-sans-bouchon.webp" alt="Image du bouchon de la bouteille" />
-            </div>
-        </main>
+        <Deconnexion>
+            <main className="h-screen w-screenp-0 m-0" style={{ backgroundImage: "url('/PWA/pictures/tel-bouteille-fond.webp')", backgroundSize: '100% 100%' }}>
+                <div className="absolute bottom-0 left-0 w-full h-auto">
+                    <img className="w-3/5 mx-auto translate-y-8" src="/PWA/pictures/bouteille-bouchon.webp" alt="Incline ton téléphone pour verser le liquide" />
+                    <img className="w-full" src="/PWA/pictures/bouteille-sans-bouchon.webp" alt="Image du bouchon de la bouteille" />
+                </div>
+            </main>
+        </Deconnexion>
     );
 }
 export default PourBottle;

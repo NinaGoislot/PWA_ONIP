@@ -7,6 +7,7 @@ import { socket } from "../socket";
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Deconnexion from "../components/Deconnexion.jsx";
 
 function Game() {
 
@@ -25,7 +26,7 @@ function Game() {
     const [movementRequired, setMovementRequiered] = useState(""); // est un id
 
     //Chrono
-    const [countdown, setCountdown] = useState(3);
+    const [countdown, setCountdown] = useState(1);
     const [isChronoStarted, setChronoStarted] = useState(false);
 
     //Suivre la reconnaissance de mouvements  
@@ -46,8 +47,11 @@ function Game() {
 
     //Scores finaux en manuel
     const [score, setScore] = useState(0);
+    const [finalScore, setFinalScore] = useState(0);
     const [nbMoves, setNbMoves] = useState(0);
 
+    //Emit les données finales
+    const [canEmit, setCanEmit] = useState(false);
 
     /********************************************* USE EFFECT *********************************************/
     // Initialisation d'AOS
@@ -59,7 +63,7 @@ function Game() {
     // --------- Pour gérer l'ajout des évènements #1 --------- 
     useEffect(() => {
         console.log('isMovementRunning', isMovementRunning);
-        let finalScore = 0;
+        let currentScore = 15;
         if (isMovementRunning) {
             console.log("L'écouteur d'évènements commence.'");
 
@@ -96,8 +100,7 @@ function Game() {
                 window.removeEventListener('devicemotion', handleMotion);
             };
         } else if (finalData.length > 1) { //Si j'ai récupéré des données avec orientationData
-
-            let minPoints = 0
+            let minPoints = 0;
 
             if (finalData.length >= MIN_POINTS_SHORT) {
                 minPoints = MIN_POINTS_SHORT;
@@ -117,10 +120,7 @@ function Game() {
             if (objectMovement.type == "quality") {
                 if (minPoints < MIN_POINTS_SHORT) {
                     console.log("Mouvement trop court");
-                    setBeyondThreshold(false);
-                    setTimerDone(false);
-                    setFinalData("");
-                    socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+
                 } else {
                     let tabDataDone = normalizeData(finalData);
                     tabDataDone = subSampleData(tabDataDone, minPoints);
@@ -130,40 +130,44 @@ function Game() {
                         console.log("Le mouvement voulu est : ", movementRequired);
 
                         if (predictedMovement == objectMovement.id) {
-                            finalScore = objectMovement.point_per_moves;
-                            console.log("Points gagnés : " + finalScore);
+                            currentScore = objectMovement.point_per_moves;
+                            console.log("Points gagnés : " + currentScore);
                         }
-                        setFinalData("");
-                        setBeyondThreshold(false);
-                        setTimerDone(false);
+
                         console.log("Partie de partieStore : ", partieStore);
-                        socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+
                     }).catch(error => {
                         console.error("Une erreur s'est produite lors de la classification :", error);
                     });
                 }
+                setFinalData("");
+                setBeyondThreshold(false);
+                setTimerDone(false);
+                setFinalScore(currentScore); //#UE8
+                setCanEmit(true); //#UE8
             }
         }
         else if (timerDone) {
             const objectMovement = movementsStore.getMovementById(movementRequired);
             if (objectMovement.type == "quality" && !isBeyondThreshold) {
                 console.log("Mon mouvement est de type quality");
-                setFinalData("");
-                setTimerDone(false);
                 console.log("Aucun mouvement n'a été fait mais le timer est fini. j'arrete le processus.");
-                socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+                currentScore = 5;
             }
             if (objectMovement.type == "quantity") {
                 console.log("Mon mouvement est de type quantity");
-                finalScore = score;
-                setTimerDone(false);
-                setOrientation("None");
-                setDirection("None");
-                setSequenceIndex(0);
-                setNbMoves(0);
-                setScore(0);
-                socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+                currentScore = score;
             }
+            setBeyondThreshold(false);
+            setFinalData("");
+            setTimerDone(false);
+            setFinalScore(currentScore); //#UE8
+            setCanEmit(true); //#UE8
+            // setOrientation("None");
+            // setDirection("None");
+            // setSequenceIndex(0);
+            // setNbMoves(0);
+            // setScore(0);
         }
     }, [isMovementRunning, isBeyondThreshold]);
 
@@ -376,18 +380,29 @@ function Game() {
 
     // --------------------------------------------------------
     // ------------ Fin des mouvements en manuel #7 -----------
-    // useEffect(() => {
-    //     if (isBeyondThreshold && timerDone) {
-    //         const objectMovement = movementsStore.getMovementById(movementRequired);
-    //         if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
-    //             console.log("Score : ", score);
-    //             console.log("Nb de coups : ", nbMoves);
+    /*useEffect(() => {
+        if (isBeyondThreshold && timerDone) {
+            const objectMovement = movementsStore.getMovementById(movementRequired);
+            if (objectMovement.direction.length > sequenceIndex && direction !== "None") {
+                console.log("Score : ", score);
+                console.log("Nb de coups : ", nbMoves);
 
-    //             setNbMoves(0);
-    //             setScore(0);
-    //         }
-    //     }
-    // }, [score, isBeyondThreshold, timerDone]);
+                setNbMoves(0);
+                setScore(0);
+            }
+        }
+    }, [score, isBeyondThreshold, timerDone]);*/
+
+
+    // --------------------------------------------------------
+    // --------- Envoyer l'emit de fin de mouvement #8 --------
+    useEffect(() => {
+        if (canEmit && finalScore != 0) {
+            socket.emit("MOVEMENT_DONE", finalScore, partieStore.roomId, partieStore.numeroPlayer);
+            setFinalScore(0);
+            setCanEmit(false);
+        }
+    }, [canEmit, finalData]);
 
     /******************************************* SOCKET ********************************************/
     //J'ai chargé la page
@@ -513,8 +528,8 @@ function Game() {
 
     const stopProcess = () => {
         console.log("stopProcess() ► J'arrête le processus.")
-        
-        setCountdown(3);
+
+        setCountdown(1);
         setMovementRunning(false); // UE#1
         setBeyondThreshold(false);
         //setTimerDone(true);
@@ -635,23 +650,25 @@ function Game() {
     }
 
     return (
-        <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
-            <div className={`${!isMovementRunning ? 'absolute h-screen w-screen bg-black opacity-60' : 'hidden'}`}></div>
-            <div className={`${!isMovementRunning ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
-                {!isMovementRunning && (<h1 className="text-3xl text-center text-white text-opacity-50">Suivez la commande sur l'ordinateur !</h1>)}
-                {countdown > 0 && isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">Prêt ?</h2>)}
-                {isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">{countdown}</h2>)}
-                {isMovementRunning && (
-                    <div className="relative h-full w-full flex justify-center items-center">
-                        <h1 data-aos="fade-left" className="text-7xl italic font-semibold text-light">Bouge ! </h1>
-                        <div className="flex flex-col justify-between items-center w-full h-full absolute">
-                            <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
-                            <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
+        <Deconnexion>
+            <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe.webp')" }}>
+                <div className={`${!isMovementRunning ? 'absolute h-screen w-screen bg-black opacity-60' : 'hidden'}`}></div>
+                <div className={`${!isMovementRunning ? "overflow-hidden" : ""} flex w-full h-full flex-col justify-around item-center relative `}>
+                    {!isMovementRunning && (<h1 className="text-3xl text-center text-white text-opacity-50">Suivez la commande sur l'ordinateur !</h1>)}
+                    {countdown > 0 && isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">Prêt ?</h2>)}
+                    {isChronoStarted && (<h2 className="text-6xl text-center text-light opacity-85">{countdown}</h2>)}
+                    {isMovementRunning && (
+                        <div className="relative h-full w-full flex justify-center items-center">
+                            <h1 data-aos="fade-left" className="text-7xl italic font-semibold text-light">Bouge ! </h1>
+                            <div className="flex flex-col justify-between items-center w-full h-full absolute">
+                                <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
+                                <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
+                            </div>
                         </div>
-                    </div>
-                )}
-            </div>
-        </main>
+                    )}
+                </div>
+            </main>
+        </Deconnexion>
     )
 }
 export default Game;

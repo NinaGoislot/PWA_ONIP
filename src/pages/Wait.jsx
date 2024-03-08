@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Deconnexion from "../components/Deconnexion";
 
 function Wait() {
 
@@ -92,32 +93,34 @@ function Wait() {
     };
 
     return (
-        <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center overflow-hidden" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe-fond.webp')" }}>
-            <div className={`${!canMove ? 'absolute h-screen w-screen bg-black opacity-60 z-40' : 'hidden'}`}></div>
-            <div className={`${!canMove ? "overflow-hidden" : ""} flex w-full h-full flex-col gap-6 justify-center items-center`}>
-                {!canMove && (<h1 className="text-5xl text-center text-light">Suis les instructions sur l'ordinateur !</h1>)}
-                {canMove && (
-                    <div
-                        onTouchStart={handleTouchStart}
-                        onTouchMove={handleTouchMove}
-                        onTouchEnd={handleTouchEnd}
-                        style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                        <div className="relative h-full w-full flex flex-col justify-between items-center">
-                            <img data-aos="fade-left" className="h-[10%]" src="/PWA/pictures/fleche-swipe-flip.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
+        <Deconnexion>
+            <main className="relative h-screen w-screen flex flex-col justify-center items-center gap-6 bg-cover bg-center overflow-hidden" style={{ backgroundImage: "url('/PWA/pictures/tel-swipe-fond.webp')" }}>
+                <div className={`${!canMove ? 'absolute h-screen w-screen bg-black opacity-60 z-40' : 'hidden'}`}></div>
+                <div className={`${!canMove ? "overflow-hidden" : ""} flex w-full h-full flex-col gap-6 justify-center items-center`}>
+                    {!canMove && (<h1 className="text-5xl text-center text-light">Suis les instructions sur l'ordinateur !</h1>)}
+                    {canMove && (
+                        <div
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
+                            style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                        >
+                            <div className="relative h-full w-full flex flex-col justify-between items-center">
+                                <img className="h-[10%]" src="/PWA/pictures/fleche-swipe-flip.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
 
-                            <img data-aos="fade-left" className="" src="/PWA/pictures/txt-balaie.svg" alt="" />
-                            {/* <div className="flex flex-col justify-between items-center w-full h-full absolute z-[-1]">
+                                <img data-aos="fade-left" className="" src="/PWA/pictures/txt-balaie.svg" alt="" />
+                                {/* <div className="flex flex-col justify-between items-center w-full h-full absolute z-[-1]">
                                 <img className="w-fit block h-[10%] transform scale-x-[-1]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
                                 <img className="w-fit block h-[10%]" src="/PWA/pictures/fleche-swipe.webp" alt="" />
                             </div> */}
-                            <img data-aos="fade-right" className="h-[10%]" src="/PWA/pictures/fleche-swipe.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
+                                <img className="h-[10%]" src="/PWA/pictures/fleche-swipe.svg" alt="Swipe pour accéder à l'amoire à bouteilles" />
 
+                            </div>
                         </div>
-                    </div>
-                )}
-            </div>
-        </main>
+                    )}
+                </div>
+            </main>
+        </Deconnexion>
     )
 }
 export default Wait;

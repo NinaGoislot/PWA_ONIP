@@ -108,7 +108,7 @@ function Home() {
                 {connected && (
                     <Link to="" onClick={testCompatibility} className="mx-auto w-5/6 h-auto"><img src="/PWA/pictures/btn-connecter.svg" alt="Bouton de connexion" /></Link>
                 )}
-                <Link to="/Options" className="mx-auto w-1/2 h-auto"><img src="/PWA/pictures/btn-options.svg" alt="Bouton de connexion" /></Link>
+                {/* <Link to="/Options" className="mx-auto w-1/2 h-auto"><img src="/PWA/pictures/btn-options.svg" alt="Bouton de connexion" /></Link> */}
             </div>
             <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-violette.webp')", backgroundSize: '100% 100%' }}></div>
         </main>

@@ -5,6 +5,7 @@ import { socket } from "@/socket";
 import { useNavigate } from "react-router-dom";
 //import { Swipeable } from 'react-swipeable';
 import { useLocation } from 'react-router-dom';
+import Deconnexion from "../components/Deconnexion";
 
 function Cabinet() {
     const { partieStore } = useContext(GlobalContext);
@@ -98,18 +99,6 @@ function Cabinet() {
 
     /***************************************** SOCKET *****************************************/
 
-    // useEffect(() => {
-    //     const navigateFictiveScene = () => {
-    //         navigate("/SwipePage");
-    //     };
-
-    //     socket.on("SWIPE_WAIT", navigateFictiveScene);
-
-    //     return () => {
-    //         socket.off("SWIPE_WAIT", navigateFictiveScene);
-    //     };
-    // }, []);
-
     useEffect(() => {
         const navigateFictiveScene = () => {
             navigate("/SwipePage");
@@ -130,34 +119,36 @@ function Cabinet() {
     /******************************************************************************************/
 
     return (
-        <main className="relative h-screen w-screen flex flex-col justify-between items-center" style={{ backgroundImage: "url('/PWA/pictures/fond-manette.webp')", backgroundSize: '100% 100%' }}>
-            <div className="h-[20%] w-full bg-contain transform transition-all hover:scale-80" onClick={backToBottlesCard} style={{ backgroundImage: "url('/PWA/pictures/btn-manette-retour.svg')", backgroundSize: '100% 100%' }}></div>
-            {canSwipe && (
-            <div
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            >
-                <div className="flex w-full h-full flex-col gap-10 justify-center items-center">
-                    <div className="flex w-1/3 justify-center p-2">
-                        <img onClick={() => sendMoveCursor("UP")} className="w-full scale-100 rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
-                    </div>
-                    <div className="flex gap-4 items-center">
-                        <img onClick={() => sendMoveCursor("LEFT")} className="p-2 w-1/3 block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
-                        <div className="flex w-1/3 justify-center">
-                            <img onClick={() => sendMoveCursor("CLICK")} className="w-full scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/fleche-directionnelle.svg" alt="" />
+        <Deconnexion>
+            <main className="relative h-screen w-screen flex flex-col justify-between items-center" style={{ backgroundImage: "url('/PWA/pictures/fond-manette.webp')", backgroundSize: '100% 100%' }}>
+                <div className="h-[20%] w-full bg-contain transform transition-all hover:scale-80" onClick={backToBottlesCard} style={{ backgroundImage: "url('/PWA/pictures/btn-manette-retour.svg')", backgroundSize: '100% 100%' }}></div>
+                {canSwipe && (
+                    <div
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                        style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                        <div className="flex w-full h-full flex-col gap-10 justify-center items-center">
+                            <div className="flex w-1/3 justify-center p-2">
+                                <img onClick={() => sendMoveCursor("UP")} className="w-full scale-100 rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <img onClick={() => sendMoveCursor("LEFT")} className="p-2 w-1/3 block scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
+                                <div className="flex w-1/3 justify-center">
+                                    <img onClick={() => sendMoveCursor("CLICK")} className="w-full scale-100 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/fleche-directionnelle.svg" alt="" />
+                                </div>
+                                <img onClick={() => sendMoveCursor("RIGHT")} className="w-1/3 p-2 scale-100 rotate-180 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
+                            </div>
+                            <div className="flex w-1/3 justify-center p-2">
+                                <img onClick={() => sendMoveCursor("DOWN")} className="scale-100 -rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
+                            </div>
                         </div>
-                        <img onClick={() => sendMoveCursor("RIGHT")} className="w-1/3 p-2 scale-100 rotate-180 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
                     </div>
-                    <div className="flex w-1/3 justify-center p-2">
-                        <img onClick={() => sendMoveCursor("DOWN")} className="scale-100 -rotate-90 transform transition-transform duration-500 hover:scale-75" src="/PWA/pictures/cercle-validation.svg" alt="" />
-                    </div>
-                </div>
-            </div>
-            )}
-            <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-bouge.svg')", backgroundSize: '100% 100%' }}></div>
-        </main >
+                )}
+                <div className="h-[20%] w-full bg-contain" style={{ backgroundImage: "url('/PWA/pictures/zone-bouge.svg')", backgroundSize: '100% 100%' }}></div>
+            </main >
+        </Deconnexion>
     )
 }
 export default Cabinet;
